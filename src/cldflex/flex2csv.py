@@ -163,7 +163,9 @@ def extract_flex_record(
     else:
         for gloss_col in [obj_string, gloss_string]:
             if gloss_col in morph_cols:
-                morph_cols[gloss_col] = morph_cols[gloss_col].apply(lambda x: "".join(x))
+                morph_cols[gloss_col] = morph_cols[gloss_col].apply(
+                    lambda x: "".join(x)
+                )
             else:
                 morph_cols[gloss_col] = ""
 
@@ -173,7 +175,7 @@ def extract_flex_record(
         "Segmentation": " ".join(obj_out),
         "Gloss": " ".join(morph_cols[gloss_string]),
         "Text_ID": text_id,
-        "Morpheme_IDs": "; ".join(morpheme_ids)
+        "Morpheme_IDs": "; ".join(morpheme_ids),
     }
     for k, v in data.items():
         if k in column_mappings:
@@ -215,18 +217,18 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     global lexicon
     lexicon = {}
     if lexicon_file is None:
-        log.warning(f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning")
+        log.warning(
+            f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning"
+        )
     elif ".csv" in lexicon_file:
         log.info("Adding lexicon from CSV file…")
         for row in csv.DictReader(open(lexicon_file)):
             lexicon[row["ID"]] = {
                 "forms": row["Form"].split("; "),
-                "meanings": row["Gloss_"+conf["gloss_lg"]].split("; "),
+                "meanings": row["Gloss_" + conf["gloss_lg"]].split("; "),
             }
     else:
-        log.warning(
-            f"{lexicon_file} is not a valid lexicon file format."
-        )
+        log.warning(f"{lexicon_file} is not a valid lexicon file format.")
     name = flextext_file.split("/")[-1].split(".")[0]
     csv_out = conf.get("output_file", dir_path + "/%s_from_flex.csv" % name)
     f = open(flextext_file, "r")

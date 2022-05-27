@@ -13,6 +13,7 @@ import yaml
 
 log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
 
+
 def get_variant(morphemes, main_id, forms, id):
     out = []
     for morpheme in morphemes:
@@ -22,6 +23,7 @@ def get_variant(morphemes, main_id, forms, id):
             morpheme["Form"].extend(forms)
         out.append(morpheme)
     return out
+
 
 def convert(lift_file="", csv_file=None, id_map=None):
     log.info(f"Processing lift file {lift_file}")
@@ -66,7 +68,8 @@ def convert(lift_file="", csv_file=None, id_map=None):
         # storing citation form as list, variants are added later
         forms = [entry["lexical-unit"]["form"]["text"]["$"]]
         lg_id = entry["lexical-unit"]["form"]["@lang"]
-        print(entry)
+        if "sense" not in entry:  # just skip these
+            continue
         sense_entries = listify(entry["sense"])
         # there are potentially glosses in multiple languages
         # the structure differs if there is only a single language...
@@ -113,8 +116,8 @@ def convert(lift_file="", csv_file=None, id_map=None):
     # convert list columns into "; " separated text
     for col in morphemes.columns:
         # if col == "Gloss_en":
-            # for r in morphemes.to_dict(orient="records"):
-                # print(r[col])
+        # for r in morphemes.to_dict(orient="records"):
+        # print(r[col])
         if type(morphemes[col][0]) == list:
             morphemes[col] = morphemes[col].apply(lambda x: "; ".join(x))
 
