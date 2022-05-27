@@ -77,18 +77,31 @@ def convert(lift_file="", csv_file=None, id_map=None):
         # every sense has its own POS value; we gather them here
         poses = []
         for sense_entry in sense_entries:
-            if "gloss" not in sense_entry:
+            print(sense_entry)
+            if "gloss" not in sense_entry and "definition" not in sense_entry:
                 continue
             if "grammatical-info" in sense_entry:
                 poses.append(sense_entry["grammatical-info"]["@value"])
-            entry_glosses = listify(sense_entry["gloss"])
-            for entry_gloss in entry_glosses:
-                gloss_lg = entry_gloss["@lang"]
-                if gloss_lg not in glosses:
-                    glosses[gloss_lg] = []
-                gloss = entry_gloss["text"]["$"]
-                if gloss not in glosses[gloss_lg]:
-                    glosses[gloss_lg].append(str(gloss))
+                print(poses)
+            if "gloss" in sense_entry:
+                entry_glosses = listify(sense_entry["gloss"])
+                for entry_gloss in entry_glosses:
+                    gloss_lg = entry_gloss["@lang"]
+                    if gloss_lg not in glosses:
+                        glosses[gloss_lg] = []
+                    gloss = entry_gloss["text"]["$"]
+                    if gloss not in glosses[gloss_lg]:
+                        glosses[gloss_lg].append(str(gloss))
+            elif "definition" in sense_entry:
+                entry_defs = listify(sense_entry["definition"])
+                for entry_def in entry_defs:
+                    form = entry_def["form"]
+                    gloss_lg = form["@lang"]
+                    if gloss_lg not in glosses:
+                        glosses[gloss_lg] = []
+                    gloss = form["text"]["$"]
+                    if gloss not in glosses[gloss_lg]:
+                        glosses[gloss_lg].append(str(gloss))
 
         poses = list(set(poses))
         if len(poses) > 1:

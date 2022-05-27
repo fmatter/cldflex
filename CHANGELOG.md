@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * skip LIFT entries without sense(s)
+* check for either `gloss` or `definition` in senses
 
 ### Removed
 
