@@ -10,6 +10,7 @@ import sys
 import logging
 from cldflex.helpers import listify
 import yaml
+from pathlib import Path
 
 log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
 
@@ -25,12 +26,14 @@ def get_variant(morphemes, main_id, forms, id):
     return out
 
 
-def convert(lift_file="", csv_file=None, id_map=None):
+def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
+    gathered_examples = []
+    lift_file = Path(lift_file)
     log.info(f"Processing lift file {lift_file}")
-    dir_path = os.path.dirname(os.path.realpath(lift_file))
-    name = lift_file.split("/")[-1].split(".")[0]
+    dir_path = lift_file.resolve().parents[0]
+    name = lift_file.stem
     if not csv_file:
-        csv_file = dir_path + "/%s_from_lift.csv" % name
+        csv_file = dir_path / f"{name}_from_lift.csv"
     f = open(lift_file, "r")
     content = f.read().replace("http://www.w3.org/1999/xhtml", "")
     morphemes = []
@@ -76,13 +79,11 @@ def convert(lift_file="", csv_file=None, id_map=None):
         glosses = {}
         # every sense has its own POS value; we gather them here
         poses = []
-        for sense_entry in sense_entries:
-            print(sense_entry)
+        for sense_count, sense_entry in enumerate(sense_entries):
             if "gloss" not in sense_entry and "definition" not in sense_entry:
                 continue
             if "grammatical-info" in sense_entry:
                 poses.append(sense_entry["grammatical-info"]["@value"])
-                print(poses)
             if "gloss" in sense_entry:
                 entry_glosses = listify(sense_entry["gloss"])
                 for entry_gloss in entry_glosses:
@@ -102,7 +103,20 @@ def convert(lift_file="", csv_file=None, id_map=None):
                     gloss = form["text"]["$"]
                     if gloss not in glosses[gloss_lg]:
                         glosses[gloss_lg].append(str(gloss))
-
+            if gather_examples and "example" in sense_entry:
+                examples = listify(sense_entry["example"])
+                for ex_cnt, example in enumerate(examples):
+                    if "form" not in example:
+                        continue
+                    translation = example.get("translation", {"form": {"text": {"$": ""}}})
+                    translation = translation.get("form", {"text": {"$": ""}})
+                    translation = translation.get("text", {"$": ""})
+                    gathered_examples.append({
+                        "ID": f"{morph_id}-{sense_count}-{ex_cnt}",
+                        "Primary_Text": example["form"]["text"]["$"],
+                        "Translated_Text": translation["$"],
+                        "Entry_ID": morph_id
+                    })
         poses = list(set(poses))
         if len(poses) > 1:
             log.warning(
@@ -141,3 +155,7 @@ def convert(lift_file="", csv_file=None, id_map=None):
 
     log.info("\n" + morphemes.head().to_string())
     morphemes.to_csv(csv_file, index=False)
+
+    if gather_examples:
+        gathered_examples = pd.DataFrame.from_dict(gathered_examples)
+        gathered_examples.to_csv(dir_path / f"{name}-examples.csv", index=False)
