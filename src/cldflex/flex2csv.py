@@ -11,7 +11,7 @@ from cldflex.helpers import listify
 import pandas as pd
 import numpy as np
 
-log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
+log = get_colorlog(__name__, sys.stdout, level=logging.INFO)
 
 delimiters = ["-", "="]
 
@@ -261,7 +261,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             abbr_lg = list(metadata["title-abbreviation"].keys())[0]
             if len(metadata["title-abbreviation"].keys()) > 1:
                 log.info(f"Assuming that {abbr_lg} stores title-abbreviation info")
-            text_abbr = metadata["title-abbreviation"][abbr_lg]
+            text_abbr = metadata["title-abbreviation"][abbr_lg].strip("‎")
         else:
             text_abbr = "_MISSING_"
 
