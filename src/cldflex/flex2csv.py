@@ -249,6 +249,8 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                 title_unit = bs["item"]
             for item in title_unit:
                 lg = item["@lang"]
+                if "$" not in item:
+                    continue
                 tent = item["$"].strip()
                 if item["@type"] not in metadata:
                     metadata[item["@type"]] = {}
