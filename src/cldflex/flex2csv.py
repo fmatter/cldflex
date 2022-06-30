@@ -6,12 +6,17 @@ import csv
 import re
 import logging
 import yaml
+from slugify import slugify
 from clldutils.loglib import get_colorlog
 from cldflex.helpers import listify
 import pandas as pd
 import numpy as np
+from json import loads, dumps
 
-log = get_colorlog(__name__, sys.stdout, level=logging.INFO)
+def to_dict(input_ordered_dict):
+    return loads(dumps(input_ordered_dict))
+
+log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
 
 delimiters = ["-", "="]
 
@@ -68,100 +73,113 @@ def extract_flex_record(
     fallback_exno="1",
     column_mappings={},
     drop_columns=[],
+    conf={}
 ):
-    data = {}
+    phrase_data = {}
     for i in example:
         if i in ["item", "words"]:
             continue
-        data[i.strip("@")] = example[i]
+        phrase_data[i.strip("@")] = example[i]
 
-    exno = fallback_exno
-    ex_id = "%s-%s" % (text_id, str(exno).replace(".", "_"))
 
     if "item" in example:
         for entry in example["item"]:
             if "$" in entry:
-                data[entry["@type"] + "_" + entry["@lang"]] = entry["$"]
+                phrase_data[entry["@type"] + "_" + entry["@lang"]] = entry["$"]
 
-    surf_key = "word_txt_" + obj_lg
-    punct_key = "word_punct_" + obj_lg
+    segnum = phrase_data.get(f"segnum_{gloss_lg}", None)
+    if segnum:
+        ex_id = slugify(f"{text_id}-{segnum}")
+    else:
+        exno = fallback_exno
+        ex_id = slugify(f"{text_id}-{exno}")
 
-    surf_sentence = ""
+
+    # this is the expected key for surface forms
+    surf_key = "word_txt_" + obj_lg     # <item type="txt" lang="mdc">Yabi</item>
+    punct_key = "word_punct_" + obj_lg # <item type="punct" lang="mdc">.</item>
+
+    surf_sentence = []
     word_datas = []
 
     words = listify(example["words"]["word"])
 
-    for word_count, word in enumerate(words):
-        word_data = {}
-        # 'item' here are word-level forms, glossings or other annotations
-        if "item" in word:
-            word_items = listify(word["item"])
+    # log.debug(dict(words[0]))
+
+    for word_count, word_data in enumerate(words):
+        word_data = dict(word_data)
+        # log.debug(word_data)
+        wf_id = word_data.get("@guid", f"{ex_id}-{word_count}")
+        # log.debug(wf_id)
+
+        # 'item' in flextext are surface form (including punctuation), glosses and POS
+        if "item" in word_data:
+            word_items = listify(word_data["item"])
             for entry in word_items:
                 typ = entry["@type"]
                 field_key = "word" + "_" + typ + "_" + entry["@lang"]
-                if field_key == surf_key:
-                    surf_sentence += " " + entry["$"]
-                elif field_key == punct_key:
-                    surf_sentence += entry["$"]
+                if field_key.startswith("word_txt") or field_key.startswith("word_punct"):
+                    word_data["surface"] = entry["$"]
                 else:
                     word_data[field_key] = entry.get("$", "")
 
-        if "morphemes" in word:
-            morphemes = listify(word["morphemes"]["morph"])
+        if "morphemes" in word_data:
+            morphemes = listify(word_data["morphemes"]["morph"])
             for morpheme in morphemes:
-                morph_type = morpheme.get("@type", "root")
+                m_type = morpheme.get("@type", "root")
                 if "morph_type" not in word_data:
                     word_data["morph_type"] = []
-                word_data["morph_type"].append(morph_type)
-                # the GUID that is contained here is ONLY the GUID of the morpheme type, not the morpheme itself!
-                items = listify(morpheme["item"])
+                word_data["morph_type"].append(m_type)
+                items = listify(morpheme["item"]) # morphs, underlying forms ("lexemes"), glosses, POS
                 for item in items:
-                    if "$" in item:
-                        typ = item["@type"]
-                        if typ == "hn":
-                            typ = "cf"
-                        typ = typ + "_" + item["@lang"]
-                        if typ not in word_data:
-                            word_data[typ] = []
-                        word_data[typ].append(str(item["$"]))
+                    value = item.get("$", "MISSING")
+                    item_key = item["@type"] + "_" + item["@lang"]
+                    if item_key.startswith("hn_"): # subscripts for distinguishing homophones
+                        word_data[item_key.replace("hn_", "cf_")][-1] += str(value)
+                    else:
+                        word_data.setdefault(item_key, [])
+                        word_data[item_key].append(str(value))
 
         word_datas.append(word_data)
     ex_df = pd.DataFrame.from_dict(word_datas)
-    word_cols = [x for x in ex_df.columns if x.startswith("word_")]
+    ex_df.drop(columns=["morphemes", "item"], inplace=True)
+
+    word_cols = [x for x in ex_df.columns if x.startswith("word_") or x in ["@guid", "surface"]]
     word_cols = ex_df[word_cols]
 
-    morph_cols = [x for x in ex_df.columns if not x.startswith("word_")]
+    morph_cols = [x for x in ex_df.columns if not x in word_cols.columns]
     morph_cols = ex_df[morph_cols].copy()
     morph_cols.dropna(how="all", inplace=True)
 
-    obj_string = "txt_" + obj_lg
-    gloss_string = "gls_" + gloss_lg
-    obj_out = []
+    obj_key = "txt_" + obj_lg
+    gloss_key = "gls_" + gloss_lg
     morpheme_ids = []
+    gloss_out = []
 
-    for i, row in morph_cols.iterrows():
-        if gloss_string not in row or row[gloss_string] is np.nan:
+    for i, word in morph_cols.iterrows():
+        if gloss_key not in word or word[gloss_key] is np.nan:
+            log.warning(f"No gloss line ({gloss_key}) found for word {''.join(word[obj_key])} ")
             morpheme_ids.append("X")
         else:
-            for o, g in zip(row[obj_string], row[gloss_string]):
+            for o, g in zip(word[obj_key], word[gloss_key]):
                 morpheme_ids.append(search_lexicon(o, g))
         # add "-" where not present
-        fixed_obj = []
-        for obj, morph_type in zip(row[obj_string], row["morph_type"]):
-            if morph_type == "suffix" and not obj.startswith("-"):
-                obj = "-" + obj
-            elif morph_type == "prefix" and not obj.endswith("-"):
-                obj += "-"
-            fixed_obj.append(obj)
-        obj_out.append("".join(fixed_obj))
+        fixed_gloss = []
+        for gloss, morph_type in zip(word[gloss_key], word["morph_type"]):
+            if morph_type == "suffix" and not gloss.startswith("-"):
+                gloss = "-" + gloss
+            elif morph_type == "prefix" and not gloss.endswith("-"):
+                gloss += "-"
+            fixed_gloss.append(gloss)
+        gloss_out.append("".join(fixed_gloss))
 
     morph_cols.fillna("", inplace=True)
     # print(morph_cols)
     if len(morph_cols) == 0:
         log.warning(f"{ex_id} has no glossing")
-        morph_cols[gloss_string] = ""
+        morph_cols[gloss_key] = ""
     else:
-        for gloss_col in [obj_string, gloss_string]:
+        for gloss_col in [obj_key, gloss_key]:
             if gloss_col in morph_cols:
                 morph_cols[gloss_col] = morph_cols[gloss_col].apply(
                     lambda x: "".join(x)
@@ -169,19 +187,20 @@ def extract_flex_record(
             else:
                 morph_cols[gloss_col] = ""
 
+    print(phrase_data)
     out_dict = {
         "ID": ex_id,
-        "Sentence": surf_sentence,
-        "Segmentation": " ".join(obj_out),
-        "Gloss": " ".join(morph_cols[gloss_string]),
+        conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
+        conf.get("segmented_obj_label", "Analyzed_Word"): " ".join(morph_cols[obj_key]),
+        conf.get("gloss_label", "Gloss"): " ".join(gloss_out),
         "Text_ID": text_id,
-        "Morpheme_IDs": "; ".join(morpheme_ids),
     }
-    for k, v in data.items():
+
+    for k, v in phrase_data.items():
         if k in column_mappings:
             new_key = column_mappings[k]
-            if new_key in out_dict:
-                log.debug(f"Replacing column {new_key} with {k} from conf file")
+            # if new_key in out_dict:
+                # log.debug(f"Replacing column {new_key} with {k} from conf file")
             out_dict[new_key] = v
         elif k not in drop_columns:
             out_dict[k] = v
@@ -237,6 +256,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     texts = bf.data(fromstring(content))["document"]["interlinear-text"]
     if type(texts) is not list:
         texts = [texts]
+    texts = to_dict(texts)
     log.info(f"Parsing {len(texts)} texts…")
     for text_count, bs in enumerate(texts):
         metadata = {}
@@ -263,9 +283,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             abbr_lg = list(metadata["title-abbreviation"].keys())[0]
             if len(metadata["title-abbreviation"].keys()) > 1:
                 log.info(f"Assuming that {abbr_lg} stores title-abbreviation info")
-            text_abbr = metadata["title-abbreviation"][abbr_lg].strip("‎")
+            text_abbr = slugify(metadata["title-abbreviation"][abbr_lg])
         else:
-            text_abbr = "_MISSING_"
+            text_abbr = "missing-text-id"
 
         if "title" in metadata:
             title_lg = list(metadata["title"].keys())[0]
@@ -296,15 +316,17 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             else:
                 subexamples = listify(example["phrases"]["phrase"])
             for subex_count, data in enumerate(subexamples):
+                # print(subex_count, data)
                 example_list.append(
                     extract_flex_record(
                         example=data,
                         text_id=text_abbr,
                         obj_lg=conf["obj_lg"],
                         gloss_lg=conf["gloss_lg"],
-                        fallback_exno=str(ex_cnt) + "." + str(subex_count),
+                        fallback_exno=str(ex_cnt) + "-" + str(subex_count),
                         column_mappings=conf["mappings"],
                         drop_columns=conf["delete"],
+                        conf=conf
                     )
                 )
     ex_df = pd.DataFrame.from_dict(example_list)
