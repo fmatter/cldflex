@@ -33,7 +33,7 @@ def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
     dir_path = lift_file.resolve().parents[0]
     name = lift_file.stem
     if not csv_file:
-        csv_file = dir_path / f"{name}_from_lift.csv"
+        csv_file = dir_path / f"{name}_tabular.csv"
     f = open(lift_file, "r")
     content = f.read().replace("http://www.w3.org/1999/xhtml", "")
     morphemes = []
@@ -167,6 +167,6 @@ def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
     log.info("\n" + morphemes.head().to_string())
     morphemes.to_csv(csv_file, index=False)
 
-    if gather_examples:
+    if gather_examples and len(gathered_examples) > 0:
         gathered_examples = pd.DataFrame.from_dict(gathered_examples)
-        gathered_examples.to_csv(dir_path / f"{name}-examples.csv", index=False)
+        gathered_examples.to_csv(dir_path / f"{name}_examples.csv", index=False)
