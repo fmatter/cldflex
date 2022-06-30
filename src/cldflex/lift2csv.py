@@ -108,15 +108,26 @@ def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
                 for ex_cnt, example in enumerate(examples):
                     if "form" not in example:
                         continue
-                    translation = example.get("translation", {"form": {"text": {"$": ""}}})
+                    translation = example.get(
+                        "translation", {"form": {"text": {"$": ""}}}
+                    )
                     translation = translation.get("form", {"text": {"$": ""}})
                     translation = translation.get("text", {"$": ""})
-                    gathered_examples.append({
-                        "ID": f"{morph_id}-{sense_count}-{ex_cnt}",
-                        "Primary_Text": example["form"]["text"]["$"],
-                        "Translated_Text": translation["$"],
-                        "Entry_ID": morph_id
-                    })
+                    if "span" in example["form"]["text"]:
+                        ex_text = [
+                            x["$"] for x in example["form"]["text"]["span"] if "$" in x
+                        ]
+                        ex_text = "".join(ex_text)
+                    else:
+                        ex_text = example["form"]["text"]["$"]
+                    gathered_examples.append(
+                        {
+                            "ID": f"{morph_id}-{sense_count}-{ex_cnt}",
+                            "Primary_Text": ex_text,
+                            "Translated_Text": translation["$"],
+                            "Entry_ID": morph_id,
+                        }
+                    )
         poses = list(set(poses))
         if len(poses) > 1:
             log.warning(

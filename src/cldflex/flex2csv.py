@@ -13,8 +13,10 @@ import pandas as pd
 import numpy as np
 from json import loads, dumps
 
+
 def to_dict(input_ordered_dict):
     return loads(dumps(input_ordered_dict))
+
 
 log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
 
@@ -73,14 +75,13 @@ def extract_flex_record(
     fallback_exno="1",
     column_mappings={},
     drop_columns=[],
-    conf={}
+    conf={},
 ):
     phrase_data = {}
     for i in example:
         if i in ["item", "words"]:
             continue
         phrase_data[i.strip("@")] = example[i]
-
 
     if "item" in example:
         for entry in example["item"]:
@@ -94,10 +95,9 @@ def extract_flex_record(
         exno = fallback_exno
         ex_id = slugify(f"{text_id}-{exno}")
 
-
     # this is the expected key for surface forms
-    surf_key = "word_txt_" + obj_lg     # <item type="txt" lang="mdc">Yabi</item>
-    punct_key = "word_punct_" + obj_lg # <item type="punct" lang="mdc">.</item>
+    surf_key = "word_txt_" + obj_lg  # <item type="txt" lang="mdc">Yabi</item>
+    punct_key = "word_punct_" + obj_lg  # <item type="punct" lang="mdc">.</item>
 
     surf_sentence = []
     word_datas = []
@@ -118,7 +118,9 @@ def extract_flex_record(
             for entry in word_items:
                 typ = entry["@type"]
                 field_key = "word" + "_" + typ + "_" + entry["@lang"]
-                if field_key.startswith("word_txt") or field_key.startswith("word_punct"):
+                if field_key.startswith("word_txt") or field_key.startswith(
+                    "word_punct"
+                ):
                     word_data["surface"] = entry["$"]
                 else:
                     word_data[field_key] = entry.get("$", "")
@@ -130,11 +132,15 @@ def extract_flex_record(
                 if "morph_type" not in word_data:
                     word_data["morph_type"] = []
                 word_data["morph_type"].append(m_type)
-                items = listify(morpheme["item"]) # morphs, underlying forms ("lexemes"), glosses, POS
+                items = listify(
+                    morpheme["item"]
+                )  # morphs, underlying forms ("lexemes"), glosses, POS
                 for item in items:
                     value = item.get("$", "MISSING")
                     item_key = item["@type"] + "_" + item["@lang"]
-                    if item_key.startswith("hn_"): # subscripts for distinguishing homophones
+                    if item_key.startswith(
+                        "hn_"
+                    ):  # subscripts for distinguishing homophones
                         word_data[item_key.replace("hn_", "cf_")][-1] += str(value)
                     else:
                         word_data.setdefault(item_key, [])
@@ -144,7 +150,9 @@ def extract_flex_record(
     ex_df = pd.DataFrame.from_dict(word_datas)
     ex_df.drop(columns=["morphemes", "item"], inplace=True)
 
-    word_cols = [x for x in ex_df.columns if x.startswith("word_") or x in ["@guid", "surface"]]
+    word_cols = [
+        x for x in ex_df.columns if x.startswith("word_") or x in ["@guid", "surface"]
+    ]
     word_cols = ex_df[word_cols]
 
     morph_cols = [x for x in ex_df.columns if not x in word_cols.columns]
@@ -158,7 +166,9 @@ def extract_flex_record(
 
     for i, word in morph_cols.iterrows():
         if gloss_key not in word or word[gloss_key] is np.nan:
-            log.warning(f"No gloss line ({gloss_key}) found for word {''.join(word[obj_key])} ")
+            log.warning(
+                f"No gloss line ({gloss_key}) found for word {''.join(word[obj_key])} "
+            )
             morpheme_ids.append("X")
         else:
             for o, g in zip(word[obj_key], word[gloss_key]):
@@ -200,7 +210,7 @@ def extract_flex_record(
         if k in column_mappings:
             new_key = column_mappings[k]
             # if new_key in out_dict:
-                # log.debug(f"Replacing column {new_key} with {k} from conf file")
+            # log.debug(f"Replacing column {new_key} with {k} from conf file")
             out_dict[new_key] = v
         elif k not in drop_columns:
             out_dict[k] = v
@@ -326,7 +336,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                         fallback_exno=str(ex_cnt) + "-" + str(subex_count),
                         column_mappings=conf["mappings"],
                         drop_columns=conf["delete"],
-                        conf=conf
+                        conf=conf,
                     )
                 )
     ex_df = pd.DataFrame.from_dict(example_list)
