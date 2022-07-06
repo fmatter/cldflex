@@ -8,19 +8,27 @@ import logging
 import yaml
 from slugify import slugify
 from clldutils.loglib import get_colorlog
-from cldflex.helpers import listify
+from cldflex.helpers import listify, retrieve_morpheme_id
 import pandas as pd
 import numpy as np
 from json import loads, dumps
+from string import punctuation
 
 
 def to_dict(input_ordered_dict):
     return loads(dumps(input_ordered_dict))
 
 
-log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
+log = get_colorlog(__name__, sys.stdout, level=logging.INFO)
 
-delimiters = ["-", "="]
+delimiters = ["-", "=", "<", ">", "~"]
+
+punc = set(punctuation)
+
+# combine surface words and punctuation into one string
+def compose_surface_string(entries):
+    return "".join(w if set(w) <= punc else " " + w for w in entries).lstrip()
+
 
 # This splits an object word into its morphemes
 # e.g. "apa-ne" -> ["apa", "-", "ne"]
@@ -74,8 +82,9 @@ def extract_flex_record(
     gloss_lg="",
     fallback_exno="1",
     column_mappings={},
-    drop_columns=[],
+    drop_columns=None,
     conf={},
+    lexicon=None,
 ):
     phrase_data = {}
     for i in example:
@@ -145,46 +154,74 @@ def extract_flex_record(
                     else:
                         word_data.setdefault(item_key, [])
                         word_data[item_key].append(str(value))
-
         word_datas.append(word_data)
     ex_df = pd.DataFrame.from_dict(word_datas)
-    ex_df.drop(columns=["morphemes", "item"], inplace=True)
+    if f"word_pos_{gloss_lg}" not in ex_df.columns:
+        ex_df[f"word_pos_{gloss_lg}"] = ""
+
+    for col in ["morphemes", "item"]:
+        if col in ex_df.columns:
+            ex_df.drop(columns=[col], inplace=True)
 
     word_cols = [
         x for x in ex_df.columns if x.startswith("word_") or x in ["@guid", "surface"]
     ]
     word_cols = ex_df[word_cols]
 
+    obj_key = "txt_" + obj_lg
+    gloss_key = "gls_" + gloss_lg
+    word_gloss_key = "word_gls_%s" % (conf.get("word_gloss_lg", conf["gloss_lg"]))
+
+    if gloss_key not in ex_df.columns:
+        ex_df[gloss_key] = "***"
+    if obj_key not in ex_df.columns:
+        return {
+            "ID": ex_id,
+            conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
+            conf.get("segmented_obj_label", "Analyzed_Word"): "",
+            conf.get("gloss_label", "Gloss"): "",
+            "Text_ID": text_id,
+        }
+    
+
     morph_cols = [x for x in ex_df.columns if not x in word_cols.columns]
     morph_cols = ex_df[morph_cols].copy()
     morph_cols.dropna(how="all", inplace=True)
 
-    obj_key = "txt_" + obj_lg
-    gloss_key = "gls_" + gloss_lg
-    morpheme_ids = []
-    gloss_out = []
+    # put ["***"] instead of NaN
+    for col in [gloss_key, obj_key, "morph_type"]:
+        morph_cols[col].fillna("***", inplace=True)
+        morph_cols[col] = morph_cols[col].apply(lambda x: [x] if not isinstance(x, list) else x)
+
+    poses = []
+    if "@guid" in ex_df.columns:
+        ex_df[f"word_pos_{gloss_lg}"] = ex_df[f"word_pos_{gloss_lg}"].fillna("")
+        for guid, pos in zip(ex_df["@guid"], ex_df[f"word_pos_{gloss_lg}"]):
+            if pd.isnull(guid):  # punctuation has no GUID
+                continue
+            if pd.isnull(pos):
+                poses.append("?")
+            else:
+                poses.append(pos)
+
+    phrase_data["Primary_Text"] = compose_surface_string(list(word_cols["surface"]))
+    phrase_data["POS"] = "\t".join(poses)
 
     for i, word in morph_cols.iterrows():
         if gloss_key not in word or word[gloss_key] is np.nan:
             log.warning(
                 f"No gloss line ({gloss_key}) found for word {''.join(word[obj_key])} "
             )
-            morpheme_ids.append("X")
-        else:
-            for o, g in zip(word[obj_key], word[gloss_key]):
-                morpheme_ids.append(search_lexicon(o, g))
-        # add "-" where not present
         fixed_gloss = []
-        for gloss, morph_type in zip(word[gloss_key], word["morph_type"]):
+        for gloss, morph_type in zip(word[gloss_key], word.get("morph_type", "?")):
             if morph_type == "suffix" and not gloss.startswith("-"):
                 gloss = "-" + gloss
             elif morph_type == "prefix" and not gloss.endswith("-"):
                 gloss += "-"
             fixed_gloss.append(gloss)
-        gloss_out.append("".join(fixed_gloss))
+        ex_df.loc[i][gloss_key] = "".join(fixed_gloss)
 
-    morph_cols.fillna("", inplace=True)
-    # print(morph_cols)
+
     if len(morph_cols) == 0:
         log.warning(f"{ex_id} has no glossing")
         morph_cols[gloss_key] = ""
@@ -197,14 +234,71 @@ def extract_flex_record(
             else:
                 morph_cols[gloss_col] = ""
 
-    print(phrase_data)
-    out_dict = {
-        "ID": ex_id,
-        conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
-        conf.get("segmented_obj_label", "Analyzed_Word"): " ".join(morph_cols[obj_key]),
-        conf.get("gloss_label", "Gloss"): " ".join(gloss_out),
-        "Text_ID": text_id,
-    }
+    if len(morph_cols) > 0:
+        out_dict = {
+            "ID": ex_id,
+            conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
+            conf.get("segmented_obj_label", "Analyzed_Word"): "\t".join(
+                morph_cols[obj_key]
+            ),
+            conf.get("gloss_label", "Gloss"): "\t".join(
+                morph_cols[gloss_key]
+            ),
+            "Text_ID": text_id,
+        }
+    else:
+        return None
+
+
+    word_ids = [x for x in ex_df["@guid"] if not pd.isnull(x)]
+    word_meanings = [x for x in word_cols[word_gloss_key] if not pd.isnull(x)]
+
+    word_count = 0
+    for word_rec in ex_df.to_dict("records"):
+        if not isinstance(word_rec[obj_key], list):
+            if not pd.isnull(word_rec["@guid"]):
+                log.warning("Unglossed word:")
+                print(ex_df)
+            continue
+        word_id = word_rec["@guid"]
+        obj = "".join(word_rec[obj_key])
+        word_forms.setdefault(word_id, {"ID": word_id, "Form": obj, "Meaning": [word_rec[gloss_key]]})
+        if word_rec[gloss_key] not in word_forms[word_id]["Meaning"]:
+            word_forms[word_id]["Meaning"].append(word_rec[gloss_key])
+        if lexicon is not None:
+            sentence_slices.append(
+                {
+                    "ID": f"{ex_id}-{word_count}",
+                    "Example_ID": ex_id,
+                    "Form_ID": word_id,
+                    "Index": word_count,
+                    "Form_Meaning": word_rec[gloss_key],
+                }
+            )
+            if word_id not in form_slices:
+                form_slices[word_id] = []
+                for m_c, (morph_obj, morph_gloss, morph_type) in enumerate(
+                    zip(
+                        re.split(re.compile("|".join(delimiters)), obj),
+                        re.split(re.compile("|".join(delimiters)), word_rec[gloss_key]),
+                        word_rec["morph_type"],
+                    )
+                ):
+                    m_id = retrieve_morpheme_id(morph_obj, morph_gloss, lexicon, morph_type)
+                    if m_id:
+                        form_slices[word_id].append(
+                            {
+                                "ID": f"{word_id}-{str(m_c)}",
+                                "Form_ID": word_id,
+                                "Form": word_rec[obj_key],
+                                "Form_Meaning": word_rec[gloss_key],
+                                "Morph_ID": m_id,
+                                "Morpheme_Meaning": morph_gloss,
+                                "Index": str(m_c),
+                            }
+                        )
+        word_count += 1
+
 
     for k, v in phrase_data.items():
         if k in column_mappings:
@@ -243,23 +337,32 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         conf = {}
     else:
         conf = yaml.safe_load(open(config_file))
+
     global lexicon
-    lexicon = {}
+    global form_slices
+    global sentence_slices
+    global word_forms
+
+    word_forms = {}
+    form_slices = {}
+    sentence_slices = []
     if lexicon_file is None:
         log.warning(
             f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning"
         )
+        lexicon = None
     elif ".csv" in lexicon_file:
         log.info("Adding lexicon from CSV file…")
-        for row in csv.DictReader(open(lexicon_file)):
-            lexicon[row["ID"]] = {
-                "forms": row["Form"].split("; "),
-                "meanings": row["Gloss_" + conf["gloss_lg"]].split("; "),
-            }
+        lexicon = pd.read_csv(lexicon_file)
+        lexicon["Form_Bare"] = lexicon["Form"].apply(
+            lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
+        )
+        for split_col in ["Form_Bare", "Form", "Meaning"]:
+            lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
     else:
         log.warning(f"{lexicon_file} is not a valid lexicon file format.")
     name = flextext_file.split("/")[-1].split(".")[0]
-    csv_out = conf.get("output_file", dir_path + "/%s_from_flex.csv" % name)
+    csv_out = conf.get("output_file", dir_path + "/sentences.csv")
     f = open(flextext_file, "r")
     content = f.read()
     example_list = []
@@ -334,11 +437,26 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                         obj_lg=conf["obj_lg"],
                         gloss_lg=conf["gloss_lg"],
                         fallback_exno=str(ex_cnt) + "-" + str(subex_count),
-                        column_mappings=conf["mappings"],
-                        drop_columns=conf["delete"],
+                        column_mappings=conf.get("mappings", {}),
+                        drop_columns=conf.get("delete", []),
                         conf=conf,
+                        lexicon=lexicon,
                     )
                 )
     ex_df = pd.DataFrame.from_dict(example_list)
-    ex_df["Language_ID"] = conf["Language_ID"]
+    ex_df["Language_ID"] = conf.get("Language_ID", conf["obj_lg"])
     ex_df.to_csv(csv_out, index=False)
+
+    word_forms = pd.DataFrame.from_dict(word_forms.values())
+    word_forms["Meaning"] = word_forms["Meaning"].apply(lambda x: "; ".join(x))
+    word_forms.to_csv("wordforms.csv", index=False)
+
+    final_slices = []
+    for slices in form_slices.values():
+        for sl in slices:
+            final_slices.append(sl)
+    form_slices = pd.DataFrame.from_dict(final_slices)
+    form_slices.to_csv("form_slices.csv", index=False)
+
+    sentence_slices = pd.DataFrame.from_dict(sentence_slices)
+    sentence_slices.to_csv("sentence_slices.csv", index=False)

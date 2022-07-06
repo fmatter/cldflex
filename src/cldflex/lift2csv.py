@@ -19,63 +19,51 @@ def get_variant(morphemes, main_id, forms, id):
     out = []
     for morpheme in morphemes:
         if morpheme["ID"] == main_id:
-            if "ijmoka" in forms:
-                print(main_id, forms, morpheme)
             morpheme["Form"].extend(forms)
         out.append(morpheme)
     return out
 
 
-def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
-    gathered_examples = []
+def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
+    dictionary_examples = []
     lift_file = Path(lift_file)
     log.info(f"Processing lift file {lift_file}")
     dir_path = lift_file.resolve().parents[0]
     name = lift_file.stem
-    if not csv_file:
-        csv_file = dir_path / f"{name}_tabular.csv"
     f = open(lift_file, "r")
     content = f.read().replace("http://www.w3.org/1999/xhtml", "")
     morphemes = []
-    complex_forms = []
+    morpheme_variants = {}
     for entry in bf.data(fromstring(content))["lift"]["entry"]:
-        morph_id = entry["@guid"]
-        # skip entries referring to other entries, for now
-        if "relation" in entry.keys():
-            done = False
-            relations = listify(entry["relation"])
-            for relation in relations:
-                if relation["@type"] not in ["Compare", "_component-lexeme"]:
-                    done = True
-                    continue
-                if morph_id == "9d3c48bb-91c3-4b21-af00-38066f2770c8":
-                    print(entry)
-                if relation["@type"] == "_component-lexeme":
-                    for trait in listify(relation["trait"]):
-                        if morph_id == "007cc9cd-b24d-419e-8c04-df64cff4737d":
-                            print(trait)
-                        if trait["@name"] == "variant-type":
-                            main_id = relation["@ref"].split("_")[-1]
-                            forms = [entry["lexical-unit"]["form"]["text"]["$"]]
-                            morphemes = get_variant(morphemes, main_id, forms, morph_id)
-                    done = True
-            if done:
-                continue
+        morpheme_id = entry["@guid"]
         # different traits are stored here
         trait_entries = listify(entry["trait"])
-        # we are interested in the morpheme type (root, prefix...)
-        morph_type = ""
+        # we are only interested in the morpheme type (root, prefix...)
+        morph_type = "root"
         for trait_entry in trait_entries:
             if trait_entry["@name"] == "morph-type":
                 morph_type = trait_entry["@value"]
-        # storing citation form as list, variants are added later
-        forms = [entry["lexical-unit"]["form"]["text"]["$"]]
-        lg_id = entry["lexical-unit"]["form"]["@lang"]
+        # some variants are stored as separate entries
+        if "relation" in entry:
+            for relation in listify(entry["relation"]):
+                if relation["@type"] == "_component-lexeme":
+                    for trait in listify(relation["trait"]):
+                        if trait["@name"] == "variant-type":
+                            main_id = relation["@ref"].split("_")[-1]
+                            morph = {
+                                "ID": morpheme_id,
+                                "Form": entry["lexical-unit"]["form"]["text"]["$"],
+                                "Morpheme_ID": main_id,
+                                "Type": morph_type,
+                            }
+                            morpheme_variants.setdefault(main_id, [])
+                            morpheme_variants[main_id].append(morph)
+            continue
         if "sense" not in entry:  # just skip these
             continue
         sense_entries = listify(entry["sense"])
         # there are potentially glosses in multiple languages
-        # the structure differs if there is only a single language...
+        # the structure differs if there is only a single language
         glosses = {}
         # every sense has its own POS value; we gather them here
         poses = []
@@ -120,53 +108,90 @@ def convert(lift_file="", csv_file=None, id_map=None, gather_examples=True):
                         ex_text = "".join(ex_text)
                     else:
                         ex_text = example["form"]["text"]["$"]
-                    gathered_examples.append(
+                    dictionary_examples.append(
                         {
-                            "ID": f"{morph_id}-{sense_count}-{ex_cnt}",
+                            "ID": f"{morpheme_id}-{sense_count}-{ex_cnt}",
                             "Primary_Text": ex_text,
                             "Translated_Text": translation["$"],
-                            "Entry_ID": morph_id,
+                            "Entry_ID": morpheme_id,
                         }
                     )
+        # storing citation form as list, variants are added later
+        forms = [entry["lexical-unit"]["form"]["text"]["$"]]
+        lg_id = entry["lexical-unit"]["form"]["@lang"]
         poses = list(set(poses))
         if len(poses) > 1:
             log.warning(
                 f"Entry {forms[0]} has multiple grammatical infos: {', '.join(poses)}"
             )
-        if "variant" in entry.keys():
-            variants = listify(entry["variant"])
-            for variant in variants:
-                if "form" not in variant.keys():
-                    continue
-                variant_form = variant["form"]["text"]["$"]
-                variant_morph_type = variant["trait"]["@value"]
-                forms.append(variant_form)
+        variants = listify(entry.get("variant", None))
+        for i, variant in enumerate(variants):
+            if not variant:
+                continue
+            if "form" not in variant.keys():
+                continue
+            variant_form = variant["form"]["text"]["$"]
+            variant_morph_type = variant["trait"]["@value"]
+            morpheme_variants.setdefault(morpheme_id, [])
+            morpheme_variants[morpheme_id].append(
+                {
+                    "ID": f"{morpheme_id}-{i}",
+                    "Form": variant_form,
+                    "Morpheme_ID": morpheme_id,
+                    "Type": variant_morph_type,
+                }
+            )
         morphemes.append(
-            {"ID": morph_id, "Form": forms, "Language_ID": lg_id, "Gramm": poses}
+            {
+                "ID": morpheme_id,
+                "Form": forms,
+                "Name": forms[0],
+                "Language_ID": lg_id,
+                "Gramm": poses,
+                "Type": morph_type,
+            }
         )
         for gloss_lg, lg_glosses in glosses.items():
-            morphemes[-1]["Gloss_" + gloss_lg] = lg_glosses
+            morphemes[-1]["Meaning"] = lg_glosses
+
+    morphs = []
+    for morpheme in morphemes:
+        main_morph = morpheme.copy()
+        main_morph["Morpheme_ID"] = main_morph["ID"]
+        main_morph["Form"] = main_morph["Form"][0]
+        del main_morph["Name"]
+        del main_morph["Gramm"]
+        morphs.append(main_morph)
+        for variant in morpheme_variants.get(morpheme["ID"], []):
+            morpheme["Form"].append(variant["Form"])
+            variant["Meaning"] = morpheme["Meaning"]
+            variant["Language_ID"] = morpheme["Language_ID"]
+            morphs.append(variant)
 
     # create pandas DF
     morphemes = pd.DataFrame.from_dict(morphemes)
     morphemes = morphemes.fillna("")
 
+    # create pandas DF
+    morphs = pd.DataFrame.from_dict(morphs)
+    morphs = morphs.fillna("")
+
     # convert list columns into "; " separated text
-    for col in morphemes.columns:
-        # if col == "Gloss_en":
-        # for r in morphemes.to_dict(orient="records"):
-        # print(r[col])
-        if type(morphemes[col][0]) == list:
-            morphemes[col] = morphemes[col].apply(lambda x: "; ".join(x))
+    for df in [morphemes, morphs]:
+        for col in df.columns:
+            if type(df[col][0]) == list:
+                df[col] = df[col].apply(lambda x: "; ".join(x))
 
     if id_map is not None:
         with open(id_map) as file:
             id_map = yaml.load(file, Loader=yaml.SafeLoader)
         morphemes["ID"].replace(id_map, inplace=True)
+        morphs["ID"].replace(id_map, inplace=True)
 
     log.info("\n" + morphemes.head().to_string())
-    morphemes.to_csv(csv_file, index=False)
-
-    if gather_examples and len(gathered_examples) > 0:
-        gathered_examples = pd.DataFrame.from_dict(gathered_examples)
-        gathered_examples.to_csv(dir_path / f"{name}_examples.csv", index=False)
+    log.info("\n" + morphs.head().to_string())
+    morphemes.to_csv(dir_path / "morphemes.csv", index=False)
+    morphs.to_csv(dir_path / "morphs.csv", index=False)
+    if gather_examples and len(dictionary_examples) > 0:
+        dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
+        dictionary_examples.to_csv(dir_path / f"{name}_examples.csv", index=False)

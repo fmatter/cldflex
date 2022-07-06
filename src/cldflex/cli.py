@@ -4,6 +4,7 @@ import click
 import cldflex
 from cldflex.flex2csv import convert as flex2csv_convert
 from cldflex.lift2csv import convert as lift2csv_convert
+from pathlib import Path
 
 
 @click.group()
@@ -18,10 +19,9 @@ def source2flex():
 
 @main.command()
 @click.argument("filename")
-@click.option("-o", "--output", "csv_file", default=None)
 @click.option("-i", "--id-map", "id_map", default=None)
-def lift2csv(filename, csv_file, id_map):
-    lift2csv_convert(lift_file=filename, csv_file=csv_file, id_map=id_map)
+def lift2csv(filename, id_map):
+    lift2csv_convert(lift_file=filename, id_map=id_map)
 
 
 @main.command()
@@ -34,6 +34,8 @@ def flexicon2cldf():
 @click.option("-c", "--conf", "config_file", default=None)
 @click.option("-l", "--lexicon", "lexicon_file", default=None)
 def flex2csv(filename, config_file, lexicon_file):
+    if not config_file and Path("flex2csv.conf").is_file():
+        config_file = "flex2csv.conf"
     flex2csv_convert(filename, config_file=config_file, lexicon_file=lexicon_file)
 
 
