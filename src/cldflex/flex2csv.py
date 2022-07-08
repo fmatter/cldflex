@@ -156,6 +156,7 @@ def extract_flex_record(
                         word_data[item_key].append(str(value))
         word_datas.append(word_data)
     ex_df = pd.DataFrame.from_dict(word_datas)
+
     if f"word_pos_{gloss_lg}" not in ex_df.columns:
         ex_df[f"word_pos_{gloss_lg}"] = ""
 
@@ -219,8 +220,7 @@ def extract_flex_record(
             elif morph_type == "prefix" and not gloss.endswith("-"):
                 gloss += "-"
             fixed_gloss.append(gloss)
-        ex_df.loc[i][gloss_key] = "".join(fixed_gloss)
-
+        ex_df.loc[i][gloss_key] = "-".join(fixed_gloss).replace("--", "-").replace("=-", "=").replace("-=", "=")
 
     if len(morph_cols) == 0:
         log.warning(f"{ex_id} has no glossing")
@@ -229,7 +229,7 @@ def extract_flex_record(
         for gloss_col in [obj_key, gloss_key]:
             if gloss_col in morph_cols:
                 morph_cols[gloss_col] = morph_cols[gloss_col].apply(
-                    lambda x: "".join(x)
+                    lambda x: "-".join(x).replace("--", "-").replace("=-", "=").replace("-=", "=")
                 )
             else:
                 morph_cols[gloss_col] = ""
