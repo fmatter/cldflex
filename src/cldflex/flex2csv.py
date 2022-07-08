@@ -85,6 +85,7 @@ def extract_flex_record(
     drop_columns=None,
     conf={},
     lexicon=None,
+    verbose=False
 ):
     phrase_data = {}
     for i in example:
@@ -256,7 +257,7 @@ def extract_flex_record(
     word_count = 0
     for word_rec in ex_df.to_dict("records"):
         if not isinstance(word_rec[obj_key], list):
-            if not pd.isnull(word_rec["@guid"]):
+            if not pd.isnull(word_rec["@guid"]) and verbose==True:
                 log.warning("Unglossed word:")
                 print(ex_df)
             continue
@@ -298,7 +299,6 @@ def extract_flex_record(
                             }
                         )
         word_count += 1
-
 
     for k, v in phrase_data.items():
         if k in column_mappings:
@@ -455,8 +455,10 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     for slices in form_slices.values():
         for sl in slices:
             final_slices.append(sl)
-    form_slices = pd.DataFrame.from_dict(final_slices)
-    form_slices.to_csv("form_slices.csv", index=False)
+    if len(final_slices) > 0:
+        form_slices = pd.DataFrame.from_dict(final_slices)
+        form_slices.to_csv("form_slices.csv", index=False)
 
-    sentence_slices = pd.DataFrame.from_dict(sentence_slices)
-    sentence_slices.to_csv("sentence_slices.csv", index=False)
+    if len(sentence_slices) > 0:
+        sentence_slices = pd.DataFrame.from_dict(sentence_slices)
+        sentence_slices.to_csv("sentence_slices.csv", index=False)
