@@ -85,7 +85,7 @@ def extract_flex_record(
     drop_columns=None,
     conf={},
     lexicon=None,
-    verbose=False
+    verbose=False,
 ):
     phrase_data = {}
     for i in example:
@@ -176,38 +176,42 @@ def extract_flex_record(
 
     if gloss_key not in ex_df.columns:
         ex_df[gloss_key] = "***"
-    if obj_key not in ex_df.columns:
-        return {
-            "ID": ex_id,
-            conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
-            conf.get("segmented_obj_label", "Analyzed_Word"): "",
-            conf.get("gloss_label", "Gloss"): "",
-            "Text_ID": text_id,
-        }
-    
+    # if obj_key not in ex_df.columns:
+    #     return {
+    #         "ID": ex_id,
+    #         conf.get("segmented_obj_label", "Primary_Text"): surf_sentence,
+    #         conf.get("segmented_obj_label", "Analyzed_Word"): "",
+    #         conf.get("gloss_label", "Gloss"): "",
+    #         "Text_ID": text_id,
+    #     }
 
     morph_cols = [x for x in ex_df.columns if not x in word_cols.columns]
     morph_cols = ex_df[morph_cols].copy()
     morph_cols.dropna(how="all", inplace=True)
 
-    # put ["***"] instead of NaN
-    for col in [gloss_key, obj_key, "morph_type"]:
-        morph_cols[col].fillna("***", inplace=True)
-        morph_cols[col] = morph_cols[col].apply(lambda x: [x] if not isinstance(x, list) else x)
+    if obj_key in ex_df.columns:
 
-    poses = []
-    if "@guid" in ex_df.columns:
-        ex_df[f"word_pos_{gloss_lg}"] = ex_df[f"word_pos_{gloss_lg}"].fillna("")
-        for guid, pos in zip(ex_df["@guid"], ex_df[f"word_pos_{gloss_lg}"]):
-            if pd.isnull(guid):  # punctuation has no GUID
-                continue
-            if pd.isnull(pos):
-                poses.append("?")
-            else:
-                poses.append(pos)
+        # put ["***"] instead of NaN
+        for col in [gloss_key, obj_key, "morph_type"]:
+            morph_cols[col].fillna("***", inplace=True)
+            morph_cols[col] = morph_cols[col].apply(
+                lambda x: [x] if not isinstance(x, list) else x
+            )
+
+        poses = []
+        if "@guid" in ex_df.columns:
+            ex_df[f"word_pos_{gloss_lg}"] = ex_df[f"word_pos_{gloss_lg}"].fillna("")
+            for guid, pos in zip(ex_df["@guid"], ex_df[f"word_pos_{gloss_lg}"]):
+                if pd.isnull(guid):  # punctuation has no GUID
+                    continue
+                if pd.isnull(pos):
+                    poses.append("?")
+                else:
+                    poses.append(pos)
+        phrase_data["POS"] = "\t".join(poses)
+
 
     phrase_data["Primary_Text"] = compose_surface_string(list(word_cols["surface"]))
-    phrase_data["POS"] = "\t".join(poses)
 
     for i, word in morph_cols.iterrows():
         if gloss_key not in word or word[gloss_key] is np.nan:
@@ -221,7 +225,12 @@ def extract_flex_record(
             elif morph_type == "prefix" and not gloss.endswith("-"):
                 gloss += "-"
             fixed_gloss.append(gloss)
-        ex_df.loc[i][gloss_key] = "-".join(fixed_gloss).replace("--", "-").replace("=-", "=").replace("-=", "=")
+        ex_df.loc[i][gloss_key] = (
+            "-".join(fixed_gloss)
+            .replace("--", "-")
+            .replace("=-", "=")
+            .replace("-=", "=")
+        )
 
     if len(morph_cols) == 0:
         log.warning(f"{ex_id} has no glossing")
@@ -230,7 +239,10 @@ def extract_flex_record(
         for gloss_col in [obj_key, gloss_key]:
             if gloss_col in morph_cols:
                 morph_cols[gloss_col] = morph_cols[gloss_col].apply(
-                    lambda x: "-".join(x).replace("--", "-").replace("=-", "=").replace("-=", "=")
+                    lambda x: "-".join(x)
+                    .replace("--", "-")
+                    .replace("=-", "=")
+                    .replace("-=", "=")
                 )
             else:
                 morph_cols[gloss_col] = ""
@@ -242,28 +254,27 @@ def extract_flex_record(
             conf.get("segmented_obj_label", "Analyzed_Word"): "\t".join(
                 morph_cols[obj_key]
             ),
-            conf.get("gloss_label", "Gloss"): "\t".join(
-                morph_cols[gloss_key]
-            ),
+            conf.get("gloss_label", "Gloss"): "\t".join(morph_cols[gloss_key]),
             "Text_ID": text_id,
         }
     else:
         return None
 
-
-    word_ids = [x for x in ex_df["@guid"] if not pd.isnull(x)]
-    word_meanings = [x for x in word_cols[word_gloss_key] if not pd.isnull(x)]
+    word_ids = [x for x in ex_df.get("@guid", []) if not pd.isnull(x)]
+    word_meanings = [x for x in word_cols.get(word_gloss_key, []) if not pd.isnull(x)]
 
     word_count = 0
     for word_rec in ex_df.to_dict("records"):
-        if not isinstance(word_rec[obj_key], list):
-            if not pd.isnull(word_rec["@guid"]) and verbose==True:
+        if not isinstance(word_rec.get(obj_key, None), list):
+            if not pd.isnull(word_rec.get("@guid", None)) and verbose == True:
                 log.warning("Unglossed word:")
                 print(ex_df)
             continue
         word_id = word_rec["@guid"]
         obj = "".join(word_rec[obj_key])
-        word_forms.setdefault(word_id, {"ID": word_id, "Form": obj, "Meaning": [word_rec[gloss_key]]})
+        word_forms.setdefault(
+            word_id, {"ID": word_id, "Form": obj, "Meaning": [word_rec[gloss_key]]}
+        )
         if word_rec[gloss_key] not in word_forms[word_id]["Meaning"]:
             word_forms[word_id]["Meaning"].append(word_rec[gloss_key])
         if lexicon is not None:
@@ -285,7 +296,9 @@ def extract_flex_record(
                         word_rec["morph_type"],
                     )
                 ):
-                    m_id = retrieve_morpheme_id(morph_obj, morph_gloss, lexicon, morph_type)
+                    m_id = retrieve_morpheme_id(
+                        morph_obj, morph_gloss, lexicon, morph_type
+                    )
                     if m_id:
                         form_slices[word_id].append(
                             {
@@ -413,8 +426,6 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         examples = listify(bs["paragraphs"]["paragraph"])
 
         for ex_cnt, example in enumerate(examples):
-            # if ex_cnt != 3:
-            #     continue
             ex_id = f"{text_abbr}-{ex_cnt+1}"
             log.debug(f"Parsing record {ex_id}")
             if len(example) == 0 or "phrases" not in example:
@@ -429,7 +440,6 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             else:
                 subexamples = listify(example["phrases"]["phrase"])
             for subex_count, data in enumerate(subexamples):
-                # print(subex_count, data)
                 example_list.append(
                     extract_flex_record(
                         example=data,
