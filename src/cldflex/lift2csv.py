@@ -36,6 +36,7 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
     morpheme_variants = {}
     for entry in bf.data(fromstring(content))["lift"]["entry"]:
         morpheme_id = entry["@guid"]
+        # log.debug(morpheme_id)
         # different traits are stored here
         trait_entries = listify(entry["trait"])
         # we are only interested in the morpheme type (root, prefix...)
@@ -44,6 +45,7 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
             if trait_entry["@name"] == "morph-type":
                 morph_type = trait_entry["@value"]
         # some variants are stored as separate entries
+        variant_entry = False
         if "relation" in entry:
             for relation in listify(entry["relation"]):
                 if relation["@type"] == "_component-lexeme":
@@ -58,8 +60,11 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
                             }
                             morpheme_variants.setdefault(main_id, [])
                             morpheme_variants[main_id].append(morph)
+                            variant_entry = True
+        if variant_entry:
             continue
         if "sense" not in entry:  # just skip entries without a sense (meaning)
+            log.info(f"Skipping entry [{morpheme_id}] -- no senses.")
             continue
         sense_entries = listify(entry["sense"])
         # there are potentially glosses in multiple languages
@@ -166,6 +171,7 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
         del main_morph["Name"]
         del main_morph["Gramm"]
         morphs.append(main_morph)
+        # log.debug(morpheme)
         for variant in morpheme_variants.get(morpheme["ID"], []):
             morpheme["Form"].append(variant["Form"])
             variant["Meaning"] = morpheme["Meaning"]
