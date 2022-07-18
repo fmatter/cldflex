@@ -59,7 +59,7 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
                             morpheme_variants.setdefault(main_id, [])
                             morpheme_variants[main_id].append(morph)
             continue
-        if "sense" not in entry:  # just skip these
+        if "sense" not in entry:  # just skip entries without a sense (meaning)
             continue
         sense_entries = listify(entry["sense"])
         # there are potentially glosses in multiple languages
@@ -154,6 +154,9 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
         )
         for gloss_lg, lg_glosses in glosses.items():
             morphemes[-1]["Meaning"] = lg_glosses
+        if "field" in entry:
+            for field_entry in listify(entry["field"]):
+                morphemes[-1][field_entry["@type"]] = field_entry["form"]["text"]["$"]
 
     morphs = []
     for morpheme in morphemes:
