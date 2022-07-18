@@ -108,7 +108,8 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
                         ex_text = "".join(ex_text)
                     else:
                         ex_text = example["form"]["text"]["$"]
-                    dictionary_examples.append(
+                    if "$" in translation:
+                        dictionary_examples.append(
                         {
                             "ID": f"{morpheme_id}-{sense_count}-{ex_cnt}",
                             "Primary_Text": ex_text,
