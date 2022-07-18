@@ -366,7 +366,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         lexicon = None
     elif ".csv" in lexicon_file:
         log.info("Adding lexicon from CSV file…")
-        lexicon = pd.read_csv(lexicon_file)
+        lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
         )
@@ -376,7 +376,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         log.warning(f"{lexicon_file} is not a valid lexicon file format.")
     name = flextext_file.split("/")[-1].split(".")[0]
     csv_out = conf.get("output_file", dir_path + "/sentences.csv")
-    f = open(flextext_file, "r")
+    f = open(flextext_file, "r", encoding="utf-8")
     content = f.read()
     example_list = []
     texts = bf.data(fromstring(content))["document"]["interlinear-text"]
