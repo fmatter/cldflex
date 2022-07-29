@@ -115,13 +115,13 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
                         ex_text = example["form"]["text"]["$"]
                     if "$" in translation:
                         dictionary_examples.append(
-                        {
-                            "ID": f"{morpheme_id}-{sense_count}-{ex_cnt}",
-                            "Primary_Text": ex_text,
-                            "Translated_Text": translation["$"],
-                            "Entry_ID": morpheme_id,
-                        }
-                    )
+                            {
+                                "ID": f"{morpheme_id}-{sense_count}-{ex_cnt}",
+                                "Primary_Text": ex_text,
+                                "Translated_Text": translation["$"],
+                                "Entry_ID": morpheme_id,
+                            }
+                        )
         # storing citation form as list, variants are added later
         forms = [entry["lexical-unit"]["form"]["text"]["$"]]
         lg_id = entry["lexical-unit"]["form"]["@lang"]
@@ -159,6 +159,8 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
         )
         for gloss_lg, lg_glosses in glosses.items():
             morphemes[-1]["Meaning"] = lg_glosses
+        if "Meaning" not in morphemes[-1]:
+            morphemes[-1]["Meaning"] = ""
         if "field" in entry:
             for field_entry in listify(entry["field"]):
                 morphemes[-1][field_entry["@type"]] = field_entry["form"]["text"]["$"]

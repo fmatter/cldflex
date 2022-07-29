@@ -210,7 +210,6 @@ def extract_flex_record(
                     poses.append(pos)
         phrase_data["POS"] = "\t".join(poses)
 
-
     phrase_data["Primary_Text"] = compose_surface_string(list(word_cols["surface"]))
 
     for i, word in morph_cols.iterrows():
