@@ -382,6 +382,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     if type(texts) is not list:
         texts = [texts]
     texts = to_dict(texts)
+    text_metadata = {}
     log.info(f"Parsing {len(texts)} texts…")
     for text_count, bs in enumerate(texts):
         metadata = {}
@@ -412,6 +413,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         else:
             text_abbr = "missing-text-id"
 
+        text_metadata[text_abbr] = metadata
         if "title" in metadata:
             title_lg = list(metadata["title"].keys())[0]
             if len(metadata["title"].keys()) > 1:
@@ -471,3 +473,13 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     if len(sentence_slices) > 0:
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         sentence_slices.to_csv("sentence_slices.csv", index=False)
+
+    text_table = []
+    for text_id, data in text_metadata.items():
+        tdic = {"ID": text_id}
+        for kind, kdic in data.items():
+            for lg, value in kdic.items():
+                tdic[f"{kind}_{lg}"] = value
+        text_table.append(tdic)
+    text_table = pd.DataFrame.from_dict(text_table)
+    text_table.to_csv("text_metadata.csv", index=False)
