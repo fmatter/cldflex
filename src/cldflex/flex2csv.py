@@ -303,7 +303,7 @@ def extract_flex_record(
                             {
                                 "ID": f"{word_id}-{str(m_c)}",
                                 "Form_ID": word_id,
-                                "Form": word_rec[obj_key],
+                                "Form": word_rec["surface"],
                                 "Form_Meaning": word_rec[gloss_key],
                                 "Morph_ID": m_id,
                                 "Morpheme_Meaning": morph_gloss,
