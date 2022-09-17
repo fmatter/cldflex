@@ -1,16 +1,13 @@
 import os
 import string
-import script_converter
 
 punctuation = "!@#$%^&*()_+<>?:.,;"
 
 
-def objectify(input, mapping_file=None):
+def objectify(input):
     for c in input:
         if c in punctuation:
             input = input.replace(c, "")
-    if mapping_file:
-        input = script_converter.convert(input, mapping_file)
     return input
 
 
