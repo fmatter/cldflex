@@ -364,7 +364,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         )
         lexicon = None
     elif ".csv" in lexicon_file:
-        log.info("Adding lexicon from CSV file…")
+        log.info(f"Adding lexicon from CSV file {lexicon_file}...")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
