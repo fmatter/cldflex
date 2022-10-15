@@ -5,14 +5,13 @@ import os
 import re
 import pandas as pd
 import unicodedata
-from clldutils.loglib import Logging, get_colorlog
 import sys
 import logging
 from cldflex.helpers import listify
 import yaml
 from pathlib import Path
 
-log = get_colorlog(__name__, sys.stdout, level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
 def get_variant(morphemes, main_id, forms, id):

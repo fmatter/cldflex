@@ -7,7 +7,6 @@ import re
 import logging
 import yaml
 from slugify import slugify
-from clldutils.loglib import get_colorlog
 from cldflex.helpers import listify, retrieve_morpheme_id
 import pandas as pd
 import numpy as np
@@ -19,7 +18,7 @@ def to_dict(input_ordered_dict):
     return loads(dumps(input_ordered_dict))
 
 
-log = get_colorlog(__name__, sys.stdout, level=logging.INFO)
+log = logging.getLogger(__name__)
 
 delimiters = ["-", "=", "<", ">", "~"]
 

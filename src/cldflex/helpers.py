@@ -3,7 +3,7 @@ from slugify import slugify
 import pandas as pd
 from pathlib import Path
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 
 def listify(item):
