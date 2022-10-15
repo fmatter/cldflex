@@ -34,8 +34,8 @@ def flexicon2cldf():
 @click.option("-c", "--conf", "config_file", default=None)
 @click.option("-l", "--lexicon", "lexicon_file", default=None)
 def flex2csv(filename, config_file, lexicon_file):
-    if not config_file and Path("flex2csv.conf").is_file():
-        config_file = "flex2csv.conf"
+    if not config_file and Path("config.yaml").is_file():
+        config_file = "config.yaml"
     flex2csv_convert(filename, config_file=config_file, lexicon_file=lexicon_file)
 
 
