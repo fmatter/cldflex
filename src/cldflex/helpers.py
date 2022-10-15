@@ -21,14 +21,13 @@ def retrieve_morpheme_id(o, g, lex, morph_type):
     if len(candidates) == 1:
         return candidates.iloc[0]["ID"]
     elif len(candidates) == 0:
-        log.error(f"No entries for {o} '{g}' in lexicon.")
         return None
     elif len(candidates) > 0:
         narrow_candidates = candidates[candidates["Type"] == morph_type]
         if len(narrow_candidates) == 1:
             return narrow_candidates.iloc[0]["ID"]
         else:
-            log.error(
+            log.warning(
                 f"Multiple lexicon entries for {o} '{g}', using the first result:"
             )
             print(morph_type)

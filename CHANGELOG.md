@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * overhaul of `flex2csv` component
-* colorlog
+* more informative and colorful log
 
 ## [0.0.1] - 2022-03-08
 

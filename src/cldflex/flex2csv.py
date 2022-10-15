@@ -309,6 +309,8 @@ def extract_flex_record(
                                 "Index": str(m_c),
                             }
                         )
+                    else:
+                        log.warning(f"No hits for {morph_obj} '{morph_gloss}' in lexicon! ({ex_id})")
         word_count += 1
 
     for k, v in phrase_data.items():
@@ -359,11 +361,11 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     sentence_slices = []
     if lexicon_file is None:
         log.warning(
-            f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning"
+            f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
         )
         lexicon = None
     elif ".csv" in lexicon_file:
-        log.info(f"Adding lexicon from CSV file {lexicon_file}...")
+        log.info(f"Adding lexicon from CSV file {lexicon_file}")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
@@ -382,7 +384,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         texts = [texts]
     texts = to_dict(texts)
     text_metadata = {}
-    log.info(f"Parsing {len(texts)} texts…")
+    log.info(f"Parsing {len(texts)} texts")
     for text_count, bs in enumerate(texts):
         metadata = {}
         if "item" not in bs:
@@ -407,7 +409,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         if "title-abbreviation" in metadata:
             abbr_lg = list(metadata["title-abbreviation"].keys())[0]
             if len(metadata["title-abbreviation"].keys()) > 1:
-                log.info(f"Assuming that {abbr_lg} stores title-abbreviation info")
+                log.info(f"Assuming that the language field [{abbr_lg}] stores title-abbreviation info")
             text_abbr = slugify(metadata["title-abbreviation"][abbr_lg])
         else:
             text_abbr = "missing-text-id"
@@ -416,12 +418,12 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         if "title" in metadata:
             title_lg = list(metadata["title"].keys())[0]
             if len(metadata["title"].keys()) > 1:
-                log.info(f"Assuming that {title_lg} stores title info")
+                log.info(f"Assuming that language field [{title_lg}] stores title info")
             title = metadata["title"][title_lg]
         else:
             title = "_MISSING_"
 
-        log.info(f"Parsing text {text_abbr} '{title}'")
+        log.info(f"Parsing text [{text_abbr}] '{title}'")
 
         examples = listify(bs["paragraphs"]["paragraph"])
 
