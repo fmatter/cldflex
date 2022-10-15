@@ -1,0 +1,40 @@
+ID,Language_ID,Surface,Form,Gloss,Translation,Part,Text_ID,Start,End,Speaker
+fc-1,arn,mari mari,mari.mari,hello,Hello,1,fc,,,
+fc-2,arn,mari mari,mari.mari,hello,Hello,2,fc,,,
+fc-3,arn,kümelkalekaymi,kümel-ka-le-ka-y-m-i,be good-CONT-RES-CONT-IND-2-SG,Are you well?,3,fc,,,
+fc-4,arn,kümelkalekan,kümel-ka-le-ka-n,be good-CONT-RES-CONT-1.SG.IND,I am well.,4,fc,,,
+fc-5,arn,petu chumimi,petu chum-i-m-i,still do what-SG-2-SG,What are you doing?,5,fc,,,
+fc-6,arn,rakiduamkülen fey mew,rakiduam-küle-n fey mew,think-RES-1.SG.IND 3 OBL,I am thinking of him.,6,fc,,,
+za-1,arn,kiñe pangi ka kiñe ngürü müley kiñe ruka mew,kiñe pangi ka kiñe ngürü müle-y kiñe ruka mew,one puma and one fox be-IND one house OBL,A puma and a fox lived in the same house.,1,za,7843,10883,CA
+za-2,arn,niey küla püñeñ feychi pangi,nie-y küla püñeñ feychi pangi,have-IND three son of woman DEM puma,The puma had three sons.,2,za,11340,13363,CA
+za-3,arn,feymew kiñe antü feypi pangi,feymew kiñe antü feypi pangi,then one day say puma,Then one day the puma said to the fox:,3,za,14095,16220,CA
+za-4,arn,iñche kintumean iloal pingey ngürü,iñche kintu-me-a-n ilo-a-l pi-nge-y ngürü,1.PRO search-AND-FUT-1.SG.IND slaughter-FUT-NONF say-PASS-IND fox,"“I will search meat”, she told the fox.",4,za,16952,19649,CA
+za-5,arn,eymi müleaymi,eymi müle-a-y-m-i,2PRO be-FUT-IND-2-SG,Stay here.,5,za,20049,21180,CA
+za-6,arn,"pichilewey ilo , dewmayaymi",pichi-le-we-y ilo  dewma-ya-y-m-i,little-RES-PERS-IND meat  make-FUT-IND-2-SG,"There's still some meat left, prepare it.",6,za,21626,23375,CA
+za-7,arn,iñche ipatuan pi pangi,iñche i-pa-tu-a-n pi pangi,1.PRO eat-CISL-RE-FUT-1.SG.IND say puma,"“I will eat it later”, said the puma.",7,za,23889,26037,CA
+za-8,arn,ya ya pi ngürü,ya ya pi ngürü,yes yes say fox,"“As you wish”, said the fox.",8,za,28723,30563,CA
+za-9,arn,feymew amuy pangi kintualu ilotual,feymew amu-y pangi kintu-a-lu ilotu-a-l,then go-IND puma search-FUT-NONF eat meat-FUT-NONF,Then the puma went to search food.,9,za,31066,33797,CA
+za-10,arn,feychi ngürü dewmay pichilewechi ilo,feychi ngürü dewma-y pichi-le-we-chi ilo,DEM fox make-IND little-RES-PERS-NONF meat,The fox prepared the rest of the food.,10,za,34163,36540,CA
+za-11,arn,feymew tichi pangi ñi küla püñeñ müley ruka mew,feymew tichi pangi ñi küla püñeñ müle-y ruka mew,then DEM puma POSS three son of woman be-IND house OBL,The puma's three sons were in the house.,11,za,37112,40495,CA
+za-12,arn,fey kintuntükunge challa mew wadküpeychi challa pingey pichike che,fey kintu-n-tüku-nge challa mew wadkü-pe-y-chi challa pi-nge-y pichi-ke che,3 search-1.SG.IND-put-PASS pot OBL boil-DUB-IND-NONF pot say-PASS-IND little-PL person,"The fox said to them: “look inside the pot, maybe the pot is boiling”, the little ones were told.",12,za,41135,46563,CA
+za-13,arn,pieyew ngürü,pi-e-y-ew ngürü,say-INV-IND-3AGT fox,They were told by the fox.,13,za,46849,47809,CA
+za-14,arn,kintutükumelu chi pichike che feymew ngürü wayontükufi,kintu-tüku-me-lu chi pichi-ke che feymew ngürü wayon-tüku-fi,search-put-AND-NONF DEM little-PL person then fox raise-put-3PAT,"While the little ones were looking incide, the fox pushed them up.",14,za,50552,54906,CA
+za-15,arn,wadküy wadkülechi challa mew,wadkü-y wadkü-le-chi challa mew,boil-IND boil-RES-NONF pot OBL,They boiled in the boiling pot.,15,za,55363,57980,CA
+za-16,arn,fey reyükünufi pichilewechi ilo mew,fey reyü-künu-fi pichi-le-we-chi ilo mew,3 mix-put-3PAT little-RES-PERS-NONF meat OBL,Then the fox stirred them in with the rest of the meat.,16,za,58449,61455,CA
+za-17,arn,feymew akutuy pangi,feymew aku-tu-y pangi,then come-RE-IND puma,Then the puma came back.,17,za,64369,65923,CA
+za-18,arn,ramtupatuy ñi küla pu püñeñ,ramtu-pa-tu-y ñi küla pu püñeñ,ask-CISL-RE-IND POSS three PL son of woman,She asked about her three sons.,18,za,66346,68346,CA
+za-19,arn,petu kintuy pichike mamüll pi ngürü pingey pangi,petu kintu-y pichi-ke mamüll pi ngürü pi-nge-y pangi,still search-IND little-PL firewood say fox say-PASS-IND puma,"“They are looking for firewood”, said the fox, was the puma told.",19,za,68917,72769,CA
+za-20,arn,feymew elungey ilokorü feychi pangi,feymew elu-nge-y ilo-korü feychi pangi,then give-PASS-IND meat-soup DEM puma,Then she served the meat to the puma.,20,za,73420,75809,CA
+za-21,arn,kishu ñi pu püñeñ em ilotupatuy,kishu ñi pu püñeñ em ilotu-pa-tu-y,ANA POSS PL son of woman dead eat meat-CISL-RE-IND,That one ate her own sons.,21,za,76335,78472,CA
+za-22,arn,feymew feypingey ngürü,feymew feypi-nge-y ngürü,then say-PASS-IND fox,Then the fox was asked:,22,za,81340,82872,CA
+za-23,arn,mütrümelmetuen ñi püñeñ,mütrüm-el-me-tu-e-n ñi püñeñ,call-APPL-AND-RE-INV-1.SG.IND 1POSS son of woman,“Call my sons.”,23,za,83226,84803,CA
+za-24,arn,feymew amuy ngürü mütrümafilu,feymew amu-y ngürü mütrüm-a-fi-lu,then go-IND fox call-FUT-3PAT-NONF,Then the fox went to call them,24,za,85363,87329,CA
+za-25,arn,welu mütrümlay,welu mütrüm-la-y,but call-NEG-IND,But she did not call them.,25,za,87763,88997,CA
+za-26,arn,lefamuy,lef-amu-y,run-go-IND,She ran away.,26,za,89489,90312,CA
+za-27,arn,aḻülu ñi amun fey wüñokintuy,aḻü-lu ñi amu-n fey wüño-kintu-y,far-NONF POSS go-INF 3 go back-look-IND,"Far away, she looked back.",27,za,90895,93066,CA
+za-28,arn,feymew mütrümi,feymew mütrüm-i,then call-SG,Then she said:,28,za,93420,94483,CA
+za-29,arn,kishu kay ñi püñeñ kay ilotuy wedañma,kishu kay ñi püñeñ kay ilotu-y wedañma,ANA DEM POSS son of woman DEM eat meat-IND naughty,“The wicked one ate her own sons.”,29,za,95157,97717,CA
+za-30,arn,kishu kay ñi püñeñ kay ilotuy wedañma,kishu kay ñi püñeñ kay ilotu-y wedañma,ANA DEM POSS son of woman DEM eat meat-IND naughty,“The wicked one ate her own sons.”,30,za,98095,100609,CA
+za-31,arn,pi ñi ülkantumütrümün feychi ngürü,pi ñi ülkantu-mütrüm-ün feychi ngürü,say POSS sing-call-INF DEM fox,That was what the fox chanted.,31,za,101089,103615,CA
+za-32,arn,feymew allküy pangi,feymew allkü-y pangi,then hear-IND puma,Then the puma heard.,32,za,106426,107957,CA
+za-33,arn,chem pimi kam pingey ngürü,chem pi-m-i kam pi-nge-y ngürü,what say-2-SG Q say-PASS-IND fox,“What did you say?” she asked the fox.,33,za,108277,110255,CA

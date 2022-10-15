@@ -21,7 +21,8 @@ extras = dev
 [testenv:lint]
 commands =
     python -m flake8
-    prospector
-    isort --check-only src/cldflex --diff
+    prospector src
+    prospector tests
+    isort --check-only src
 extras = dev
 """
