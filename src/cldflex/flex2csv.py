@@ -8,6 +8,7 @@ from slugify import slugify
 from cldflex.helpers import listify, retrieve_morpheme_id
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from json import loads, dumps
 from string import punctuation
 
@@ -107,7 +108,6 @@ def extract_flex_record(
     word_datas = []
 
     words = listify(example["words"]["word"])
-
 
     for word_count, word_data in enumerate(words):
         word_data = dict(word_data)
@@ -328,9 +328,11 @@ def extract_flex_record(
 # sys.excepthook = ex_handler
 
 
-def convert(flextext_file="", lexicon_file=None, config_file=None):
+def convert(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
+    output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
+    output_dir = Path(output_dir)
     logging.basicConfig(
-        filename=f"flex2csv_{os.path.splitext(flextext_file)[0]}.log",
+        filename=output_dir / f"flex2csv_{os.path.splitext(flextext_file)[0]}.log",
         filemode="w",
         level="INFO",
         format="%(levelname)s::%(name)s::%(message)s",
@@ -338,7 +340,6 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     if flextext_file == "":
         log.error("No .flextext file provided")
         return None
-    dir_path = os.path.dirname(os.path.realpath(flextext_file))
     if not config_file:
         log.warning("Running without a config file.")
         conf = {}
@@ -370,8 +371,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     else:
         log.warning(f"{lexicon_file} is not a valid lexicon file format.")
     # name = flextext_file.split("/")[-1].split(".")[0]
-    csv_out = conf.get("output_file", dir_path + "/sentences.csv")
-
+    csv_out = output_dir / conf.get("output_file", "sentences.csv")
 
     conf.setdefault("gloss_lg", "en")
     with open(flextext_file, "r", encoding="utf-8") as f:
@@ -445,10 +445,11 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             else:
                 subexamples = listify(example["phrases"]["phrase"])
             if obj_missing:
-                for item in subexamples[0]["item"]:
-                    if "@lang" in item and item["@lang"]:
-                        conf["obj_lg"] = item["@lang"]
-                obj_missing = False
+                for item in list(subexamples[0]["words"].values())[0]:
+                    for subitem in item["item"]:
+                        if "@lang" in subitem and subitem["@lang"] != "en":
+                            conf["obj_lg"] = subitem["@lang"]
+                            obj_missing = False
             for subex_count, data in enumerate(subexamples):
                 example_list.append(
                     extract_flex_record(
@@ -466,10 +467,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     ex_df = pd.DataFrame.from_dict(example_list)
     ex_df["Language_ID"] = conf.get("Language_ID", conf["obj_lg"])
     ex_df.to_csv(csv_out, index=False)
-
     word_forms = pd.DataFrame.from_dict(word_forms.values())
     word_forms["Meaning"] = word_forms["Meaning"].apply(lambda x: "; ".join(x))
-    word_forms.to_csv("wordforms.csv", index=False)
+    word_forms.to_csv(output_dir / "wordforms.csv", index=False)
 
     final_slices = []
     for slices in form_slices.values():
@@ -481,7 +481,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
 
     if len(sentence_slices) > 0:
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
-        sentence_slices.to_csv("sentence_slices.csv", index=False)
+        sentence_slices.to_csv(output_dir / "sentence_slices.csv", index=False)
 
     text_table = []
     for text_id, data in text_metadata.items():
@@ -491,4 +491,4 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                 tdic[f"{kind}_{lg}"] = value
         text_table.append(tdic)
     text_table = pd.DataFrame.from_dict(text_table)
-    text_table.to_csv("texts.csv", index=False)
+    text_table.to_csv(output_dir / "texts.csv", index=False)

@@ -1,0 +1,1408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<document version="2">
+  <interlinear-text guid="e4e1a825-4260-43bd-b7ca-178a3e5c3a17">
+    <item type="title" lang="en">The old man</item>
+    <item type="title" lang="txi">Ekïrï</item>
+    <item type="title-abbreviation" lang="en">ekiri</item>
+    <item type="title-abbreviation" lang="txi">ekiri</item>
+    <item type="source" lang="txi">ikpengpacheco2001</item>
+    <paragraphs>
+      <paragraph guid="39f0a9df-93a2-48e2-a69f-68cfda2deff6">
+        <phrases>
+          <phrase guid="674114d7-6707-42e1-af99-16b5d7079777">
+            <item type="segnum" lang="en">1</item>
+            <words>
+              <word guid="494f9d98-30db-4b92-b196-df02bbfea28d">
+                <item type="txt" lang="txi">ekïrï</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ekïrï</item>
+                    <item type="cf" lang="txi">ekïrï</item>
+                    <item type="gls" lang="en">old one</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">old one</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="5e51b9c3-0e94-4a13-a4de-499dd59d2189">
+                <item type="txt" lang="txi">ru</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ru</item>
+                    <item type="cf" lang="txi">ru</item>
+                    <item type="gls" lang="en">PART</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">PART</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="2b20a75a-d71e-43f6-b925-e494626f79dd">
+                <item type="txt" lang="txi">eroang</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ero</item>
+                    <item type="cf" lang="txi">ero</item>
+                    <item type="gls" lang="en">go</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">go</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="af4368cf-fb9d-48f0-8ae2-16ed129f36d9">
+                <item type="txt" lang="txi">tïmamin</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">tï-</item>
+                    <item type="cf" lang="txi">tï-</item>
+                    <item type="gls" lang="en">3COR</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mami</item>
+                    <item type="cf" lang="txi">mami</item>
+                    <item type="gls" lang="en">work</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">work</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="cd79ab83-0e33-434d-943a-8147979f61f5">
+                <item type="txt" lang="txi">ïna</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ïna</item>
+                    <item type="cf" lang="txi">ïna</item>
+                    <item type="gls" lang="en">OBL</item>
+                    <item type="msa" lang="en">post</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">OBL</item>
+                <item type="pos" lang="en">post</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">The old man went to his work,</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="c34a3d5b-e95a-4fe6-8b26-bc7bc632c9f2">
+        <phrases>
+          <phrase guid="726fb6d1-b426-430d-80ba-620fca4aed42">
+            <item type="segnum" lang="en">2</item>
+            <words>
+              <word guid="8c9d9ca2-9006-4c85-87d3-40a29b64b538">
+                <item type="txt" lang="txi">yuwyang</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">y-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">1</item>
+                    <item type="gls" lang="en">3&gt;3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">uwy</item>
+                    <item type="cf" lang="txi">uwy</item>
+                    <item type="gls" lang="en">search</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">search</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="7fa9e6d2-4c78-4a70-a924-e10c2b9fe9cb">
+                <item type="txt" lang="txi">tïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">tï-</item>
+                    <item type="cf" lang="txi">tï-</item>
+                    <item type="gls" lang="en">3COR</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">He looked for his machete.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="8059267a-e304-4a34-904e-25c706765e66">
+        <phrases>
+          <phrase guid="0ff18c26-8fe0-4a7f-bace-dc9bf615160f">
+            <item type="segnum" lang="en">3</item>
+            <words>
+              <word guid="51f5cba7-fc48-4962-9902-cfcd7171884c">
+                <item type="txt" lang="txi">ïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ï-</item>
+                    <item type="cf" lang="txi">ï-</item>
+                    <item type="gls" lang="en">1</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="2c5de766-8d4a-4d2f-8057-299cbddedee8">
+                <item type="txt" lang="txi">mun</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mun</item>
+                    <item type="cf" lang="txi">mun</item>
+                    <item type="gls" lang="en">INAN.DIST</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.DIST</item>
+                <item type="pos" lang="en">pro</item>
+              </word>
+              <word guid="1cfc4772-dfcc-48d9-a91a-d66660940b28">
+                <item type="txt" lang="txi">eto</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">eto</item>
+                    <item type="cf" lang="txi">eto</item>
+                    <item type="gls" lang="en">UNCERT</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">UNCERT</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="f618193f-f85e-4150-a48b-d741da50c1a6">
+                <item type="txt" lang="txi">ankang</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">an-</item>
+                    <item type="cf" lang="txi">an-</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">k</item>
+                    <item type="cf" lang="txi">k</item>
+                    <item type="gls" lang="en">say</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">say</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“Where might my machete be?”, he asked.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="9953cbea-14ab-487d-8d40-6a88d1d29d98">
+        <phrases>
+          <phrase guid="92d5ddbd-0c2b-4e6f-9bc1-80db7f169118">
+            <item type="segnum" lang="en">4</item>
+            <words>
+              <word guid="d3ebc6d8-5272-4c3c-9537-3a11a146ab84">
+                <item type="txt" lang="txi">rïk</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">rïk</item>
+                    <item type="cf" lang="txi">rïk</item>
+                    <item type="gls" lang="en">hear</item>
+                    <item type="msa" lang="en">ideo</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">hear</item>
+                <item type="pos" lang="en">ideo</item>
+              </word>
+              <word guid="d3ebc6d8-5272-4c3c-9537-3a11a146ab84">
+                <item type="txt" lang="txi">rïk</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">rïk</item>
+                    <item type="cf" lang="txi">rïk</item>
+                    <item type="gls" lang="en">hear</item>
+                    <item type="msa" lang="en">ideo</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">hear</item>
+                <item type="pos" lang="en">ideo</item>
+              </word>
+              <word guid="d3ebc6d8-5272-4c3c-9537-3a11a146ab84">
+                <item type="txt" lang="txi">rïk</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">rïk</item>
+                    <item type="cf" lang="txi">rïk</item>
+                    <item type="gls" lang="en">hear</item>
+                    <item type="msa" lang="en">ideo</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">hear</item>
+                <item type="pos" lang="en">ideo</item>
+              </word>
+              <word guid="45ba9ec8-33a1-406d-ae37-afec90088be1">
+                <item type="txt" lang="txi">yuwitkang</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">y-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">1</item>
+                    <item type="gls" lang="en">3&gt;3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">uwi</item>
+                    <item type="cf" lang="txi">uwy</item>
+                    <item type="gls" lang="en">search</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-tk</item>
+                    <item type="cf" lang="txi">-tk</item>
+                    <item type="gls" lang="en">ITER</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">search</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">So he went looking for it.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="62dd9e39-1a28-48f2-bedc-95b65fc31427">
+        <phrases>
+          <phrase guid="c8224b23-19ae-4f0e-86e5-6071c313cec6">
+            <item type="segnum" lang="en">5</item>
+            <words>
+              <word guid="106fe335-89dd-4c38-8add-784d8bc00d1d">
+                <item type="txt" lang="txi">patxang</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">patxang</item>
+                    <item type="cf" lang="txi">patxang</item>
+                    <item type="gls" lang="en">IDEO</item>
+                    <item type="msa" lang="en">ideo</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">IDEO</item>
+                <item type="pos" lang="en">ideo</item>
+              </word>
+              <word guid="0e15db1e-ee1c-45aa-86ca-d1ff7f0614d7">
+                <item type="txt" lang="txi">orotpotang</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">orotpot</item>
+                    <item type="cf" lang="txi">orotpot</item>
+                    <item type="gls" lang="en">return</item>
+                    <item type="msa" lang="en">vi</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">return</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="07386805-939d-49ab-ae82-0111ace12886">
+                <item type="txt" lang="txi">owro</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">owro</item>
+                    <item type="cf" lang="txi">owro</item>
+                    <item type="gls" lang="en">house</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">house</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="73e98d61-f2f3-40a9-b748-88c8b8deeab4">
+                <item type="txt" lang="txi">waraktxi</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wara</item>
+                    <item type="cf" lang="txi">wara</item>
+                    <item type="gls" lang="en">inside</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ktxi</item>
+                    <item type="cf" lang="txi">-ktxi</item>
+                    <item type="gls" lang="en">ALL</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">inside</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">He went back into the house.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="16932fab-7528-4be9-9883-9e245d5d6600">
+        <phrases>
+          <phrase guid="3838914a-84cf-43b7-b459-6c0bd2bbd1ac">
+            <item type="segnum" lang="en">6</item>
+            <words>
+              <word guid="8a99d753-859c-452b-a3c7-82196309587f">
+                <item type="txt" lang="txi">meneng</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">m-</item>
+                    <item type="cf" lang="txi">m-</item>
+                    <item type="gls" lang="en">2&gt;3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">eneng</item>
+                    <item type="cf" lang="txi">eneng</item>
+                    <item type="gls" lang="en">see</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">see</item>
+              </word>
+              <word guid="c127d809-7638-420d-9245-bd0ab532d686">
+                <item type="txt" lang="txi">payng</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">payng</item>
+                    <item type="cf" lang="txi">payng</item>
+                    <item type="gls" lang="en">dear</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">dear</item>
+              </word>
+              <word guid="51f5cba7-fc48-4962-9902-cfcd7171884c">
+                <item type="txt" lang="txi">ïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ï-</item>
+                    <item type="cf" lang="txi">ï-</item>
+                    <item type="gls" lang="en">1</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“Have you seen my machete, dear?”</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="6b0b2bdf-28e4-49c2-badf-1df1dd7d1ff6">
+        <phrases>
+          <phrase guid="42bd4013-f7bf-4bdd-9dde-ca21c8699f61">
+            <item type="segnum" lang="en">7</item>
+            <words>
+              <word guid="f618193f-f85e-4150-a48b-d741da50c1a6">
+                <item type="txt" lang="txi">ankang</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">an-</item>
+                    <item type="cf" lang="txi">an-</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">k</item>
+                    <item type="cf" lang="txi">k</item>
+                    <item type="gls" lang="en">say</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">say</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="69653ba4-cac9-432b-8a9b-065f7b6abcb0">
+                <item type="txt" lang="txi">tïmuye</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">tï-</item>
+                    <item type="cf" lang="txi">tï-</item>
+                    <item type="gls" lang="en">3COR</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">muye</item>
+                    <item type="cf" lang="txi">muye</item>
+                    <item type="gls" lang="en">woman</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">woman</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="880bb80a-fa47-41ae-9d64-a16d8df396ec">
+                <item type="txt" lang="txi">na</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">na</item>
+                    <item type="cf" lang="txi">ïna</item>
+                    <item type="gls" lang="en">OBL</item>
+                    <item type="msa" lang="en">post</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">OBL</item>
+                <item type="pos" lang="en">post</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">He said to his wife.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="2690f4e1-b57e-4493-afa3-ae4886ec29f9">
+        <phrases>
+          <phrase guid="bfb36913-5ecf-4d17-8ab9-2c0966408dc8">
+            <item type="segnum" lang="en">8</item>
+            <words>
+              <word guid="adb883f2-9372-4542-8984-858ed4f06663">
+                <item type="txt" lang="txi">yaptakgwam</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">y-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">aptak</item>
+                    <item type="cf" lang="txi">aptak</item>
+                    <item type="gls" lang="en">arm</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-gwam</item>
+                    <item type="cf" lang="txi">-gwam</item>
+                    <item type="gls" lang="en">below</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">arm</item>
+              </word>
+              <word guid="b2ae11d5-b376-4811-87ad-90ddd2aca701">
+                <item type="txt" lang="txi">txutkerem</item>
+              </word>
+              <word guid="7c79d6b3-0487-4e77-80b6-11965991ab87">
+                <item type="txt" lang="txi">yuwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">y-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">uwï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">His machete was under his arm.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="79af8974-333d-4bed-88f5-c54aa3f98d2b">
+        <phrases>
+          <phrase guid="8672f6f0-42d7-4e33-b176-92d0a9fe9794">
+            <item type="segnum" lang="en">9</item>
+            <words>
+              <word guid="18f664ba-d600-443b-9983-8c718db97c75">
+                <item type="txt" lang="txi">otumunto</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">otumunto</item>
+                    <item type="cf" lang="txi">otumunto</item>
+                    <item type="gls" lang="en">where</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">where</item>
+              </word>
+              <word guid="2c5de766-8d4a-4d2f-8057-299cbddedee8">
+                <item type="txt" lang="txi">mun</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mun</item>
+                    <item type="cf" lang="txi">mun</item>
+                    <item type="gls" lang="en">INAN.DIST</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.DIST</item>
+                <item type="pos" lang="en">pro</item>
+              </word>
+              <word guid="1cfc4772-dfcc-48d9-a91a-d66660940b28">
+                <item type="txt" lang="txi">eto</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">eto</item>
+                    <item type="cf" lang="txi">eto</item>
+                    <item type="gls" lang="en">UNCERT</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">UNCERT</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="51f5cba7-fc48-4962-9902-cfcd7171884c">
+                <item type="txt" lang="txi">ïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ï-</item>
+                    <item type="cf" lang="txi">ï-</item>
+                    <item type="gls" lang="en">1</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="18f664ba-d600-443b-9983-8c718db97c75">
+                <item type="txt" lang="txi">otumunto</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">otumunto</item>
+                    <item type="cf" lang="txi">otumunto</item>
+                    <item type="gls" lang="en">where</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">where</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“Where might my machete be, where?”</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="a3416d28-bcd4-431b-afbb-e25eb7b90577">
+        <phrases>
+          <phrase guid="a058e7ba-34ef-4915-bfcc-3e0ed5d3f80c">
+            <item type="segnum" lang="en">10</item>
+            <words>
+              <word guid="1af3a6cb-c278-41ec-9239-fdfa63852763">
+                <item type="txt" lang="txi">nento</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">nen</item>
+                    <item type="cf" lang="txi">nen</item>
+                    <item type="gls" lang="en">INAN.PROX</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-to</item>
+                    <item type="cf" lang="txi">-to</item>
+                    <item type="gls" lang="en">LOC</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.PROX</item>
+              </word>
+              <word guid="1af3a6cb-c278-41ec-9239-fdfa63852763">
+                <item type="txt" lang="txi">nento</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">nen</item>
+                    <item type="cf" lang="txi">nen</item>
+                    <item type="gls" lang="en">INAN.PROX</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-to</item>
+                    <item type="cf" lang="txi">-to</item>
+                    <item type="gls" lang="en">LOC</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.PROX</item>
+              </word>
+              <word guid="cde6394a-2c75-489c-aab4-6ae7135edf4c">
+                <item type="txt" lang="txi">yenglï</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">y-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">3</item>
+                    <item type="gls" lang="en">1&gt;3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">eng</item>
+                    <item type="cf" lang="txi">eng</item>
+                    <item type="gls" lang="en">put</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-lï</item>
+                    <item type="cf" lang="txi">-lï</item>
+                    <item type="gls" lang="en">REC</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">put</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="51f5cba7-fc48-4962-9902-cfcd7171884c">
+                <item type="txt" lang="txi">ïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ï-</item>
+                    <item type="cf" lang="txi">ï-</item>
+                    <item type="gls" lang="en">1</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“Here, here I put my machete.”</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="96be562e-03e1-443b-a3cd-9a797c370808">
+        <phrases>
+          <phrase guid="d0610f56-abad-4242-a4dd-664a614f8a21">
+            <item type="segnum" lang="en">11</item>
+            <words>
+              <word guid="f618193f-f85e-4150-a48b-d741da50c1a6">
+                <item type="txt" lang="txi">ankang</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">an-</item>
+                    <item type="cf" lang="txi">an-</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">k</item>
+                    <item type="cf" lang="txi">k</item>
+                    <item type="gls" lang="en">say</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">say</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="24ac1361-5a2e-406e-adde-dce88472568c">
+                <item type="txt" lang="txi">imun</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">i-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mu</item>
+                    <item type="cf" lang="txi">mu</item>
+                    <item type="gls" lang="en">son</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">son</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">His son said:</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="43dbbf48-9b03-4534-a6ac-25f2494c3319">
+        <phrases>
+          <phrase guid="35a56fc9-369b-4141-8bce-f56eee776870">
+            <item type="segnum" lang="en">12</item>
+            <words>
+              <word guid="940f4f5a-cf3d-4cbe-a3b0-b909ec89d965">
+                <item type="txt" lang="txi">pupa</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">pupa</item>
+                    <item type="cf" lang="txi">pupa</item>
+                    <item type="gls" lang="en">father</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">father</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="8157f165-dc07-41a8-8649-5fe03f59c419">
+                <item type="txt" lang="txi">muntu</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mun</item>
+                    <item type="cf" lang="txi">mun</item>
+                    <item type="gls" lang="en">INAN.DIST</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-tu</item>
+                    <item type="cf" lang="txi">-tu</item>
+                    <item type="gls" lang="en">LOC</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.DIST</item>
+                <item type="pos" lang="en">pro</item>
+              </word>
+              <word guid="2c5de766-8d4a-4d2f-8057-299cbddedee8">
+                <item type="txt" lang="txi">mun</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mun</item>
+                    <item type="cf" lang="txi">mun</item>
+                    <item type="gls" lang="en">INAN.DIST</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">INAN.DIST</item>
+                <item type="pos" lang="en">pro</item>
+              </word>
+              <word guid="bdcf7190-652c-436b-a997-87a34bec16aa">
+                <item type="txt" lang="txi">waptakgwam</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">w-</item>
+                    <item type="cf" lang="txi">w-</item>
+                    <item type="gls" lang="en">2</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">aptak</item>
+                    <item type="cf" lang="txi">aptak</item>
+                    <item type="gls" lang="en">arm</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-gwam</item>
+                    <item type="cf" lang="txi">-gwam</item>
+                    <item type="gls" lang="en">below</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">arm</item>
+              </word>
+              <word guid="f7dc516a-4d01-440f-90e7-f76937d4128c">
+                <item type="txt" lang="txi">keni</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">keni</item>
+                    <item type="cf" lang="txi">keni</item>
+                    <item type="gls" lang="en">REL</item>
+                    <item type="msa" lang="en">rel</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">REL</item>
+                <item type="pos" lang="en">rel</item>
+              </word>
+              <word guid="2bcf6b7c-555f-46b1-892d-6843819b0bff">
+                <item type="txt" lang="txi">owïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">o-</item>
+                    <item type="cf" lang="txi">w-</item>
+                    <item type="gls" lang="en">2</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“Father, your machete is the one under your arm.”</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="2f58b1b4-4785-4b32-bd78-2ecba3d9398a">
+        <phrases>
+          <phrase guid="0ed894ff-cb7d-48e0-8203-d74b09471016">
+            <item type="segnum" lang="en">13</item>
+            <words>
+              <word guid="a6b47d0b-be69-4b11-9c75-1d364a62789e">
+                <item type="txt" lang="txi">nen</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">nen</item>
+                    <item type="cf" lang="txi">nen</item>
+                    <item type="gls" lang="en">INAN.PROX</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">here</item>
+              </word>
+              <word guid="266e49eb-e8b7-4112-aedd-ec9de2715d8b">
+                <item type="txt" lang="txi">tan</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">tan</item>
+                    <item type="cf" lang="txi">tan</item>
+                    <item type="gls" lang="en">here</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">here</item>
+              </word>
+              <word guid="a6b47d0b-be69-4b11-9c75-1d364a62789e">
+                <item type="txt" lang="txi">nen</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">nen</item>
+                    <item type="cf" lang="txi">nen</item>
+                    <item type="gls" lang="en">INAN.PROX</item>
+                    <item type="msa" lang="en">pro</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">here</item>
+              </word>
+              <word guid="51f5cba7-fc48-4962-9902-cfcd7171884c">
+                <item type="txt" lang="txi">ïwïn</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ï-</item>
+                    <item type="cf" lang="txi">ï-</item>
+                    <item type="gls" lang="en">1</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">wï</item>
+                    <item type="cf" lang="txi">wï</item>
+                    <item type="gls" lang="en">machete</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">machete</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">“My machete is here.”</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+      <paragraph guid="02fcdef0-9a76-410c-baca-5763558d4409">
+        <phrases>
+          <phrase guid="216ceb77-f721-4631-a720-b7d7343f0aa9">
+            <item type="segnum" lang="en">14</item>
+            <words>
+              <word guid="90a0f294-a270-4877-abdc-7dca8c346606">
+                <item type="txt" lang="txi">tïmongmo</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">tïmo</item>
+                    <item type="cf" lang="txi">tïmo</item>
+                    <item type="gls" lang="en">AUX</item>
+                    <item type="msa" lang="en">vi</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ngmo</item>
+                    <item type="cf" lang="txi">-ngmo</item>
+                    <item type="gls" lang="en">PL</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AUX</item>
+              </word>
+              <word guid="bf9c75a9-ca28-401a-adaf-0760b631a367">
+                <item type="txt" lang="txi">arawïremkom</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">arawï</item>
+                    <item type="cf" lang="txi">arawï</item>
+                    <item type="gls" lang="en">begin</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-rem</item>
+                    <item type="cf" lang="txi">-rem</item>
+                    <item type="gls" lang="en">NMLZ</item>
+                    <item type="msa" lang="en">v&gt;n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-kom</item>
+                    <item type="cf" lang="txi">-ngmo</item>
+                    <item type="gls" lang="en">PL</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">begin</item>
+              </word>
+              <word guid="fbd5274c-e64d-419d-8f12-b63f1f36c3a0">
+                <item type="txt" lang="txi">ankangtom</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">an-</item>
+                    <item type="cf" lang="txi">an-</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">k</item>
+                    <item type="cf" lang="txi">k</item>
+                    <item type="gls" lang="en">say</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-tom</item>
+                    <item type="cf" lang="txi">-tom</item>
+                    <item type="gls" lang="en">PL</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">say</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+              <word guid="24ac1361-5a2e-406e-adde-dce88472568c">
+                <item type="txt" lang="txi">imun</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">i-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mu</item>
+                    <item type="cf" lang="txi">mu</item>
+                    <item type="gls" lang="en">son</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">son</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="9ff5f88b-cd69-4621-89c6-5caff17c5ef7">
+                <item type="txt" lang="txi">emtxin</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">e-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mtxi</item>
+                    <item type="cf" lang="txi">mtxi</item>
+                    <item type="gls" lang="en">daughter</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-n</item>
+                    <item type="cf" lang="txi">-n</item>
+                    <item type="gls" lang="en">PERT</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">daughter</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="45f33dd7-2c9a-446b-9052-e04d21add7a8">
+                <item type="txt" lang="txi">emuye</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">e-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">2</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">n:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">muye</item>
+                    <item type="cf" lang="txi">muye</item>
+                    <item type="gls" lang="en">woman</item>
+                    <item type="msa" lang="en">n</item>
+                  </morph>
+                </morphemes>
+              </word>
+              <word guid="f7dc516a-4d01-440f-90e7-f76937d4128c">
+                <item type="txt" lang="txi">keni</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">keni</item>
+                    <item type="cf" lang="txi">keni</item>
+                    <item type="gls" lang="en">REL</item>
+                    <item type="msa" lang="en">rel</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">REL</item>
+                <item type="pos" lang="en">rel</item>
+              </word>
+              <word guid="c6a39b1a-5ea5-43e2-83f3-83b9218b5325">
+                <item type="txt" lang="txi">ningkïn</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">ningkïn</item>
+                    <item type="cf" lang="txi">ningkïn</item>
+                    <item type="gls" lang="en">PL</item>
+                    <item type="msa" lang="en">&lt;Not Sure&gt;</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">PL</item>
+              </word>
+              <word guid="9a22de7c-4478-4f2c-b4f2-b6433a2f796f">
+                <item type="txt" lang="txi">emnoptowoge</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">e-</item>
+                    <item type="cf" lang="txi">y-</item>
+                    <item type="hn" lang="txi">1</item>
+                    <item type="gls" lang="en">3&gt;3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">mnop</item>
+                    <item type="cf" lang="txi">mnop</item>
+                    <item type="gls" lang="en">mock</item>
+                    <item type="msa" lang="en">vt</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-towo</item>
+                    <item type="cf" lang="txi">-towo</item>
+                    <item type="gls" lang="en">NMLZ</item>
+                    <item type="msa" lang="en">v&gt;n</item>
+                  </morph>
+                  <morph type="enclitic" guid="d7f713e1-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">=ge</item>
+                    <item type="cf" lang="txi">=ge</item>
+                    <item type="gls" lang="en">=INS</item>
+                    <item type="msa" lang="en">post</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">mock</item>
+                <item type="pos" lang="en">n</item>
+              </word>
+              <word guid="0915dc40-ae3a-4a96-8dad-8f627c2ec8f3">
+                <item type="txt" lang="txi">Kïkïkï</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">Kïkïkï</item>
+                    <item type="cf" lang="txi">Kïkïkï</item>
+                    <item type="gls" lang="en">laugh</item>
+                    <item type="msa" lang="en">ideo</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">laugh</item>
+                <item type="pos" lang="en">ideo</item>
+              </word>
+              <word guid="fbd5274c-e64d-419d-8f12-b63f1f36c3a0">
+                <item type="txt" lang="txi">ankangtom</item>
+                <morphemes>
+                  <morph type="prefix" guid="d7f713db-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">an-</item>
+                    <item type="cf" lang="txi">an-</item>
+                    <item type="gls" lang="en">3</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">k</item>
+                    <item type="cf" lang="txi">k</item>
+                    <item type="gls" lang="en">say</item>
+                    <item type="msa" lang="en">v</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-ang</item>
+                    <item type="cf" lang="txi">-ang</item>
+                    <item type="gls" lang="en">REM.CONT</item>
+                    <item type="msa" lang="en">v:Any</item>
+                  </morph>
+                  <morph type="suffix" guid="d7f713dd-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">-tom</item>
+                    <item type="cf" lang="txi">-tom</item>
+                    <item type="gls" lang="en">PL</item>
+                    <item type="msa" lang="en">Attaches to any category</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">say</item>
+                <item type="pos" lang="en">v</item>
+              </word>
+              <word guid="e3b20298-66c6-4be1-b94a-c388c4e62608">
+                <item type="txt" lang="txi">man</item>
+                <morphemes>
+                  <morph type="stem" guid="d7f713e8-e8cf-11d3-9764-00c04f186933">
+                    <item type="txt" lang="txi">man</item>
+                    <item type="cf" lang="txi">man</item>
+                    <item type="gls" lang="en">AFF</item>
+                    <item type="msa" lang="en">prt</item>
+                  </morph>
+                </morphemes>
+                <item type="gls" lang="en">AFF</item>
+                <item type="pos" lang="en">prt</item>
+              </word>
+            </words>
+            <item type="gls" lang="en">His family, his son, his daughter, his wife started laughing (because of all this). Hahaha! They laughed.</item>
+          </phrase>
+        </phrases>
+      </paragraph>
+    </paragraphs>
+    <languages>
+      <language lang="en" font="Charis SIL" />
+      <language lang="txi" font="Charis SIL" vernacular="true" />
+    </languages>
+  </interlinear-text>
+</document>
