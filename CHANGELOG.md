@@ -21,4 +21,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release
 
 [Unreleased]: https://github.com/fmatter/cldflex/compare/0.0.2...HEAD
-[0.0.2]: https://github.com/fmatter/cldflex/compare/0.0.1...0.0.2
