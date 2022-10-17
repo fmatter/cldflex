@@ -360,7 +360,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None, output_dir=No
             "No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
         )
         lexicon = None
-    elif ".csv" in lexicon_file:
+    elif lexicon_file.suffix == ".csv":
         log.info(f"Adding lexicon from CSV file {lexicon_file}")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
         lexicon["Form_Bare"] = lexicon["Form"].apply(
