@@ -26,6 +26,7 @@ def get_variant(morphemes, main_id, forms, id):
 def convert(
     lift_file="", id_map=None, gather_examples=True, cldf_mode="all", output_dir=None
 ):
+    lift_file = Path(lift_file)
     output_dir = output_dir or lift_file.resolve().parents[0]
     output_dir = Path(output_dir)
     dictionary_examples = []
