@@ -23,11 +23,14 @@ def get_variant(morphemes, main_id, forms, id):
     return out
 
 
-def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
+def convert(
+    lift_file="", id_map=None, gather_examples=True, cldf_mode="all", output_dir=None
+):
+    output_dir = output_dir or lift_file.resolve().parents[0]
+    output_dir = Path(output_dir)
     dictionary_examples = []
     lift_file = Path(lift_file)
     log.info(f"Processing lift file {lift_file}")
-    dir_path = lift_file.resolve().parents[0]
     name = lift_file.stem
     f = open(lift_file, "r")
     content = f.read().replace("http://www.w3.org/1999/xhtml", "")
@@ -201,8 +204,8 @@ def convert(lift_file="", id_map=None, gather_examples=True, cldf_mode="all"):
 
     log.info("\n" + morphemes.head().to_string())
     log.info("\n" + morphs.head().to_string())
-    morphemes.to_csv(dir_path / "morphemes.csv", index=False)
-    morphs.to_csv(dir_path / "morphs.csv", index=False)
+    morphemes.to_csv(output_dir / "morphemes.csv", index=False)
+    morphs.to_csv(output_dir / "morphs.csv", index=False)
     if gather_examples and len(dictionary_examples) > 0:
         dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
-        dictionary_examples.to_csv(dir_path / f"{name}_examples.csv", index=False)
+        dictionary_examples.to_csv(output_dir / f"{name}_examples.csv", index=False)
