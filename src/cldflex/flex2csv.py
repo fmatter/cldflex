@@ -477,7 +477,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None, output_dir=No
             final_slices.append(sl)
     if len(final_slices) > 0:
         form_slices = pd.DataFrame.from_dict(final_slices)
-        form_slices.to_csv("form_slices.csv", index=False)
+        form_slices.to_csv(output_dir / "form_slices.csv", index=False)
 
     if len(sentence_slices) > 0:
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
