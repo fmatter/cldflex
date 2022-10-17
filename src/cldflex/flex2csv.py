@@ -268,7 +268,6 @@ def extract_flex_record(
         )
         if word_rec[gloss_key] not in word_forms[word_id]["Meaning"]:
             word_forms[word_id]["Meaning"].append(word_rec[gloss_key])
-        if lexicon is not None:
             sentence_slices.append(
                 {
                     "ID": f"{ex_id}-{word_count}",
@@ -278,6 +277,7 @@ def extract_flex_record(
                     "Form_Meaning": word_rec[gloss_key],
                 }
             )
+        if lexicon is not None:
             if word_id not in form_slices:
                 form_slices[word_id] = []
                 for m_c, (morph_obj, morph_gloss, morph_type) in enumerate(
