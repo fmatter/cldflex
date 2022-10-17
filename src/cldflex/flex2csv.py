@@ -1,8 +1,6 @@
 from xml.etree.ElementTree import fromstring
 from xmljson import badgerfish as bf
-import sys
 import os
-import csv
 import re
 import logging
 import yaml
@@ -34,7 +32,7 @@ def compose_surface_string(entries):
 def split_obj_word(word):
     output = []
     char_list = list(word)
-    for i, char in enumerate(char_list):
+    for char in char_list:
         if len(output) == 0 or (char in delimiters or output[-1] in delimiters):
             output.append(char)
         else:
@@ -58,7 +56,7 @@ def form_match(str1, str2):
         str2.replace("-", ""),
         str2.replace("=", ""),
     ]
-    return list(set(var1) & set(var2)) != []
+    return list(set(var1) & set(var2))
 
 
 def search_lexicon(form, meaning):
@@ -66,7 +64,6 @@ def search_lexicon(form, meaning):
         return "X"
     new_meaning = meaning
     for morph_id, morpheme in lexicon.items():
-        lex_forms = []
         for lex_form in morpheme["forms"]:
             for sub_meaning in morpheme["meanings"]:
                 if form_match(form, lex_form) and form_match(new_meaning, sub_meaning):
@@ -80,12 +77,14 @@ def extract_flex_record(
     obj_lg="",
     gloss_lg="",
     fallback_exno="1",
-    column_mappings={},
+    column_mappings=None,
     drop_columns=None,
-    conf={},
+    conf=None,
     lexicon=None,
     verbose=False,
 ):
+    column_mappings = column_mappings or {}
+    conf = conf or {}
     phrase_data = {}
     for i in example:
         if i in ["item", "words"]:
@@ -104,21 +103,16 @@ def extract_flex_record(
         exno = fallback_exno
         ex_id = slugify(f"{text_id}-{exno}")
 
-    # this is the expected key for surface forms
-    surf_key = "word_txt_" + obj_lg  # <item type="txt" lang="mdc">Yabi</item>
-    punct_key = "word_punct_" + obj_lg  # <item type="punct" lang="mdc">.</item>
-
     surf_sentence = []
     word_datas = []
 
     words = listify(example["words"]["word"])
 
-    # log.debug(dict(words[0]))
 
     for word_count, word_data in enumerate(words):
         word_data = dict(word_data)
         # log.debug(word_data)
-        wf_id = word_data.get("@guid", f"{ex_id}-{word_count}")
+        # wf_id = word_data.get("@guid", f"{ex_id}-{word_count}")
         # log.debug(wf_id)
 
         # 'item' in flextext are surface form (including punctuation), glosses and POS
@@ -171,7 +165,7 @@ def extract_flex_record(
 
     obj_key = "txt_" + obj_lg
     gloss_key = "gls_" + gloss_lg
-    word_gloss_key = "word_gls_%s" % (conf.get("word_gloss_lg", conf["gloss_lg"]))
+    # word_gloss_key = "word_gls_{key}" % (conf.get("word_gloss_lg", conf["gloss_lg"]))
 
     if gloss_key not in ex_df.columns:
         ex_df[gloss_key] = "***"
@@ -184,12 +178,11 @@ def extract_flex_record(
     #         "Text_ID": text_id,
     #     }
 
-    morph_cols = [x for x in ex_df.columns if not x in word_cols.columns]
+    morph_cols = [x for x in ex_df.columns if x not in word_cols.columns]
     morph_cols = ex_df[morph_cols].copy()
     morph_cols.dropna(how="all", inplace=True)
 
     if obj_key in ex_df.columns:
-
         # put ["***"] instead of NaN
         for col in [gloss_key, obj_key, "morph_type"]:
             morph_cols[col].fillna("***", inplace=True)
@@ -258,13 +251,13 @@ def extract_flex_record(
     else:
         return None
 
-    word_ids = [x for x in ex_df.get("@guid", []) if not pd.isnull(x)]
-    word_meanings = [x for x in word_cols.get(word_gloss_key, []) if not pd.isnull(x)]
+    # word_ids = [x for x in ex_df.get("@guid", []) if not pd.isnull(x)]
+    # word_meanings = [x for x in word_cols.get(word_gloss_key, []) if not pd.isnull(x)]
 
     word_count = 0
     for word_rec in ex_df.to_dict("records"):
         if not isinstance(word_rec.get(obj_key, None), list):
-            if not pd.isnull(word_rec.get("@guid", None)) and verbose == True:
+            if not pd.isnull(word_rec.get("@guid", None)) and verbose is True:
                 log.warning("Unglossed word:")
                 print(ex_df)
             continue
@@ -310,7 +303,9 @@ def extract_flex_record(
                             }
                         )
                     else:
-                        log.warning(f"No hits for {morph_obj} '{morph_gloss}' in lexicon! ({ex_id})")
+                        log.warning(
+                            f"No hits for {morph_obj} '{morph_gloss}' in lexicon! ({ex_id})"
+                        )
         word_count += 1
 
     for k, v in phrase_data.items():
@@ -342,14 +337,14 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     )
     if flextext_file == "":
         log.error("No .flextext file provided")
-        return
-    else:
-        dir_path = os.path.dirname(os.path.realpath(flextext_file))
+        return None
+    dir_path = os.path.dirname(os.path.realpath(flextext_file))
     if not config_file:
-        log.warning(f"Running without a config file.")
+        log.warning("Running without a config file.")
         conf = {}
     else:
-        conf = yaml.safe_load(open(config_file))
+        with open(config_file, encoding="utf-8") as f:
+            conf = yaml.safe_load(f)
 
     global lexicon
     global form_slices
@@ -361,7 +356,7 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     sentence_slices = []
     if lexicon_file is None:
         log.warning(
-            f"No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
+            "No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
         )
         lexicon = None
     elif ".csv" in lexicon_file:
@@ -374,13 +369,13 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
             lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
     else:
         log.warning(f"{lexicon_file} is not a valid lexicon file format.")
-    name = flextext_file.split("/")[-1].split(".")[0]
+    # name = flextext_file.split("/")[-1].split(".")[0]
     csv_out = conf.get("output_file", dir_path + "/sentences.csv")
-    f = open(flextext_file, "r", encoding="utf-8")
-    content = f.read()
+    with open(flextext_file, "r", encoding="utf-8") as f:
+        content = f.read()
     example_list = []
     texts = bf.data(fromstring(content))["document"]["interlinear-text"]
-    if type(texts) is not list:
+    if not isinstance(texts, list):
         texts = [texts]
     texts = to_dict(texts)
     text_metadata = {}
@@ -388,9 +383,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
     for text_count, bs in enumerate(texts):
         metadata = {}
         if "item" not in bs:
-            log.error(f"Text #{i+1} has no title or language information")
+            log.error(f"Text #{text_count+1} has no title or language information")
         else:
-            if type(bs["item"]) is not list:
+            if not isinstance(bs["item"], list):
                 title_unit = [bs["item"]]
             else:
                 title_unit = bs["item"]
@@ -409,7 +404,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         if "title-abbreviation" in metadata:
             abbr_lg = list(metadata["title-abbreviation"].keys())[0]
             if len(metadata["title-abbreviation"].keys()) > 1:
-                log.info(f"Assuming that the language field [{abbr_lg}] stores title-abbreviation info")
+                log.info(
+                    f"Assuming that the language field [{abbr_lg}] stores title-abbreviation info"
+                )
             text_abbr = slugify(metadata["title-abbreviation"][abbr_lg])
         else:
             text_abbr = "missing-text-id"
@@ -483,4 +480,4 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                 tdic[f"{kind}_{lg}"] = value
         text_table.append(tdic)
     text_table = pd.DataFrame.from_dict(text_table)
-    text_table.to_csv("text_metadata.csv", index=False)
+    text_table.to_csv("texts.csv", index=False)
