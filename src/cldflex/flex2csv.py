@@ -371,6 +371,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
         log.warning(f"{lexicon_file} is not a valid lexicon file format.")
     # name = flextext_file.split("/")[-1].split(".")[0]
     csv_out = conf.get("output_file", dir_path + "/sentences.csv")
+
+
+    conf.setdefault("gloss_lg", "en")
     with open(flextext_file, "r", encoding="utf-8") as f:
         content = f.read()
     example_list = []
@@ -424,6 +427,9 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
 
         examples = listify(bs["paragraphs"]["paragraph"])
 
+        obj_missing = False
+        if "obj_lg" not in conf:
+            obj_missing = True
         for ex_cnt, example in enumerate(examples):
             ex_id = f"{text_abbr}-{ex_cnt+1}"
             log.debug(f"Parsing record {ex_id}")
@@ -438,6 +444,11 @@ def convert(flextext_file="", lexicon_file=None, config_file=None):
                 subexamples = listify(example["phrase"])
             else:
                 subexamples = listify(example["phrases"]["phrase"])
+            if obj_missing:
+                for item in subexamples[0]["item"]:
+                    if "@lang" in item and item["@lang"]:
+                        conf["obj_lg"] = item["@lang"]
+                obj_missing = False
             for subex_count, data in enumerate(subexamples):
                 example_list.append(
                     extract_flex_record(
