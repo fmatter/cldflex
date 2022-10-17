@@ -1,10 +1,10 @@
 """Console script for cldflex."""
 import sys
+from pathlib import Path
 import click
 import cldflex
 from cldflex.flex2csv import convert as flex2csv_convert
 from cldflex.lift2csv import convert as lift2csv_convert
-from pathlib import Path
 
 
 @click.group()

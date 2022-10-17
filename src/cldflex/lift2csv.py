@@ -1,20 +1,16 @@
-from xml.etree.ElementTree import fromstring
-from xmljson import badgerfish as bf
-import sys
-import os
-import re
-import pandas as pd
-import unicodedata
-import sys
 import logging
-from cldflex.helpers import listify
-import yaml
 from pathlib import Path
+from xml.etree.ElementTree import fromstring
+import pandas as pd
+import yaml
+from xmljson import badgerfish as bf
+from cldflex.helpers import listify
+
 
 log = logging.getLogger(__name__)
 
 
-def get_variant(morphemes, main_id, forms, id):
+def get_variant(morphemes, main_id, forms):
     out = []
     for morpheme in morphemes:
         if morpheme["ID"] == main_id:
@@ -23,9 +19,7 @@ def get_variant(morphemes, main_id, forms, id):
     return out
 
 
-def convert(
-    lift_file="", id_map=None, gather_examples=True, cldf_mode="all", output_dir=None
-):
+def convert(lift_file="", id_map=None, gather_examples=True, output_dir=None):
     lift_file = Path(lift_file)
     output_dir = output_dir or lift_file.resolve().parents[0]
     output_dir = Path(output_dir)
@@ -33,8 +27,8 @@ def convert(
     lift_file = Path(lift_file)
     log.info(f"Processing lift file {lift_file}")
     name = lift_file.stem
-    f = open(lift_file, "r")
-    content = f.read().replace("http://www.w3.org/1999/xhtml", "")
+    with open(lift_file, "r", encoding="utf-8") as f:
+        content = f.read().replace("http://www.w3.org/1999/xhtml", "")
     morphemes = []
     morpheme_variants = {}
     for entry in bf.data(fromstring(content))["lift"]["entry"]:
@@ -194,17 +188,17 @@ def convert(
     # convert list columns into "; " separated text
     for df in [morphemes, morphs]:
         for col in df.columns:
-            if type(df[col][0]) == list:
+            if isinstance(df[col][0], list):
                 df[col] = df[col].apply(lambda x: "; ".join(x))
 
     if id_map is not None:
-        with open(id_map) as file:
+        with open(id_map, "r", encoding="utf-8") as file:
             id_map = yaml.load(file, Loader=yaml.SafeLoader)
         morphemes["ID"].replace(id_map, inplace=True)
         morphs["ID"].replace(id_map, inplace=True)
 
-    log.info("\n" + morphemes.head().to_string())
-    log.info("\n" + morphs.head().to_string())
+    log.info(f"\n{morphemes.head().to_string()}")
+    log.info(f"\n{morphs.head().to_string()}")
     morphemes.to_csv(output_dir / "morphemes.csv", index=False)
     morphs.to_csv(output_dir / "morphs.csv", index=False)
     if gather_examples and len(dictionary_examples) > 0:

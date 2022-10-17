@@ -1,16 +1,18 @@
-from xml.etree.ElementTree import fromstring
-from xmljson import badgerfish as bf
+import logging
 import os
 import re
-import logging
+from json import dumps
+from json import loads
+from pathlib import Path
+from string import punctuation
+from xml.etree.ElementTree import fromstring
+import numpy as np
+import pandas as pd
 import yaml
 from slugify import slugify
-from cldflex.helpers import listify, retrieve_morpheme_id
-import pandas as pd
-import numpy as np
-from pathlib import Path
-from json import loads, dumps
-from string import punctuation
+from xmljson import badgerfish as bf
+from cldflex.helpers import listify
+from cldflex.helpers import retrieve_morpheme_id
 
 
 def to_dict(input_ordered_dict):

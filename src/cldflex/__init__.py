@@ -2,6 +2,7 @@
 import logging
 import colorlog
 
+
 handler = colorlog.StreamHandler(None)
 handler.setFormatter(
     colorlog.ColoredFormatter("%(log_color)s%(levelname)-7s%(reset)s %(message)s")

@@ -1,14 +1,14 @@
 import logging
 from slugify import slugify
 
+
 log = logging.getLogger(__name__)
 
 
 def listify(item):
-    if type(item) is not list:
+    if not isinstance(item, list):
         return [item]
-    else:
-        return item
+    return item
 
 
 def retrieve_morpheme_id(o, g, lex, morph_type):
@@ -18,19 +18,17 @@ def retrieve_morpheme_id(o, g, lex, morph_type):
     ]
     if len(candidates) == 1:
         return candidates.iloc[0]["ID"]
-    elif len(candidates) == 0:
+    if len(candidates) == 0:
         return None
-    elif len(candidates) > 0:
+    if len(candidates) > 0:
         narrow_candidates = candidates[candidates["Type"] == morph_type]
         if len(narrow_candidates) == 1:
             return narrow_candidates.iloc[0]["ID"]
-        else:
-            log.warning(
-                f"Multiple lexicon entries for {o} '{g}', using the first result:"
-            )
-            print(morph_type)
-            print(candidates)
-            return candidates.iloc[0]["ID"]
+        log.warning(f"Multiple lexicon entries for {o} '{g}', using the first result:")
+        print(morph_type)
+        print(candidates)
+        return candidates.iloc[0]["ID"]
+    return None
 
 
 def get_slug(meaning, meanings):
