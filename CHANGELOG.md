@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2022-10-17
+
 ### Added
 * skip LIFT entries without sense(s)
 * check for either `gloss` or `definition` in senses
@@ -18,4 +20,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/fmatter/cldflex/compare/0.0.1...HEAD
+[Unreleased]: https://github.com/fmatter/cldflex/compare/0.0.2...HEAD
+[0.0.2]: https://github.com/fmatter/cldflex/compare/0.0.1...0.0.2
