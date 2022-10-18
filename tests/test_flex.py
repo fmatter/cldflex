@@ -1,6 +1,7 @@
 """Tests for the cldflex.my_module module.
 """
 import pytest
+import pandas as pd
 
 from cldflex.flex2csv import convert
 
@@ -8,12 +9,10 @@ from cldflex.flex2csv import convert
 def test_convert(flextext, monkeypatch, tmp_path, data):
     convert(flextext, output_dir=tmp_path)
 
-    with open(tmp_path / "sentences.csv", "r", encoding="utf-8") as f:
-        sentences = f.read()
-
-    with open(data / "output" / "sentences.csv", "r", encoding="utf-8") as f:
-        sentences2 = f.read()
-    assert sentences == sentences2
+    for filename in ["sentences.csv"]:
+        df1 = pd.read_csv(tmp_path / filename)
+        df2 = pd.read_csv(data / "output" / filename)
+        pd.testing.assert_frame_equal(df1, df2)
 
 def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
     convert(flextext, lexicon_file=data/"output"/"morphs.csv", output_dir=tmp_path)

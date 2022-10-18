@@ -13,6 +13,7 @@ from slugify import slugify
 from xmljson import badgerfish as bf
 from cldflex.helpers import listify
 from cldflex.helpers import retrieve_morpheme_id
+from bs4 import BeautifulSoup
 
 
 def to_dict(input_ordered_dict):
@@ -330,7 +331,106 @@ def extract_flex_record(
 # sys.excepthook = ex_handler
 
 
-def convert(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
+def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
+    record_list = []
+    for phrase_count, phrase in enumerate(text.find_all("phrase")):
+        surface = []
+        segnum = phrase.select("item[type='segnum']")
+        interlinear_lines = []
+        if segnum:
+            segnum = segnum[0].text
+        else:
+            segnum = phrase_count
+        for word in phrase.find_all("word"):
+            word_dict = {}
+            for word_item in word.find_all("item", recursive=False):
+                key = word_item["type"] + "_" + word_item["lang"]
+                if key == obj_key or key == punct_key:
+                    surface.append(word_item.text)
+                else:
+                    word_dict[key + "_word"] = word_item.text
+            for morpheme in word.find_all("morph"):
+                morpheme_type = morpheme.get("type", "root")
+                for item in morpheme.find_all("item"):
+                    key = item["type"] + "_" + item["lang"]
+                    word_dict.setdefault(key, "")
+                    text = item.text
+                    if key in [gloss_key, f"msa_{conf['gloss_lg']}"]:
+                        if (
+                            morpheme_type == "suffix"
+                            or word_dict.get(obj_key, "").startswith("-")
+                            and not text.startswith("-")
+                        ):
+                            text = "-" + item.text
+                        elif (
+                            morpheme_type == "prefix"
+                            or word_dict.get(obj_key, "").endswith("-")
+                            and not text.endswith("-")
+                        ):
+                            text = item.text + "-"
+                    word_dict[key] += text
+            if word_dict:
+                interlinear_lines.append(word_dict)
+        surface = compose_surface_string(surface)
+        interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
+        phrase_dict = {"ID": f"{text_id}-{segnum}", "Primary_Text": surface}
+        for col in interlinear_lines.columns:
+            phrase_dict[col] = "\t".join(interlinear_lines[col])
+        record_list.append(phrase_dict)
+    return record_list
+
+
+def convert(
+    flextext_file="", lexicon_file=None, config_file=None, output_dir=None, conf=None
+):
+    output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
+    output_dir = Path(output_dir)
+    with open(flextext_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    texts = BeautifulSoup(content)
+    if not conf:
+        if not config_file:
+            log.warning("No configuration file or dict provided.")
+            conf = {}
+        else:
+            with open(config_file, encoding="utf-8") as f:
+                conf = yaml.safe_load(f)
+
+    if "gloss_lg" not in conf:
+        log.warning("No glossing language specified, assuming [en].")
+        conf["gloss_lg"] = "en"
+    gloss_key = "gls_" + conf["gloss_lg"]
+
+    if "obj_lg" not in conf:
+        conf["obj_lg"] = texts.select(f"item[lang!={conf['gloss_lg']}]")[0]["lang"]
+        log.warning(f"No object language specified, assuming [{conf['obj_lg']}].")
+    obj_key = "txt_" + conf["obj_lg"]
+    punct_key = "punct_" + conf["obj_lg"]
+
+    if "Language_ID" not in conf:
+        log.info(f"Language_ID not specified, using [{conf['obj_lg']}]")
+        conf["Language_ID"] = conf["obj_lg"]
+    for text in texts.find_all("interlinear-text"):
+        text_id = None
+        abbrevs = text.select("item[type='title-abbreviation']")
+        for abbrev in abbrevs:
+            if abbrev.text != "" and text_id is None:
+                text_id = slugify(abbrev.text)
+                log.info(f"Using language {abbrev['lang']} for text ID: {text_id}")
+        record_list = extract_records(
+            text, obj_key, punct_key, gloss_key, text_id, conf
+        )
+    df = (
+        pd.DataFrame.from_dict(record_list)
+        .rename(columns={obj_key: "Analyzed_Word", gloss_key: "Gloss"})
+        .fillna("")
+    )
+    df["Language_ID"] = conf["Language_ID"]
+    # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
+    df.to_csv(output_dir / "sentences.csv", index=False)
+
+
+def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
     output_dir = Path(output_dir)
     logging.basicConfig(
