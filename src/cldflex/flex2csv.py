@@ -441,6 +441,7 @@ def convert(
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
         (f"pos_{conf['gloss_lg']}_word", "POS"),
+        (f"segnum_{conf['gloss_lg']}_phrase", "Part")
     ]:
         rename_dict.setdefault(gen_col, label)
     df.rename(columns=rename_dict, inplace=True)
