@@ -373,7 +373,7 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
                 interlinear_lines.append(word_dict)
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
-        phrase_dict = {"ID": f"{text_id}-{segnum}", "Primary_Text": surface}
+        phrase_dict = {"ID": f"{text_id}-{segnum}", "Primary_Text": surface, "Text_ID": text_id}
         for col in interlinear_lines.columns:
             phrase_dict[col] = "\t".join(interlinear_lines[col])
         record_list.append(phrase_dict)
