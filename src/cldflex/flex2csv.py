@@ -195,8 +195,12 @@ def extract_flex_record(
         poses = []
         if "@guid" in ex_df.columns:
             ex_df[f"word_pos_{gloss_lg}"] = ex_df[f"word_pos_{gloss_lg}"].fillna("")
-            for guid, pos in zip(ex_df["@guid"], ex_df[f"word_pos_{gloss_lg}"]):
+            for guid, gloss, pos in zip(
+                ex_df["@guid"], ex_df[gloss_key], ex_df[f"word_pos_{gloss_lg}"]
+            ):
                 if pd.isnull(guid):  # punctuation has no GUID
+                    continue
+                if not isinstance(gloss, list):  # unanalyzed words have no POS
                     continue
                 if pd.isnull(pos):
                     poses.append("?")
@@ -468,7 +472,10 @@ def convert(flextext_file="", lexicon_file=None, config_file=None, output_dir=No
                 )
     ex_df = pd.DataFrame.from_dict(example_list)
     ex_df["Language_ID"] = conf.get("Language_ID", conf["obj_lg"])
-    for gen_col, label in [(f"gls_{conf['gloss_lg']}", "Translated_Text"), (f"segnum_{conf['gloss_lg']}", "Part")]:
+    for gen_col, label in [
+        (f"gls_{conf['gloss_lg']}", "Translated_Text"),
+        (f"segnum_{conf['gloss_lg']}", "Part"),
+    ]:
         if gen_col in ex_df.columns:
             log.info(f"Mapping {gen_col} to {label}")
             ex_df.rename(columns={gen_col: label}, inplace=True)
