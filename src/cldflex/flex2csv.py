@@ -335,7 +335,7 @@ def extract_flex_record(
 # sys.excepthook = ex_handler
 
 
-def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
+def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, conf):
     record_list = []
     for phrase_count, phrase in enumerate(text.find_all("phrase")):
         surface = []
@@ -375,6 +375,12 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
                     word_dict[key] += text
             if word_dict:
                 interlinear_lines.append(word_dict)
+                # add to wordform table
+                wordforms.setdefault(word["guid"], {"ID": word["guid"], "Form": [], "Meaning": []})
+                for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
+                    if word_dict[gen_col] not in wordforms[word["guid"]][label]:
+                        wordforms[word["guid"]][label].append(word_dict[gen_col])
+
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
         phrase_dict = {
@@ -424,6 +430,7 @@ def convert(
         log.info(f"Language_ID not specified, using [{conf['obj_lg']}]")
         conf["Language_ID"] = conf["obj_lg"]
 
+    wordforms = {}
     for text in texts.find_all("interlinear-text"):
         text_id = None
         abbrevs = text.select("item[type='title-abbreviation']")
@@ -432,7 +439,7 @@ def convert(
                 text_id = slugify(abbrev.text)
                 log.info(f"Using language {abbrev['lang']} for text ID: {text_id}")
         record_list = extract_records(
-            text, obj_key, punct_key, gloss_key, text_id, conf
+            text, obj_key, punct_key, gloss_key, text_id, wordforms, conf
         )
 
     df = (
@@ -454,6 +461,10 @@ def convert(
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
     df.to_csv(output_dir / "sentences.csv", index=False)
 
+    wordforms = pd.DataFrame.from_dict(wordforms.values())
+    for col in ["Form", "Meaning"]:
+        wordforms[col] = wordforms[col].apply(lambda x: "; ".join(x))
+    wordforms.to_csv(output_dir / "wordforms.csv")
 
 def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
