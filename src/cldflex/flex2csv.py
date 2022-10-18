@@ -380,16 +380,23 @@ def extract_records(
                     if key in [gloss_key, f"msa_{conf['gloss_lg']}"]:
                         if (
                             morpheme_type == "suffix"
-                            or word_dict.get(obj_key, "").startswith("-")
+                            and not word_dict[key].endswith("-")
                             and not text.startswith("-")
                         ):
                             text = "-" + item.text
                         elif (
                             morpheme_type == "prefix"
-                            or word_dict.get(obj_key, "").endswith("-")
                             and not text.endswith("-")
                         ):
                             text = item.text + "-"
+                        elif (
+                            morpheme_type == "infix"
+                        ):
+                            if not text.startswith("-") and not word_dict[key].endswith("-"):
+                                text = "-" + text
+                            if not text.endswith("-"):
+                                text = text + "-"
+
                     word_dict[key] += text
 
             # sentence slices are only for analyzed word forms
