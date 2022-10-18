@@ -588,10 +588,10 @@ def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=N
                 )
     ex_df = pd.DataFrame.from_dict(example_list)
     ex_df["Language_ID"] = conf.get("Language_ID", conf["obj_lg"])
-    if f"gls_{conf['gloss_lg']}" in ex_df.columns:
-        ex_df.rename(
-            columns={f"gls_{conf['gloss_lg']}": "Translated_Text"}, inplace=True
-        )
+    for gen_col, label in [(f"gls_{conf['gloss_lg']}", "Translated_Text"), (f"segnum_{conf['gloss_lg']}", "Part")]:
+        if gen_col in ex_df.columns:
+            log.info(f"Mapping {gen_col} to {label}")
+            ex_df.rename(columns={gen_col: label}, inplace=True)
     ex_df.to_csv(csv_out, index=False)
     word_forms = pd.DataFrame.from_dict(word_forms.values())
     word_forms["Meaning"] = word_forms["Meaning"].apply(lambda x: "; ".join(x))
