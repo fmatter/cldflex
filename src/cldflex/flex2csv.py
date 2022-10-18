@@ -335,7 +335,9 @@ def extract_flex_record(
 # sys.excepthook = ex_handler
 
 
-def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, conf):
+def extract_records(
+    text, obj_key, punct_key, gloss_key, text_id, wordforms, sentence_slices, conf
+):
     record_list = []
     for phrase_count, phrase in enumerate(text.find_all("phrase")):
         surface = []
@@ -345,6 +347,10 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, con
             segnum = segnum[0].text
         else:
             segnum = phrase_count
+
+        ex_id = f"{text_id}-{segnum}"
+
+        word_count = 0
         for word in phrase.find_all("word"):
             word_dict = {}
             for word_item in word.find_all("item", recursive=False):
@@ -353,6 +359,7 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, con
                     surface.append(word_item.text)
                 else:
                     word_dict[key + "_word"] = word_item.text
+
             for morpheme in word.find_all("morph"):
                 morpheme_type = morpheme.get("type", "root")
                 for item in morpheme.find_all("item"):
@@ -373,10 +380,26 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, con
                         ):
                             text = item.text + "-"
                     word_dict[key] += text
+
+            # sentence slices are only for analyzed word forms
+            if word.find_all("morphemes"):
+                sentence_slices.append(
+                    {
+                        "ID": f"{ex_id}-{word_count}",
+                        "Example_ID": ex_id,
+                        "Form_ID": word["guid"],
+                        "Index": word_count,
+                        "Form_Meaning": word_dict[gloss_key],
+                    }
+                )
+                word_count += 1
+
             if word_dict:
                 interlinear_lines.append(word_dict)
                 # add to wordform table
-                wordforms.setdefault(word["guid"], {"ID": word["guid"], "Form": [], "Meaning": []})
+                wordforms.setdefault(
+                    word["guid"], {"ID": word["guid"], "Form": [], "Meaning": []}
+                )
                 for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
                     if word_dict[gen_col] not in wordforms[word["guid"]][label]:
                         wordforms[word["guid"]][label].append(word_dict[gen_col])
@@ -384,7 +407,7 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, wordforms, con
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
         phrase_dict = {
-            "ID": f"{text_id}-{segnum}",
+            "ID": ex_id,
             "Primary_Text": surface,
             "Text_ID": text_id,
             "guid": phrase["guid"],
@@ -431,6 +454,7 @@ def convert(
         conf["Language_ID"] = conf["obj_lg"]
 
     wordforms = {}
+    sentence_slices = []
     for text in texts.find_all("interlinear-text"):
         text_id = None
         abbrevs = text.select("item[type='title-abbreviation']")
@@ -439,7 +463,14 @@ def convert(
                 text_id = slugify(abbrev.text)
                 log.info(f"Using language {abbrev['lang']} for text ID: {text_id}")
         record_list = extract_records(
-            text, obj_key, punct_key, gloss_key, text_id, wordforms, conf
+            text,
+            obj_key,
+            punct_key,
+            gloss_key,
+            text_id,
+            wordforms,
+            sentence_slices,
+            conf,
         )
 
     df = (
@@ -452,12 +483,12 @@ def convert(
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
         (f"pos_{conf['gloss_lg']}_word", "POS"),
-        (f"segnum_{conf['gloss_lg']}_phrase", "Part")
+        (f"segnum_{conf['gloss_lg']}_phrase", "Part"),
     ]:
         rename_dict.setdefault(gen_col, label)
     df.rename(columns=rename_dict, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
-    
+
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
     df.to_csv(output_dir / "sentences.csv", index=False)
 
@@ -465,6 +496,10 @@ def convert(
     for col in ["Form", "Meaning"]:
         wordforms[col] = wordforms[col].apply(lambda x: "; ".join(x))
     wordforms.to_csv(output_dir / "wordforms.csv")
+
+    sentence_slices = pd.DataFrame.from_dict(sentence_slices)
+    sentence_slices.to_csv(output_dir / "sentence_slices.csv")
+
 
 def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))

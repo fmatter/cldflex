@@ -11,7 +11,7 @@ def test_convert(flextext, monkeypatch, tmp_path, data):
 
     for filename in [
         "sentences.csv",
-        # "sentence_slices.csv",
+        "sentence_slices.csv",
         "wordforms.csv",
         # "texts.csv",
     ]:
