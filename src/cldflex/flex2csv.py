@@ -373,7 +373,12 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
                 interlinear_lines.append(word_dict)
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
-        phrase_dict = {"ID": f"{text_id}-{segnum}", "Primary_Text": surface, "Text_ID": text_id}
+        phrase_dict = {
+            "ID": f"{text_id}-{segnum}",
+            "Primary_Text": surface,
+            "Text_ID": text_id,
+            "guid": phrase["guid"],
+        }
         for col in interlinear_lines.columns:
             phrase_dict[col] = "\t".join(interlinear_lines[col])
         record_list.append(phrase_dict)
@@ -569,7 +574,9 @@ def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=N
     ex_df = pd.DataFrame.from_dict(example_list)
     ex_df["Language_ID"] = conf.get("Language_ID", conf["obj_lg"])
     if f"gls_{conf['gloss_lg']}" in ex_df.columns:
-        ex_df.rename(columns={f"gls_{conf['gloss_lg']}": "Translated_Text"}, inplace=True)
+        ex_df.rename(
+            columns={f"gls_{conf['gloss_lg']}": "Translated_Text"}, inplace=True
+        )
     ex_df.to_csv(csv_out, index=False)
     word_forms = pd.DataFrame.from_dict(word_forms.values())
     word_forms["Meaning"] = word_forms["Meaning"].apply(lambda x: "; ".join(x))
