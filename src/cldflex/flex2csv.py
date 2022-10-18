@@ -361,7 +361,7 @@ def extract_records(
 
         word_count = 0
         for word in phrase.find_all("word"):
-            word_id = word["guid"]
+            word_id = word.get("guid", None)
             word_dict = {"morph_type": []}
             for word_item in word.find_all("item", recursive=False):
                 key = word_item["type"] + "_" + word_item["lang"]
@@ -462,6 +462,8 @@ def extract_records(
             "Text_ID": text_id,
             "guid": phrase["guid"],
         }
+        for attr, value in phrase.attrs.items():
+            phrase_dict[attr] = value
         for phrase_item in phrase.find_all("item", recursive=False):
             phrase_dict[
                 phrase_item["type"] + "_" + phrase_item["lang"] + "_phrase"
