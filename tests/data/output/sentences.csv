@@ -1,4 +1,4 @@
-ID,Primary_Text,Analyzed_Word,Gloss,Text_ID,guid,segnum_en,Translated_Text,POS,Language_ID
+ID,Primary_Text,Analyzed_Word,Gloss,Text_ID,guid,Part,Translated_Text,POS,Language_ID
 ekiri-1,ekïrï ru man eroang tïmamin ïna,ekïrï	ru	man	ero-ang	tï-mami-n	ïna,old one	PART	AFF	go-REM.CONT	3COR-work-PERT	OBL,ekiri,674114d7-6707-42e1-af99-16b5d7079777,1,"The old man went to his work,",n	prt	prt	v	n	post,txi
 ekiri-2,yuwyang man tïwïn,y-uwy-ang	man	tï-wï-n,3>3-search-REM.CONT	AFF	3COR-machete-PERT,ekiri,726fb6d1-b426-430d-80ba-620fca4aed42,2,He looked for his machete.,v	prt	n,txi
 ekiri-3,ïwïn mun eto ankang man,ï-wï-n	mun	eto	an-k-ang	man,1-machete-PERT	INAN.DIST	UNCERT	3-say-REM.CONT	AFF,ekiri,0ff18c26-8fe0-4a7f-bace-dc9bf615160f,3,"“Where might my machete be?”, he asked.",n	pro	prt	v	prt,txi
