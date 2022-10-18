@@ -13,7 +13,7 @@ def test_convert(flextext, monkeypatch, tmp_path, data):
         "sentences.csv",
         "sentence_slices.csv",
         "wordforms.csv",
-        # "texts.csv",
+        "texts.csv",
     ]:
         df1 = pd.read_csv(tmp_path / filename)
         df2 = pd.read_csv(data / "output" / filename)

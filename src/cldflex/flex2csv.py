@@ -455,6 +455,7 @@ def convert(
 
     wordforms = {}
     sentence_slices = []
+    text_list = []
     for text in texts.find_all("interlinear-text"):
         text_id = None
         abbrevs = text.select("item[type='title-abbreviation']")
@@ -462,6 +463,13 @@ def convert(
             if abbrev.text != "" and text_id is None:
                 text_id = slugify(abbrev.text)
                 log.info(f"Using language {abbrev['lang']} for text ID: {text_id}")
+
+        text_metadata = {"ID": text_id}
+        for text_item in text.find_all("item", recursive=False):
+            key = text_item["type"] + "_" + text_item["lang"]
+            text_metadata[key] = text_item.text
+        text_list.append(text_metadata)
+
         record_list = extract_records(
             text,
             obj_key,
@@ -495,10 +503,13 @@ def convert(
     wordforms = pd.DataFrame.from_dict(wordforms.values())
     for col in ["Form", "Meaning"]:
         wordforms[col] = wordforms[col].apply(lambda x: "; ".join(x))
-    wordforms.to_csv(output_dir / "wordforms.csv")
+    wordforms.to_csv(output_dir / "wordforms.csv", index=False)
 
     sentence_slices = pd.DataFrame.from_dict(sentence_slices)
-    sentence_slices.to_csv(output_dir / "sentence_slices.csv")
+    sentence_slices.to_csv(output_dir / "sentence_slices.csv", index=False)
+
+    text_df = pd.DataFrame.from_dict(text_list)
+    text_df.to_csv(output_dir / "texts.csv", index=False)
 
 
 def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):
@@ -663,12 +674,12 @@ def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=N
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         sentence_slices.to_csv(output_dir / "sentence_slices.csv", index=False)
 
-    text_table = []
+    text_list = []
     for text_id, data in text_metadata.items():
         tdic = {"ID": text_id}
         for kind, kdic in data.items():
             for lg, value in kdic.items():
                 tdic[f"{kind}_{lg}"] = value
-        text_table.append(tdic)
-    text_table = pd.DataFrame.from_dict(text_table)
-    text_table.to_csv(output_dir / "texts.csv", index=False)
+        text_list.append(tdic)
+    text_list = pd.DataFrame.from_dict(text_list)
+    text_list.to_csv(output_dir / "texts.csv", index=False)
