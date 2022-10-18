@@ -379,6 +379,10 @@ def extract_records(text, obj_key, punct_key, gloss_key, text_id, conf):
             "Text_ID": text_id,
             "guid": phrase["guid"],
         }
+        for phrase_item in phrase.find_all("item", recursive=False):
+            phrase_dict[
+                phrase_item["type"] + "_" + phrase_item["lang"] + "_phrase"
+            ] = phrase_item.text
         for col in interlinear_lines.columns:
             phrase_dict[col] = "\t".join(interlinear_lines[col])
         record_list.append(phrase_dict)
@@ -415,6 +419,7 @@ def convert(
     if "Language_ID" not in conf:
         log.info(f"Language_ID not specified, using [{conf['obj_lg']}]")
         conf["Language_ID"] = conf["obj_lg"]
+
     for text in texts.find_all("interlinear-text"):
         text_id = None
         abbrevs = text.select("item[type='title-abbreviation']")
@@ -425,12 +430,22 @@ def convert(
         record_list = extract_records(
             text, obj_key, punct_key, gloss_key, text_id, conf
         )
+
     df = (
         pd.DataFrame.from_dict(record_list)
         .rename(columns={obj_key: "Analyzed_Word", gloss_key: "Gloss"})
         .fillna("")
     )
+
+    rename_dict = conf.get("mappings", {})
+    for gen_col, label in [
+        (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
+        (f"pos_{conf['gloss_lg']}_word", "POS"),
+    ]:
+        rename_dict.setdefault(gen_col, label)
+    df.rename(columns=rename_dict, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
+    
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
     df.to_csv(output_dir / "sentences.csv", index=False)
 
