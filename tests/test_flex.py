@@ -16,8 +16,11 @@ def test_convert(flextext, monkeypatch, tmp_path, data):
         # "texts.csv",
     ]:
         df1 = pd.read_csv(tmp_path / filename)
-        df1.drop(columns=["gls_en_word", "cf_txi", "msa_en", "hn_txi"], inplace=True)
         df2 = pd.read_csv(data / "output" / filename)
+
+        for col in df1.columns:
+            if col not in df2.columns:
+                df1.drop(columns=[col], inplace=True)
 
         df1 = df1[sorted(df1.columns)]
         df2 = df2[sorted(df2.columns)]
