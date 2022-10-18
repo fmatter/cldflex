@@ -336,7 +336,16 @@ def extract_flex_record(
 
 
 def extract_records(
-    text, obj_key, punct_key, gloss_key, text_id, wordforms, sentence_slices, conf
+    text,
+    obj_key,
+    punct_key,
+    gloss_key,
+    text_id,
+    wordforms,
+    sentence_slices,
+    form_slices,
+    lexicon,
+    conf,
 ):
     record_list = []
     for phrase_count, phrase in enumerate(text.find_all("phrase")):
@@ -352,7 +361,8 @@ def extract_records(
 
         word_count = 0
         for word in phrase.find_all("word"):
-            word_dict = {}
+            word_id = word["guid"]
+            word_dict = {"morph_type": []}
             for word_item in word.find_all("item", recursive=False):
                 key = word_item["type"] + "_" + word_item["lang"]
                 if key == obj_key or key == punct_key:
@@ -362,6 +372,7 @@ def extract_records(
 
             for morpheme in word.find_all("morph"):
                 morpheme_type = morpheme.get("type", "root")
+                word_dict["morph_type"].append(morpheme_type)
                 for item in morpheme.find_all("item"):
                     key = item["type"] + "_" + item["lang"]
                     word_dict.setdefault(key, "")
@@ -387,22 +398,61 @@ def extract_records(
                     {
                         "ID": f"{ex_id}-{word_count}",
                         "Example_ID": ex_id,
-                        "Form_ID": word["guid"],
+                        "Form_ID": word_id,
                         "Index": word_count,
                         "Form_Meaning": word_dict[gloss_key],
                     }
                 )
                 word_count += 1
 
+                if lexicon is not None:
+                    if word_id not in form_slices:
+                        form_slices[word_id] = []
+                        for m_c, (morph_obj, morph_gloss, morph_type) in enumerate(
+                            zip(
+                                re.split(
+                                    re.compile("|".join(delimiters)), word_dict[obj_key]
+                                ),
+                                re.split(
+                                    re.compile("|".join(delimiters)),
+                                    word_dict[gloss_key],
+                                ),
+                                word_dict["morph_type"],
+                            )
+                        ):
+                            m_id = retrieve_morpheme_id(
+                                morph_obj, morph_gloss, lexicon, morph_type
+                            )
+                            if m_id:
+                                form_slices[word_id].append(
+                                    {
+                                        "ID": f"{word_id}-{str(m_c)}",
+                                        "Form_ID": word_id,
+                                        "Form": re.sub(
+                                            "|".join(delimiters), "", word_dict[obj_key]
+                                        ),
+                                        "Form_Meaning": word_dict[gloss_key],
+                                        "Morph_ID": m_id,
+                                        "Morpheme_Meaning": morph_gloss,
+                                        "Index": str(m_c),
+                                    }
+                                )
+                            else:
+                                log.warning(
+                                    f"No hits for {morph_obj} '{morph_gloss}' in lexicon! ({ex_id})"
+                                )
+            # not needed for the output, only morpheme retrieval
+            del word_dict["morph_type"]
+
             if word_dict:
                 interlinear_lines.append(word_dict)
                 # add to wordform table
                 wordforms.setdefault(
-                    word["guid"], {"ID": word["guid"], "Form": [], "Meaning": []}
+                    word_id, {"ID": word_id, "Form": [], "Meaning": []}
                 )
                 for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
-                    if word_dict[gen_col] not in wordforms[word["guid"]][label]:
-                        wordforms[word["guid"]][label].append(word_dict[gen_col])
+                    if word_dict[gen_col] not in wordforms[word_id][label]:
+                        wordforms[word_id][label].append(word_dict[gen_col])
 
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
@@ -427,6 +477,24 @@ def convert(
 ):
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
     output_dir = Path(output_dir)
+
+    if lexicon_file is None:
+        log.warning(
+            "No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
+        )
+        lexicon = None
+    elif Path(lexicon_file).suffix == ".csv":
+        log.info(f"Adding lexicon from {lexicon_file}")
+        lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
+        lexicon["Form_Bare"] = lexicon["Form"].apply(
+            lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
+        )
+        for split_col in ["Form_Bare", "Form", "Meaning"]:
+            lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
+    else:
+        log.error(f"{lexicon_file} is not a valid lexicon file format, ignoring.")
+        lexicon = None
+
     with open(flextext_file, "r", encoding="utf-8") as f:
         content = f.read()
     texts = BeautifulSoup(content)
@@ -455,6 +523,7 @@ def convert(
 
     wordforms = {}
     sentence_slices = []
+    form_slices = {}
     text_list = []
     for text in texts.find_all("interlinear-text"):
         text_id = None
@@ -462,7 +531,7 @@ def convert(
         for abbrev in abbrevs:
             if abbrev.text != "" and text_id is None:
                 text_id = slugify(abbrev.text)
-                log.info(f"Using language {abbrev['lang']} for text ID: {text_id}")
+                log.info(f"Using language [{abbrev['lang']}] for text ID: {text_id}")
 
         text_metadata = {"ID": text_id}
         for text_item in text.find_all("item", recursive=False):
@@ -478,6 +547,8 @@ def convert(
             text_id,
             wordforms,
             sentence_slices,
+            form_slices,
+            lexicon,
             conf,
         )
 
@@ -497,6 +568,7 @@ def convert(
     df.rename(columns=rename_dict, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
 
+    # todo: sort columns
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
     df.to_csv(output_dir / "sentences.csv", index=False)
 
@@ -510,6 +582,13 @@ def convert(
 
     text_df = pd.DataFrame.from_dict(text_list)
     text_df.to_csv(output_dir / "texts.csv", index=False)
+
+    all_slices = []
+    for wf_id, slices in form_slices.items():
+        for form_slice in slices:
+            all_slices.append(form_slice)
+    form_slices = pd.DataFrame.from_dict(all_slices)
+    form_slices.to_csv(output_dir / "form_slices.csv", index=False)
 
 
 def convert1(flextext_file="", lexicon_file=None, config_file=None, output_dir=None):

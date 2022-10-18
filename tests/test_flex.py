@@ -28,12 +28,24 @@ def test_convert(flextext, monkeypatch, tmp_path, data):
         pd.testing.assert_frame_equal(df1, df2)
 
 
-# def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
-#     convert(flextext, lexicon_file=data / "output" / "morphs.csv", output_dir=tmp_path)
+def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
+    convert(flextext, lexicon_file=data / "output" / "morphs.csv", output_dir=tmp_path)
 
-#     with open(tmp_path / "form_slices.csv", "r", encoding="utf-8") as f:
-#         sl1 = f.read()
+    for filename in [
+        "sentences.csv",
+        "sentence_slices.csv",
+        "wordforms.csv",
+        "texts.csv",
+        "form_slices.csv"
+    ]:
+        df1 = pd.read_csv(tmp_path / filename)
+        df2 = pd.read_csv(data / "output" / filename)
 
-#     with open(data / "output" / "form_slices.csv", "r", encoding="utf-8") as f:
-#         sl2 = f.read()
-#     assert sl1 == sl2
+        for col in df1.columns:
+            if col not in df2.columns:
+                df1.drop(columns=[col], inplace=True)
+
+        df1 = df1[sorted(df1.columns)]
+        df2 = df2[sorted(df2.columns)]
+
+        pd.testing.assert_frame_equal(df1, df2)
