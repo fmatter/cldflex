@@ -5,6 +5,7 @@ import pandas as pd
 import yaml
 from xmljson import badgerfish as bf
 from cldflex.helpers import listify
+from bs4 import BeautifulSoup
 
 
 log = logging.getLogger(__name__)
@@ -19,7 +20,61 @@ def get_variant(morphemes, main_id, forms):
     return out
 
 
+def parse_entry(entry, variant_dict=None):
+    entry_id = entry["guid"]
+    variant_dict = variant_dict or {}
+    morphs = []
+    morpheme_id = entry["guid"]
+    morph_type = entry.select("trait[name='morph-type']")[0]["value"]
+    poses = []
+    senses = {}
+
+    for sense in entry.find_all("sense", recursive=False):
+        print(sense)
+        for gramm in sense.find_all("grammatical-info"):
+            poses.append(gramm["value"])
+        senses[sense["id"]] = {"Meaning": sense}
+    for form in entry.find("lexical-unit").find_all("form"):
+        print(form.text, morph_type)
+        morphs.append({"ID": entry_id, "Form": form.text, "Type": morph_type, "Meaning": })
+    for morph in entry.find_all("variant"):
+        for form in morph.find_all("form"):
+            print(form.text)
+
+    # morph_types = list(dict.fromkeys([x["value"] for x in entry.select("trait[name='morph-type']")]))
+    # if len(morph_types) > 1:
+    #     log.info(f"Entry {morpheme_id} has {len(morph_types)} morpheme types ({', '.join(morph_types)}). Using {morph_types[0]}")
+    # morph_type = morph_types[0]
+
+
+# <entry datecreated="2021-09-08T08:25:46Z" datemodified="2021-09-08T09:06:43Z" guid="3fcda9bb-60e3-4033-a77b-beb26abdc524" id="ïna_3fcda9bb-60e3-4033-a77b-beb26abdc524">
+# <lexical-unit>
+# <form lang="txi"><text>ïna</text></form>
+# </lexical-unit>
+# <trait name="morph-type" value="stem"></trait>
+# <variant>
+# <form lang="txi"><text>na</text></form>
+# <trait name="morph-type" value="stem"></trait>
+# </variant>
+# <sense id="c129ae7d-5d5a-44f7-a07e-12232769f313">
+# <grammatical-info value="Postposition">
+# </grammatical-info>
+# <gloss lang="en"><text>OBL</text></gloss>
+# </sense>
+# </entry>
+
+
 def convert(lift_file="", id_map=None, gather_examples=True, output_dir=None):
+    lift_file = Path(lift_file)
+    output_dir = output_dir or lift_file.resolve().parents[0]
+    output_dir = Path(output_dir)
+    with open(lift_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    lexicon = BeautifulSoup(content)
+    for entry in lexicon.find_all("entry"):
+        parse_entry(entry)
+
+def convert1(lift_file="", id_map=None, gather_examples=True, output_dir=None):
     lift_file = Path(lift_file)
     output_dir = output_dir or lift_file.resolve().parents[0]
     output_dir = Path(output_dir)
