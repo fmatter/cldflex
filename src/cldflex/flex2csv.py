@@ -90,7 +90,7 @@ def extract_records(
                         "Example_ID": ex_id,
                         "Form_ID": word_id,
                         "Index": word_count,
-                        "Form_Meaning": word_dict[gloss_key],
+                        "Form_Meaning": word_dict.get(gloss_key, "***"),
                     }
                 )
                 word_count += 1
@@ -141,7 +141,7 @@ def extract_records(
                     word_id, {"ID": word_id, "Form": [], "Meaning": []}
                 )
                 for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
-                    if word_dict[gen_col] not in wordforms[word_id][label]:
+                    if gen_col in word_dict and word_dict[gen_col] not in wordforms[word_id][label]:
                         wordforms[word_id][label].append(word_dict[gen_col])
 
         surface = compose_surface_string(surface)
