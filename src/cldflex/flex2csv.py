@@ -217,6 +217,7 @@ def convert(
     sentence_slices = []
     form_slices = {}
     text_list = []
+    record_list = []
     for text in texts.find_all("interlinear-text"):
         text_id = None
         abbrevs = text.select("item[type='title-abbreviation']")
@@ -231,7 +232,7 @@ def convert(
             text_metadata[key] = text_item.text
         text_list.append(text_metadata)
 
-        record_list = extract_records(
+        record_list.extend(extract_records(
             text,
             obj_key,
             punct_key,
@@ -242,7 +243,7 @@ def convert(
             form_slices,
             lexicon,
             conf,
-        )
+        ))
 
     df = (
         pd.DataFrame.from_dict(record_list)
