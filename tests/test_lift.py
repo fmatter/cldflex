@@ -18,6 +18,10 @@ def test_lift(data, tmp_path):
             if col not in df2.columns:
                 df1.drop(columns=[col], inplace=True)
 
+        for df in [df1, df2]:
+            assert df["ID"].is_unique
+            df.drop(columns="ID", inplace=True)
+
         df1 = df1[sorted(df1.columns)]
         df2 = df2[sorted(df2.columns)]
 
