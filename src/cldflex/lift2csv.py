@@ -76,7 +76,6 @@ def parse_entry(entry, variant_dict=None, sep="; "):
 
     form_count = 0
     for form in entry.find("lexical-unit").find_all("form"):
-        form_count += 1
         f_dict = {
             "ID": f"{entry_id}-{form_count}",
             "Form": form.text,
@@ -86,6 +85,7 @@ def parse_entry(entry, variant_dict=None, sep="; "):
         f_dict.update(**fields)
         morphs.append(f_dict)
         forms.append(form.text)
+        form_count += 1
 
     for variant in entry.find_all("variant"):
         morph_type = get_morph_type(variant)
@@ -99,6 +99,7 @@ def parse_entry(entry, variant_dict=None, sep="; "):
             f_dict.update(**fields)
             morphs.append(f_dict)
             forms.append(form.text)
+            form_count += 1
 
     morpheme_dict = {
         "ID": entry_id,
