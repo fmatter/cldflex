@@ -187,6 +187,7 @@ def convert(
         log.error(f"{lexicon_file} is not a valid lexicon file format, ignoring.")
         lexicon = None
 
+    log.info("Reading file...")
     with open(flextext_file, "r", encoding="utf-8") as f:
         content = f.read()
     texts = BeautifulSoup(content)
