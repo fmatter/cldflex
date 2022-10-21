@@ -20,6 +20,27 @@ def get_variant(morphemes, main_id, forms):
     return out
 
 
+def gather_variants(entry, variants):
+    relations = entry.find_all("relation")
+    if relations:
+        for relation in relations:
+            if relation.select("trait[name='variant-type']") and relation["ref"] != "":
+                main_entry_id = relation["ref"].split("_")[-1]
+                variants.setdefault(main_entry_id, [])
+                variants[main_entry_id].append(
+                    {
+                        "ID": entry["id"],
+                        "Form": entry.find("form").text,
+                        "Type": entry.select("trait[name='morph-type']")[0]["value"],
+                    }
+                )
+    return None
+
+
+def get_morph_type(entry):
+    return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
+
+
 # <entry datecreated="2021-09-08T08:25:46Z" datemodified="2021-09-08T09:06:43Z" guid="3fcda9bb-60e3-4033-a77b-beb26abdc524" id="ïna_3fcda9bb-60e3-4033-a77b-beb26abdc524">
 # <lexical-unit>
 # <form lang="txi"><text>ïna</text></form>
@@ -37,18 +58,15 @@ def get_variant(morphemes, main_id, forms):
 # </entry>
 
 
-
-def parse_entry(entry, variant_dict=None):
+def parse_entry(entry, variant_dict=None, sep="; "):
     entry_id = entry["guid"]
     variant_dict = variant_dict or {}
     forms = []
-    morph_type = entry.select("trait[name='morph-type']")[0]["value"]
+    morpheme_type = get_morph_type(entry)
     poses = []
-    senses = {}
+    morphs = []
     fields = {}
     for sense in entry.find_all("sense", recursive=False):
-        sense_id = sense["id"]
-        senses[sense_id] = []
         for gramm in sense.find_all("grammatical-info"):
             poses.append(gramm["value"])
         for gloss in sense.find_all("gloss"):
@@ -56,31 +74,89 @@ def parse_entry(entry, variant_dict=None):
             fields.setdefault(key, [])
             fields[key].append(gloss.text)
 
+    form_count = 0
     for form in entry.find("lexical-unit").find_all("form"):
+        form_count += 1
+        f_dict = {
+            "ID": f"{entry_id}-{form_count}",
+            "Form": form.text,
+            "Type": morpheme_type,
+            "Morpheme_ID": entry_id,
+        }
+        f_dict.update(**fields)
+        morphs.append(f_dict)
         forms.append(form.text)
 
-    res_dict = {"ID": entry_id, "Gramm": poses, "Type": morph_type, "Form": forms, "Name": forms[0]}
-    res_dict.update(**fields)
-    return res_dict
+    for variant in entry.find_all("variant"):
+        morph_type = get_morph_type(variant)
+        for form in variant.find_all("form"):
+            f_dict = {
+                "ID": f"{entry_id}-{form_count}",
+                "Form": form.text,
+                "Type": morph_type,
+                "Morpheme_ID": entry_id,
+            }
+            f_dict.update(**fields)
+            morphs.append(f_dict)
+            forms.append(form.text)
+
+    morpheme_dict = {
+        "ID": entry_id,
+        "Gramm": poses,
+        "Type": morpheme_type,
+        "Form": forms,
+        "Name": forms[0],
+    }
+    morpheme_dict.update(**fields)
+    return morpheme_dict, morphs
 
 
-def gather_variants(lexicon):
-    return None
-
-
-
-def convert(lift_file="", id_map=None, gather_examples=True, output_dir=None):
+def convert(
+    lift_file="",
+    id_map=None,
+    gather_examples=True,
+    output_dir=None,
+    gloss_lg=None,
+    obj_lg=None,
+    sep="; "
+):
     lift_file = Path(lift_file)
     output_dir = output_dir or lift_file.resolve().parents[0]
     output_dir = Path(output_dir)
     with open(lift_file, "r", encoding="utf-8") as f:
         content = f.read()
-    lexicon = BeautifulSoup(content)
+    lexicon = BeautifulSoup(content, features="xml")
+    morphemes = []
+    morphs = []
     entries = []
+    variant_dict = {}
     for entry in lexicon.find_all("entry"):
-        entries.append(parse_entry(entry))
-    entries = pd.DataFrame.from_dict(entries)
-    print(entries)
+        if not gather_variants(entry, variant_dict):
+            entries.append(entry)
+    for entry in entries:
+        if not gloss_lg:
+            gloss_lg = entry.find("gloss")["lang"]
+            log.info(f"Using [{gloss_lg}] as the main meta language ('Meaning' column)")
+        if not obj_lg:
+            obj_lg = entry.find("form")["lang"]
+            log.info(f"Assuming [{obj_lg}] to be the object language")
+        morpheme, allomorphs = parse_entry(entry, sep=sep)
+        morphemes.append(morpheme)
+        morphs.extend(allomorphs)
+    morphemes = pd.DataFrame.from_dict(morphemes)
+    morphs = pd.DataFrame.from_dict(morphs)
+    for df in [morphs, morphemes]:
+        df.rename(columns={f"gloss_{gloss_lg}": "Meaning"}, inplace=True)
+        df["Language_ID"] = obj_lg
+        df.fillna("", inplace=True)
+        for col in df.columns:
+            if isinstance(df[col].iloc[0], list):
+                df[col] = df[col].apply(lambda x: sep.join(x))
+
+    # print(morphs)
+    # print(morphemes)
+    morphs.to_csv(output_dir / "morphs.csv", index=False)
+    morphemes.to_csv(output_dir / "morphemes.csv", index=False)
 
 def convert1(lift_file="", id_map=None, gather_examples=True, output_dir=None):
     lift_file = Path(lift_file)
