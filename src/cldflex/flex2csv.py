@@ -141,7 +141,10 @@ def extract_records(
                     word_id, {"ID": word_id, "Form": [], "Meaning": []}
                 )
                 for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
-                    if gen_col in word_dict and word_dict[gen_col] not in wordforms[word_id][label]:
+                    if (
+                        gen_col in word_dict
+                        and word_dict[gen_col] not in wordforms[word_id][label]
+                    ):
                         wordforms[word_id][label].append(word_dict[gen_col])
 
         surface = compose_surface_string(surface)
@@ -233,18 +236,20 @@ def convert(
             text_metadata[key] = text_item.text
         text_list.append(text_metadata)
 
-        record_list.extend(extract_records(
-            text,
-            obj_key,
-            punct_key,
-            gloss_key,
-            text_id,
-            wordforms,
-            sentence_slices,
-            form_slices,
-            lexicon,
-            conf,
-        ))
+        record_list.extend(
+            extract_records(
+                text,
+                obj_key,
+                punct_key,
+                gloss_key,
+                text_id,
+                wordforms,
+                sentence_slices,
+                form_slices,
+                lexicon,
+                conf,
+            )
+        )
 
     df = (
         pd.DataFrame.from_dict(record_list)
