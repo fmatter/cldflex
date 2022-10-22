@@ -28,10 +28,48 @@ def get_morph_type(entry):
     return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
 
 
+def extract_senses(sense, fields):
+    for gloss in sense.find_all("gloss"):
+        key = "gloss_" + gloss["lang"]
+        fields.setdefault(key, [])
+        fields[key].append(gloss.text)
+
+
+def extract_examples(sense, dictionary_examples, entry_id):
+    for ex_count, example in enumerate(sense.find_all("example")):
+        example_dict = {"ID": f"{entry_id}-{ex_count}"}
+        for child in example.find_all(recursive=False):
+            if child.name == "form":
+                example_dict["Form"] = child.text
+            else:
+                child_form = child.find("form")
+                example_dict[
+                    f"{child.name}-{slugify(child['type'])}-{child_form['lang']}"
+                ] = child_form.text
+        for attr in example.attrs:
+            example_dict[attr] = example[attr]
+        dictionary_examples.append(example_dict)
+
+
+def extract_forms(
+    entry_part, entry_id, morph_type, morphs, fields, form_count
+):  # pylint: disable=too-many-arguments
+    for form in entry_part.find_all("form"):
+        f_dict = {
+            "ID": f"{entry_id}-{form_count}",
+            "Form": form.text,
+            "Type": morph_type,
+            "Morpheme_ID": entry_id,
+        }
+        f_dict.update(**fields)
+        morphs.append(f_dict)
+        form_count += 1
+    return form_count
+
+
 def parse_entry(entry, dictionary_examples, variant_dict=None):
     entry_id = entry["guid"]
     variant_dict = variant_dict or {}
-    forms = []
     morpheme_type = get_morph_type(entry)
     poses = []
     morphs = []
@@ -41,54 +79,22 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
         # POS
         for gramm in sense.find_all("grammatical-info"):
             poses.append(gramm["value"])
-            # glosses for this sense
-        for gloss in sense.find_all("gloss"):
-            key = "gloss_" + gloss["lang"]
-            fields.setdefault(key, [])
-            fields[key].append(gloss.text)
-            # examples are stored in senses
-        for ex_count, example in enumerate(sense.find_all("example")):
-            example_dict = {"ID": f"{entry_id}-{ex_count}"}
-            for child in example.find_all(recursive=False):
-                if child.name == "form":
-                    example_dict["Form"] = child.text
-                else:
-                    child_form = child.find("form")
-                    example_dict[
-                        f"{child.name}-{slugify(child['type'])}-{child_form['lang']}"
-                    ] = child_form.text
-            for attr in example.attrs:
-                example_dict[attr] = example[attr]
-            dictionary_examples.append(example_dict)
+        # glosses for this sense
+        extract_senses(sense, fields)
+        # examples are stored in senses
+        extract_examples(sense, dictionary_examples, entry_id)
 
     # go through form(s?)
     form_count = 0
-    for form in entry.find("lexical-unit").find_all("form"):
-        f_dict = {
-            "ID": f"{entry_id}-{form_count}",
-            "Form": form.text,
-            "Type": morpheme_type,
-            "Morpheme_ID": entry_id,
-        }
-        f_dict.update(**fields)
-        morphs.append(f_dict)
-        forms.append(form.text)
-        form_count += 1
+    form_count = extract_forms(
+        entry.find("lexical-unit"), entry_id, morpheme_type, morphs, fields, form_count
+    )
 
     # go through allomorphs / variants
     for variant in entry.find_all("variant"):
-        morph_type = get_morph_type(variant)
-        for form in variant.find_all("form"):
-            f_dict = {
-                "ID": f"{entry_id}-{form_count}",
-                "Form": form.text,
-                "Type": morph_type,
-                "Morpheme_ID": entry_id,
-            }
-            f_dict.update(**fields)
-            morphs.append(f_dict)
-            forms.append(form.text)
-            form_count += 1
+        form_count = extract_forms(
+            variant, entry_id, get_morph_type(variant), morphs, fields, form_count
+        )
 
     # gather variants stored in other dictionary entries
     for variant in variant_dict.get(entry_id, []):
@@ -100,8 +106,8 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
         "ID": entry_id,
         "Gramm": poses,
         "Type": morpheme_type,
-        "Form": forms,
-        "Name": forms[0],
+        "Form": [x["Form"] for x in morphs],
+        "Name": morphs[0]["Form"],
     }
     morpheme_dict.update(**fields)
     return morpheme_dict, morphs
