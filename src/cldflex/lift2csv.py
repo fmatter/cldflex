@@ -28,7 +28,7 @@ def get_morph_type(entry):
     return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
 
 
-def extract_senses(sense, fields):
+def extract_glosses(sense, fields):
     for gloss in sense.find_all("gloss"):
         key = "gloss_" + gloss["lang"]
         fields.setdefault(key, [])
@@ -76,11 +76,11 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
     fields = {}
 
     for sense in entry.find_all("sense", recursive=False):
-        # POS
+        # POS are stored in senses
         for gramm in sense.find_all("grammatical-info"):
             poses.append(gramm["value"])
-        # glosses for this sense
-        extract_senses(sense, fields)
+        # and glosses
+        extract_glosses(sense, fields)
         # examples are stored in senses
         extract_examples(sense, dictionary_examples, entry_id)
 
@@ -114,8 +114,7 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
 
 
 def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "):
-    lift_file = Path(lift_file)
-    output_dir = output_dir or lift_file.resolve().parents[0]
+    output_dir = output_dir or Path(lift_file).resolve().parents[0]
     output_dir = Path(output_dir)
     with open(lift_file, "r", encoding="utf-8") as f:
         content = f.read()
