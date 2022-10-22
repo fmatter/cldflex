@@ -19,9 +19,8 @@ def source2flex():
 
 @main.command()
 @click.argument("filename")
-@click.option("-i", "--id-map", "id_map", default=None)
-def lift2csv(filename, id_map):
-    lift2csv_convert(lift_file=filename, id_map=id_map)
+def lift2csv(filename):
+    lift2csv_convert(lift_file=filename)
 
 
 @main.command()

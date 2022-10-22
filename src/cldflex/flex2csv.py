@@ -51,7 +51,7 @@ def extract_records(
             word_dict = {"morph_type": []}
             for word_item in word.find_all("item", recursive=False):
                 key = word_item["type"] + "_" + word_item["lang"]
-                if key == obj_key or key == punct_key:
+                if key in (obj_key, punct_key):
                     surface.append(word_item.text)
                 else:
                     word_dict[key + "_word"] = word_item.text
@@ -283,7 +283,7 @@ def convert(
     text_df.to_csv(output_dir / "texts.csv", index=False)
 
     all_slices = []
-    for wf_id, slices in form_slices.items():
+    for slices in form_slices.values():
         for form_slice in slices:
             all_slices.append(form_slice)
     form_slices = pd.DataFrame.from_dict(all_slices)

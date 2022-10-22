@@ -1,12 +1,8 @@
 import logging
 from pathlib import Path
-from xml.etree.ElementTree import fromstring
 import pandas as pd
-import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from xmljson import badgerfish as bf
-from cldflex.helpers import listify
 
 
 log = logging.getLogger(__name__)
@@ -26,14 +22,13 @@ def gather_variants(entry, variant_dict):
                         "Type": entry.select("trait[name='morph-type']")[0]["value"],
                     }
                 )
-    return None
 
 
 def get_morph_type(entry):
     return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
 
 
-def parse_entry(entry, dictionary_examples, variant_dict=None, sep="; "):
+def parse_entry(entry, dictionary_examples, variant_dict=None):
     entry_id = entry["guid"]
     variant_dict = variant_dict or {}
     forms = []
@@ -112,15 +107,7 @@ def parse_entry(entry, dictionary_examples, variant_dict=None, sep="; "):
     return morpheme_dict, morphs
 
 
-def convert(
-    lift_file="",
-    id_map=None,
-    gather_examples=True,
-    output_dir=None,
-    gloss_lg=None,
-    obj_lg=None,
-    sep="; ",
-):
+def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "):
     lift_file = Path(lift_file)
     output_dir = output_dir or lift_file.resolve().parents[0]
     output_dir = Path(output_dir)
@@ -143,7 +130,7 @@ def convert(
             obj_lg = entry.find("form")["lang"]
             log.info(f"Assuming [{obj_lg}] to be the object language")
         morpheme, allomorphs = parse_entry(
-            entry, dictionary_examples, variant_dict=variant_dict, sep=sep
+            entry, dictionary_examples, variant_dict=variant_dict
         )
         morphemes.append(morpheme)
         morphs.extend(allomorphs)

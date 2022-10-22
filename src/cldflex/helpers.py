@@ -5,12 +5,6 @@ from slugify import slugify
 log = logging.getLogger(__name__)
 
 
-def listify(item):
-    if not isinstance(item, list):
-        return [item]
-    return item
-
-
 def retrieve_morpheme_id(o, g, lex, morph_type):
     candidates = lex[
         (lex["Form_Bare"].apply(lambda x: o in x))
