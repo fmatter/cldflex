@@ -3,10 +3,11 @@ from pathlib import Path
 from xml.etree.ElementTree import fromstring
 import pandas as pd
 import yaml
-from xmljson import badgerfish as bf
-from cldflex.helpers import listify
 from bs4 import BeautifulSoup
 from slugify import slugify
+from xmljson import badgerfish as bf
+from cldflex.helpers import listify
+
 
 log = logging.getLogger(__name__)
 

@@ -5,9 +5,9 @@ from pathlib import Path
 from string import punctuation
 import pandas as pd
 import yaml
+from bs4 import BeautifulSoup
 from slugify import slugify
 from cldflex.helpers import retrieve_morpheme_id
-from bs4 import BeautifulSoup
 
 
 log = logging.getLogger(__name__)
