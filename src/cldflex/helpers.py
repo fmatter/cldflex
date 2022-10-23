@@ -1,6 +1,4 @@
 import logging
-from slugify import slugify
-
 
 log = logging.getLogger(__name__)
 
@@ -23,10 +21,3 @@ def retrieve_morpheme_id(o, g, lex, morph_type):
         print(candidates)
         return candidates.iloc[0]["ID"]
     return None
-
-
-def get_slug(meaning, meanings):
-    slug_count = 0
-    while slugify(meaning) + "-" + str(slug_count) in meanings:
-        slug_count += 1
-    return slugify(meaning) + "-" + str(slug_count)
