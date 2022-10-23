@@ -113,12 +113,11 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
     return morpheme_dict, morphs
 
 
-def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "):
+def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "): # pylint: disable=too-many-locals
     output_dir = output_dir or Path(lift_file).resolve().parents[0]
     output_dir = Path(output_dir)
     with open(lift_file, "r", encoding="utf-8") as f:
-        content = f.read()
-    lexicon = BeautifulSoup(content, features="xml")
+        lexicon = BeautifulSoup(f.read(), features="xml")
     morphemes = []
     morphs = []
     entries = []
@@ -147,7 +146,7 @@ def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; ")
         df.fillna("", inplace=True)
         for col in df.columns:
             if isinstance(df[col].iloc[0], list):
-                df[col] = df[col].apply(lambda x: sep.join(x))
+                df[col] = df[col].apply(sep.join)
 
     morphs.to_csv(output_dir / "morphs.csv", index=False)
     morphemes.to_csv(output_dir / "morphemes.csv", index=False)
