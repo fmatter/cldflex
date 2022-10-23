@@ -113,7 +113,9 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
     return morpheme_dict, morphs
 
 
-def convert(lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "): # pylint: disable=too-many-locals
+def convert(
+    lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "
+):  # pylint: disable=too-many-locals
     output_dir = output_dir or Path(lift_file).resolve().parents[0]
     output_dir = Path(output_dir)
     with open(lift_file, "r", encoding="utf-8") as f:
