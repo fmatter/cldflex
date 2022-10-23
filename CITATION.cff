@@ -7,7 +7,7 @@ authors:
     given-names: Florian
     orcid: "https://orcid.org/0000-0002-2545-5154"
 date-released: 2022-10-22
-version: "0.0.3"
+version: "0.0.4.dev"
 repository-code: "https://github.com/fmatter/cldflex"
 keywords:
   - cldf
