@@ -1,6 +1,5 @@
 """Tests for the cldflex.my_module module.
 """
-import pytest
 import pandas as pd
 
 from cldflex.flex2csv import convert
