@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * all records make it into `sentences.csv`
 
 ## Changed
-* reimplemented `flex2csv` with `beautifulsoup` from the ground up
+* reimplemented `flex2csv` and `lift2csv` from the ground up with `beautifulsoup`
 
 ## [0.0.2] - 2022-10-17
 
