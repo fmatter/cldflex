@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] -- 2022-10-22
+
 ## Fixed
 * missing glosses are handled
 * all records make it into `sentences.csv`
@@ -27,4 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/fmatter/cldflex/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/fmatter/cldflex/compare/0.0.3...HEAD
+[0.0.3]: https://github.com/fmatter/cldflex/releases/tag/0.0.3
+[0.0.3]: https://github.com/fmatter/cldflex/releases/tag/0.0.2
