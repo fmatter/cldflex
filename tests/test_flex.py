@@ -48,3 +48,8 @@ def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
         df2 = df2[sorted(df2.columns)]
 
         pd.testing.assert_frame_equal(df1, df2)
+
+def test_duplicate(flextext, monkeypatch, tmp_path, data, caplog):
+
+    convert(flextext, lexicon_file=data / "output" / "morphs_dup.csv", output_dir=tmp_path)
+    assert "using the first hit" in caplog.text
