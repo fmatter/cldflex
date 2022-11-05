@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 * missing glosses are handled
 * all records make it into `sentences.csv`
+* empty fields in produced lexicon csv file are handled
 
 ## Changed
 * reimplemented `flex2csv` and `lift2csv` from the ground up with `beautifulsoup`

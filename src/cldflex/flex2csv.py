@@ -191,7 +191,7 @@ def load_lexicon(lexicon_file):
         return None
     if Path(lexicon_file).suffix == ".csv":
         log.info(f"Adding lexicon from {lexicon_file}")
-        lexicon = pd.read_csv(lexicon_file, encoding="utf-8")
+        lexicon = pd.read_csv(lexicon_file, encoding="utf-8", keep_default_na=False)
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
         )
