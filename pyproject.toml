@@ -16,7 +16,9 @@ toxworkdir=/tmp/.cldflex_tox
 usedevelop = True
 commands = 
     pytest --cov
-extras = dev
+extras =
+    dev
+    extra
 
 [testenv:lint]
 commands =
