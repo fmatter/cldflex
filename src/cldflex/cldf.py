@@ -146,7 +146,7 @@ def create_dataset(
             writer.cldf.add_component("LanguageTable")
             for lg in lg_df.to_dict("records"):
                 writer.objects["LanguageTable"].append(lg)
-        else:
+        else:  # pragma: no cover
             log.info(
                 f"No languages.csv file found, fetching language info for [{glottocode}] from glottolog"
             )
