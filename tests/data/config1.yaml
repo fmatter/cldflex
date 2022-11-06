@@ -1,0 +1,10 @@
+Language_ID: ikpe1245
+cldf:
+  metadata:
+    id: "soq-cldf-demo"
+    title: "Example data from Soq (kana1288)"
+    description: "This dataset demonstrates how a FLEx corpus can be represented in CLDF"
+    license: "CC-BY-SA-4.0"
+    url: "https://github.com/fmatter/soq_pylingdocs_demo"
+    citation: "Matter, Florian. 2022. Example data from Soq (kana1288)."
+  sentence_slices: true

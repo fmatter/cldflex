@@ -16,8 +16,9 @@ delimiters = ["-", "=", "<", ">", "~"]
 
 punc = set(punctuation)
 
-# combine surface words and punctuation into one string
+
 def compose_surface_string(entries):
+    # combine surface words and punctuation into one string
     return "".join(w if set(w) <= punc else " " + w for w in entries).lstrip()
 
 
@@ -112,6 +113,7 @@ def extract_records(
             segnum = phrase_count
 
         ex_id = f"{text_id}-{segnum}"
+        log.debug(f"{ex_id}")
 
         word_count = 0
         for word in phrase.find_all("word"):
@@ -183,10 +185,10 @@ def extract_records(
     return record_list
 
 
-def load_lexicon(lexicon_file):
+def load_lexicon(lexicon_file, conf):
     if lexicon_file is None:
         log.warning(
-            "No lexicon file provided. If you want the output to contain morpheme IDs, provide a csv file with ID, Form, and Meaning."
+            "No lexicon file provided. If you want the output to contain morph IDs, provide a csv file with ID, Form, and Meaning."
         )
         return None
     if Path(lexicon_file).suffix == ".csv":
@@ -197,6 +199,12 @@ def load_lexicon(lexicon_file):
         )
         for split_col in ["Form_Bare", "Form", "Meaning"]:
             lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
+        morpheme_lg = lexicon.iloc[0]["Language_ID"]
+        if morpheme_lg != conf["Language_ID"]:
+            log.info(
+                f"Changing language ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
+            )
+            lexicon["Language_ID"] = conf["Language_ID"]
         return lexicon
     log.error(f"{lexicon_file} is not a valid lexicon file format, ignoring.")
     return lexicon
@@ -244,7 +252,9 @@ def write_form_slices(form_slices, output_dir):
         for form_slice in slices:
             all_slices.append(form_slice)
     form_slices = pd.DataFrame.from_dict(all_slices)
+    log.debug("Saving form_slices.csv")
     form_slices.to_csv(output_dir / "form_slices.csv", index=False)
+    return form_slices
 
 
 def write_sentences(df, output_dir, conf):
@@ -260,30 +270,42 @@ def write_sentences(df, output_dir, conf):
 
     # todo: sort columns for humans
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
+    log.debug("Saving sentences.csv")
     df.to_csv(output_dir / "sentences.csv", index=False)
+    return df
 
 
-def write_wordforms(wordforms, output_dir):
+def write_wordforms(wordforms, output_dir, conf):
     wordforms = pd.DataFrame.from_dict(wordforms.values())
+    lg_id = conf.get("Language_ID", None)
+    if lg_id:
+        wordforms["Language_ID"] = lg_id
     for col in ["Form", "Meaning"]:
         wordforms[col] = wordforms[col].apply(
             lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
         )
+    log.debug("Saving wordforms.csv")
     wordforms.to_csv(output_dir / "wordforms.csv", index=False)
+    return wordforms
 
 
 def write_generic(data, name, output_dir):
     df = pd.DataFrame.from_dict(data)
+    log.debug(f"Saving {name}.csv")
     df.to_csv(output_dir / f"{name}.csv", index=False)
+    return df
 
 
 def convert(
-    flextext_file="", lexicon_file=None, config_file=None, output_dir=None, conf=None
-):  # pylint: disable=too-many-locals
+    flextext_file="",
+    lexicon_file=None,
+    config_file=None,
+    output_dir=None,
+    conf=None,
+    cldf=False,
+):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
     output_dir = Path(output_dir)
-
-    lexicon = load_lexicon(lexicon_file)
 
     log.info("Reading file...")
     with open(flextext_file, "r", encoding="utf-8") as f:
@@ -296,9 +318,8 @@ def convert(
         else:
             with open(config_file, encoding="utf-8") as f:
                 conf = yaml.safe_load(f)
-
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
-
+    lexicon = load_lexicon(lexicon_file, conf)
     wordforms = {}
     sentence_slices = []
     form_slices = {}
@@ -306,7 +327,7 @@ def convert(
     record_list = []
     for text in texts.find_all("interlinear-text"):
         text_id = get_text_id(text)
-
+        log.debug(f"Processing {text_id}")
         text_list.append(get_text_metadata(text, text_id))
 
         record_list.extend(
@@ -332,10 +353,35 @@ def convert(
 
     write_sentences(df, output_dir, conf)
 
-    write_wordforms(wordforms, output_dir)
+    wordforms = write_wordforms(wordforms, output_dir, conf)
 
-    write_generic(sentence_slices, "sentence_slices", output_dir)
+    sentence_slices = write_generic(sentence_slices, "sentence_slices", output_dir)
 
     write_generic(text_list, "texts", output_dir)
 
-    write_form_slices(form_slices, output_dir)
+    form_slices = write_form_slices(form_slices, output_dir)
+
+    log.info(f"Saved files in {output_dir}")
+    if cldf:
+        from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
+
+        log.info("Creating CLDF dataset")
+        cldf_settings = conf.get("cldf", {})
+        metadata = cldf_settings.get("metadata", {})
+        tables = {"FormTable": wordforms, "ExampleTable": df}
+        if cldf_settings.get("no_sentence_slices", True):
+            tables["SentenceSlices"] = sentence_slices
+        if lexicon is not None:
+            tables["MorphTable"] = lexicon
+            tables["FormSlices"] = form_slices
+            tables["MorphsetTable"] = load_lexicon(
+                Path(lexicon_file).parents[0] / "morphemes.csv", conf
+            )
+
+        create_cldf(
+            tables=tables,
+            glottocode=conf.get("Glottocode", conf.get("Language_ID", "minn1241")),
+            metadata=metadata,
+            output_dir=output_dir,
+            cwd=Path(flextext_file).parents[0],
+        )

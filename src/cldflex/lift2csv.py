@@ -1,8 +1,10 @@
 import logging
 from pathlib import Path
 import pandas as pd
+import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
+from cldflex.cldf import create_dictionary_dataset
 
 
 log = logging.getLogger(__name__)
@@ -29,10 +31,13 @@ def get_morph_type(entry):
 
 
 def extract_glosses(sense, fields):
+    glosses = []
     for gloss in sense.find_all("gloss"):
         key = "gloss_" + gloss["lang"]
         fields.setdefault(key, [])
         fields[key].append(gloss.text)
+        glosses.append(gloss.text)
+    return glosses
 
 
 def extract_examples(sense, dictionary_examples, entry_id):
@@ -67,7 +72,7 @@ def extract_forms(
     return form_count
 
 
-def parse_entry(entry, dictionary_examples, variant_dict=None):
+def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
     entry_id = entry["guid"]
     variant_dict = variant_dict or {}
     morpheme_type = get_morph_type(entry)
@@ -80,7 +85,14 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
         for gramm in sense.find_all("grammatical-info"):
             poses.append(gramm["value"])
         # and glosses
-        extract_glosses(sense, fields)
+        glosses = extract_glosses(sense, fields)
+        senses.append(
+            {
+                "ID": sense.attrs["id"],
+                "Description": ", ".join(glosses),
+                "Entry_ID": entry_id,
+            }
+        )
         # examples are stored in senses
         extract_examples(sense, dictionary_examples, entry_id)
 
@@ -114,15 +126,24 @@ def parse_entry(entry, dictionary_examples, variant_dict=None):
 
 
 def convert(
-    lift_file="", output_dir=None, gloss_lg=None, obj_lg=None, sep="; "
+    lift_file="", output_dir=".", sep="; ", config_file=None, cldf=False
 ):  # pylint: disable=too-many-locals
-    output_dir = output_dir or Path(lift_file).resolve().parents[0]
+    if not config_file:
+        log.warning("No configuration file or dict provided.")
+        conf = {}
+    else:
+        with open(config_file, encoding="utf-8") as f:
+            conf = yaml.safe_load(f)
+    obj_lg = conf.get("obj_lg", None)
+    gloss_lg = conf.get("gloss_lg", None)
+    lg_id = conf.get("Language_ID", None)
     output_dir = Path(output_dir)
     with open(lift_file, "r", encoding="utf-8") as f:
         lexicon = BeautifulSoup(f.read(), features="xml")
     morphemes = []
     morphs = []
     entries = []
+    senses = []
     variant_dict = {}
     dictionary_examples = []
     for entry in lexicon.find_all("entry"):
@@ -136,7 +157,7 @@ def convert(
             obj_lg = entry.find("form")["lang"]
             log.info(f"Assuming [{obj_lg}] to be the object language")
         morpheme, allomorphs = parse_entry(
-            entry, dictionary_examples, variant_dict=variant_dict
+            entry, senses, dictionary_examples, variant_dict=variant_dict
         )
         morphemes.append(morpheme)
         morphs.extend(allomorphs)
@@ -144,7 +165,10 @@ def convert(
     morphs = pd.DataFrame.from_dict(morphs)
     for df in [morphs, morphemes]:
         df.rename(columns={f"gloss_{gloss_lg}": "Meaning"}, inplace=True)
-        df["Language_ID"] = obj_lg
+        if lg_id:
+            df["Language_ID"] = lg_id
+        else:
+            df["Language_ID"] = obj_lg
         df.fillna("", inplace=True)
         for col in df.columns:
             if isinstance(df[col].iloc[0], list):
@@ -152,6 +176,11 @@ def convert(
 
     morphs.to_csv(output_dir / "morphs.csv", index=False)
     morphemes.to_csv(output_dir / "morphemes.csv", index=False)
+    senses = pd.DataFrame.from_dict(senses)
+    senses.to_csv(output_dir / "senses.csv", index=False)
     if dictionary_examples:
         dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
         dictionary_examples.to_csv(output_dir / "dictionary_examples.csv", index=False)
+
+    if cldf:
+        create_dictionary_dataset(morphemes, senses, output_dir=output_dir)

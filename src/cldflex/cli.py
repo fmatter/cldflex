@@ -2,7 +2,6 @@
 import sys
 from pathlib import Path
 import click
-import cldflex
 from cldflex.flex2csv import convert as flex2csv_convert
 from cldflex.lift2csv import convert as lift2csv_convert
 
@@ -13,34 +12,32 @@ def main():
 
 
 @main.command()
-def source2flex():
-    cldflex.source2flex.convert(filename=sys.argv[1], mapping_file=sys.argv[2])
-
-
-@main.command()
 @click.argument("filename")
-def lift2csv(filename):
-    lift2csv_convert(lift_file=filename)
-
-
-@main.command()
-def flexicon2cldf():
-    cldflex.flexicon2cldf.convert(filename=sys.argv[1], language_id=sys.argv[2])
+@click.option("-c", "--conf", "config_file", default=None)
+@click.option("-o", "--output", "output_dir", default=Path("."))
+@click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
+def lift2csv(filename, config_file, cldf, output_dir):
+    lift2csv_convert(
+        lift_file=filename, config_file=config_file, cldf=cldf, output_dir=output_dir
+    )
 
 
 @main.command()
 @click.argument("filename")
 @click.option("-c", "--conf", "config_file", default=None)
+@click.option("-o", "--output", "output_dir", default=Path("."))
 @click.option("-l", "--lexicon", "lexicon_file", default=None)
-def flex2csv(filename, config_file, lexicon_file):
+@click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
+def flex2csv(filename, config_file, lexicon_file, cldf, output_dir):
     if not config_file and Path("config.yaml").is_file():
-        config_file = "config.yaml"
-    flex2csv_convert(filename, config_file=config_file, lexicon_file=lexicon_file)
-
-
-@main.command()
-def bare2flex():
-    cldflex.elicit2flex.convert(filename=sys.argv[1], language_id=sys.argv[2])
+        config_file = "cldflex.yaml"
+    flex2csv_convert(
+        filename,
+        config_file=config_file,
+        lexicon_file=lexicon_file,
+        cldf=cldf,
+        output_dir=output_dir,
+    )
 
 
 if __name__ == "__main__":
