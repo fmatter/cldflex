@@ -252,8 +252,9 @@ def write_form_slices(form_slices, output_dir):
         for form_slice in slices:
             all_slices.append(form_slice)
     form_slices = pd.DataFrame.from_dict(all_slices)
-    log.debug("Saving form_slices.csv")
-    form_slices.to_csv(output_dir / "form_slices.csv", index=False)
+    if len(form_slices) > 0:
+        log.debug("Saving form_slices.csv")
+        form_slices.to_csv(output_dir / "form_slices.csv", index=False)
     return form_slices
 
 
@@ -357,7 +358,7 @@ def convert(
 
     sentence_slices = write_generic(sentence_slices, "sentence_slices", output_dir)
 
-    write_generic(text_list, "texts", output_dir)
+    texts = write_generic(text_list, "texts", output_dir)
 
     form_slices = write_form_slices(form_slices, output_dir)
 
@@ -369,8 +370,8 @@ def convert(
         log.warning(conf)
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
-        tables = {"FormTable": wordforms, "ExampleTable": df}
-        if cldf_settings.get("no_sentence_slices", True):
+        tables = {"FormTable": wordforms, "ExampleTable": df, "TextTable": texts}
+        if not cldf_settings.get("no_sentence_slices", False):
             tables["SentenceSlices"] = sentence_slices
         if lexicon is not None:
             tables["MorphTable"] = lexicon
