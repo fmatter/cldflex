@@ -3,6 +3,7 @@ from cldflex.cli import flex2csv, lift2csv
 from pycldf import Dataset
 from pathlib import Path
 import shutil
+import pandas as pd
 
 
 def test_sentences(data, tmp_path, monkeypatch):
@@ -24,18 +25,18 @@ def test_sentences(data, tmp_path, monkeypatch):
 def test_sentences_with_lexicon(data, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     shutil.copy(data / "ikpeng.flextext", tmp_path)
+    df = pd.DataFrame([{"ID": "txi", "Name": "Ikpeng"}])
+    df.to_csv(tmp_path / "languages.csv", index=False)
     runner = CliRunner()
     result = runner.invoke(
         flex2csv,
         [
-            str((tmp_path / "ikpeng.flextext").resolve()),
+            str((data / "ikpeng.flextext").resolve()),
             "--lexicon",
             str((data / "output/morphs.csv")),
             f"--output",
             tmp_path,
             "--cldf",
-            "--conf",
-            str((data / "config1.yaml")),
         ],
     )
     assert result.exit_code == 0
@@ -55,8 +56,6 @@ def test_lift(data, tmp_path, monkeypatch):
             f"--output",
             tmp_path,
             "--cldf",
-            "--conf",
-            str((data / "config1.yaml")),
         ],
     )
     assert result.exit_code == 0
