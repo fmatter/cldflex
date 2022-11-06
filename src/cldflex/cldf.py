@@ -66,7 +66,7 @@ def add_morphology_tables(tables, writer):
         from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
         from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
         from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
-    except ImportError:
+    except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
         )
@@ -171,6 +171,7 @@ def create_dataset(
                 }
             )
         md = Metadata(**metadata)
+        log.warning(md)
         writer.cldf.properties.setdefault("rdf:ID", md.id)
         writer.cldf.add_provenance(
             wasGeneratedBy=[

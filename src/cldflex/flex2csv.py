@@ -366,6 +366,7 @@ def convert(
         from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
         log.info("Creating CLDF dataset")
+        log.warning(conf)
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
         tables = {"FormTable": wordforms, "ExampleTable": df}

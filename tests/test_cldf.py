@@ -37,6 +37,8 @@ def test_sentences_with_lexicon(data, tmp_path, monkeypatch):
             f"--output",
             tmp_path,
             "--cldf",
+            "--conf",
+            str((data / "config1.yaml")),
         ],
     )
     assert result.exit_code == 0
