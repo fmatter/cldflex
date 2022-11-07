@@ -1,0 +1,10 @@
+Language_ID: txi
+cldf:
+  metadata:
+    id: "ikpeng-demo"
+    title: "Example data from Ikpeng (ikpe1245)"
+    description: "Words words words"
+    license: "CC-BY-SA-4.0"
+    url: "https://github.com/fmatter/cldflex"
+    citation: "Matter, Florian. 2022. Example data from Ikpeng (ikpe1245)."
+  no_sentence_slices: true

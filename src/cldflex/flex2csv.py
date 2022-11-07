@@ -8,11 +8,12 @@ import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
 from cldflex.helpers import retrieve_morpheme_id
+from cldflex.helpers import slug
 
 
 log = logging.getLogger(__name__)
 
-delimiters = ["-", "=", "<", ">", "~"]
+delimiters = ["-", "<", ">", "~"]
 
 punc = set(punctuation)
 
@@ -23,6 +24,7 @@ def compose_surface_string(entries):
 
 
 def init_word_dict(word, obj_key, punct_key, surface):
+    """Create a dict containing the word-specific fields"""
     word_dict = {"morph_type": []}
     for word_item in word.find_all("item", recursive=False):
         key = word_item["type"] + "_" + word_item["lang"]
@@ -33,35 +35,74 @@ def init_word_dict(word, obj_key, punct_key, surface):
     return word_dict
 
 
-def iterate_morphemes(word, word_dict, gloss_key, conf):
+def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
+    """Get annotations for clitics, fill in gaps with word-level information"""
+    clitic_dict = {"morph_type": []}
+    clitic_dict["morph_type"].append(morpheme_type)
+    for item in morpheme.find_all("item"):
+        key = item["type"] + "_" + item["lang"]
+        clitic_dict.setdefault(key, "")
+        clitic_dict[key] += item.text
+
+    clitic_dict["ID"] = slug(
+        clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***")
+    )
+    clitic_dict.setdefault(
+        f"pos_{conf['gloss_lg']}_word", clitic_dict[f"msa_{conf['gloss_lg']}"]
+    )
+    clitic_dict[gloss_key] = clitic_dict[gloss_key].strip("=")
+    clitic_dict.setdefault(gloss_key + "_word", clitic_dict[gloss_key])
+    return clitic_dict
+
+
+def extract_morpheme_data(morpheme, morpheme_type, word_dict, gloss_key, conf):
+    """Extract information from morphemes in a word, add to word_dict"""
+    word_dict["morph_type"].append(morpheme_type)
+    for item in morpheme.find_all("item"):
+        key = item["type"] + "_" + item["lang"]
+        word_dict.setdefault(key, "")
+        text = item.text
+        if key in [gloss_key, f"msa_{conf['gloss_lg']}"]:
+            if (
+                morpheme_type == "suffix"
+                and not word_dict[key].endswith("-")
+                and not text.startswith("-")
+            ):
+                text = "-" + item.text
+            elif morpheme_type == "prefix" and not text.endswith("-"):
+                text = item.text + "-"
+            elif morpheme_type == "infix":
+                if not text.startswith("-") and not word_dict[key].endswith("-"):
+                    text = "-" + text
+                if not text.endswith("-"):
+                    text = text + "-"
+
+        word_dict[key] += text
+
+
+def iterate_morphemes(word, word_dict, obj_key, gloss_key, conf):
+    """Go through morphemes of a word -- affixes are added to word_dict, clitics are handled separately"""
+    proclitics = []
+    enclitics = []
     for morpheme in word.find_all("morph"):
         morpheme_type = morpheme.get("type", "root")
-        word_dict["morph_type"].append(morpheme_type)
-        for item in morpheme.find_all("item"):
-            key = item["type"] + "_" + item["lang"]
-            word_dict.setdefault(key, "")
-            text = item.text
-            if key in [gloss_key, f"msa_{conf['gloss_lg']}"]:
-                if (
-                    morpheme_type == "suffix"
-                    and not word_dict[key].endswith("-")
-                    and not text.startswith("-")
-                ):
-                    text = "-" + item.text
-                elif morpheme_type == "prefix" and not text.endswith("-"):
-                    text = item.text + "-"
-                elif morpheme_type == "infix":
-                    if not text.startswith("-") and not word_dict[key].endswith("-"):
-                        text = "-" + text
-                    if not text.endswith("-"):
-                        text = text + "-"
-
-            word_dict[key] += text
+        if morpheme_type == "proclitic":
+            proclitics.append(
+                extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf)
+            )
+        elif morpheme_type == "enclitic":
+            enclitics.append(
+                extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf)
+            )
+        else:
+            extract_morpheme_data(morpheme, morpheme_type, word_dict, gloss_key, conf)
+    return proclitics, enclitics
 
 
 def get_form_slices(
     word_dict, word_id, lexicon, form_slices, obj_key, gloss_key, ex_id
 ):  # pylint: disable=too-many-arguments
+    """For a given word consisting of a number of morphemes, establish what morphemes occur in which position, based on the lexicon information"""
     if word_id not in form_slices:
         form_slices[word_id] = []
         for m_c, (morph_obj, morph_gloss, morph_type) in enumerate(
@@ -71,16 +112,18 @@ def get_form_slices(
                 word_dict["morph_type"],
             )
         ):
-            m_id = retrieve_morpheme_id(morph_obj, morph_gloss, lexicon, morph_type)
+            m_id, m_gloss = retrieve_morpheme_id(
+                morph_obj, morph_gloss, lexicon, morph_type
+            )
             if m_id:
                 form_slices[word_id].append(
                     {
                         "ID": f"{word_id}-{str(m_c)}",
                         "Form_ID": word_id,
                         "Form": re.sub("|".join(delimiters), "", word_dict[obj_key]),
-                        "Form_Meaning": word_dict[gloss_key],
+                        "Form_Meaning": slug(word_dict[gloss_key]),
                         "Morph_ID": m_id,
-                        "Morpheme_Meaning": morph_gloss,
+                        "Morpheme_Meaning": m_gloss,
                         "Index": str(m_c),
                     }
                 )
@@ -90,7 +133,28 @@ def get_form_slices(
                 )
 
 
-def extract_records(
+def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id):
+    sentence_slices.append(
+        {
+            "ID": f"{ex_id}-{word_count}",
+            "Example_ID": ex_id,
+            "Form_ID": clitic["ID"],
+            "Index": word_count,
+            "Form_Meaning": clitic.get(gloss_key, "***"),
+            "Parameter_ID": slug(clitic.get(gloss_key, "***")),
+        }
+    )
+    return word_count + 1
+
+
+def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
+    wordforms.setdefault(clitic["ID"], {"ID": clitic["ID"], "Form": [], "Meaning": []})
+    for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
+        if gen_col in clitic and clitic[gen_col] not in wordforms[clitic["ID"]][label]:
+            wordforms[clitic["ID"]][label].append(clitic[gen_col])
+
+
+def extract_records(  # noqa: MC0001
     text,
     obj_key,
     punct_key,
@@ -103,7 +167,10 @@ def extract_records(
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
-    for phrase_count, phrase in enumerate(text.find_all("phrase")):
+
+    for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
+        text.find_all("phrase")
+    ):
         surface = []
         segnum = phrase.select("item[type='segnum']")
         interlinear_lines = []
@@ -120,21 +187,12 @@ def extract_records(
             word_id = word.get("guid", None)
 
             word_dict = init_word_dict(word, obj_key, punct_key, surface)
-
-            iterate_morphemes(word, word_dict, gloss_key, conf)
+            proclitics, enclitics = iterate_morphemes(
+                word, word_dict, obj_key, gloss_key, conf
+            )
 
             # sentence slices are only for analyzed word forms
             if word.find_all("morphemes"):
-                sentence_slices.append(
-                    {
-                        "ID": f"{ex_id}-{word_count}",
-                        "Example_ID": ex_id,
-                        "Form_ID": word_id,
-                        "Index": word_count,
-                        "Form_Meaning": word_dict.get(gloss_key, "***"),
-                    }
-                )
-                word_count += 1
 
                 if lexicon is not None:
                     get_form_slices(
@@ -146,25 +204,63 @@ def extract_records(
                         gloss_key,
                         ex_id,
                     )
+                    for clitic in proclitics + enclitics:
+                        get_form_slices(
+                            clitic,
+                            clitic["ID"],
+                            lexicon,
+                            form_slices,
+                            obj_key,
+                            gloss_key,
+                            ex_id,
+                        )
 
-            # not needed for the output, only morpheme retrieval
-            del word_dict["morph_type"]
+                for clitic in proclitics:
+                    word_count = process_clitic_slices(
+                        clitic, sentence_slices, gloss_key, word_count, ex_id
+                    )
+                    add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key)
+                    del clitic["ID"]
+                    interlinear_lines.append(clitic)
 
-            if word_dict:
-                interlinear_lines.append(word_dict)
-                # add to wordform table
-                wordforms.setdefault(
-                    word_id, {"ID": word_id, "Form": [], "Meaning": []}
+                form_meaning = word_dict.get(gloss_key, "***")
+                form_meaning_id = slug(form_meaning)
+
+                sentence_slices.append(
+                    {
+                        "ID": f"{ex_id}-{word_count}",
+                        "Example_ID": ex_id,
+                        "Form_ID": word_id,
+                        "Index": word_count,
+                        "Form_Meaning": form_meaning,
+                        "Parameter_ID": form_meaning_id,
+                    }
                 )
-                for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
-                    if (
-                        gen_col in word_dict
-                        and word_dict[gen_col] not in wordforms[word_id][label]
-                    ):
-                        wordforms[word_id][label].append(word_dict[gen_col])
+                word_count += 1
+                if word_dict:
+                    interlinear_lines.append(word_dict)
+                    # add to wordform table
+                    wordforms.setdefault(
+                        word_id, {"ID": word_id, "Form": [], "Meaning": []}
+                    )
+                    for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
+                        if (
+                            gen_col in word_dict
+                            and word_dict[gen_col] not in wordforms[word_id][label]
+                        ):
+                            wordforms[word_id][label].append(word_dict[gen_col])
+
+                for clitic in enclitics:
+                    word_count = process_clitic_slices(
+                        clitic, sentence_slices, gloss_key, word_count, ex_id
+                    )
+                    add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key)
+                    del clitic["ID"]
+                    interlinear_lines.append(clitic)
 
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
+        interlinear_lines.drop(columns=["morph_type"], inplace=True)
         phrase_dict = {
             "ID": ex_id,
             "Primary_Text": surface,
@@ -181,6 +277,8 @@ def extract_records(
             phrase_dict[col] = "\t".join(
                 interlinear_lines[col]  # pylint: disable=unsubscriptable-object 🙄
             )
+        if "working" not in phrase_dict["ID"]:
+            print(phrase_dict["ID"])
         record_list.append(phrase_dict)
     return record_list
 
@@ -197,7 +295,7 @@ def load_lexicon(lexicon_file, conf):
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
         )
-        for split_col in ["Form_Bare", "Form", "Meaning"]:
+        for split_col in ["Form_Bare", "Form", "Meaning", "Parameter_ID"]:
             lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
         morpheme_lg = lexicon.iloc[0]["Language_ID"]
         if morpheme_lg != conf["Language_ID"]:
@@ -321,7 +419,9 @@ def convert(
                 conf = yaml.safe_load(f)
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
     lexicon = load_lexicon(lexicon_file, conf)
+
     wordforms = {}
+
     sentence_slices = []
     form_slices = {}
     text_list = []
@@ -367,17 +467,23 @@ def convert(
         from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
         log.info("Creating CLDF dataset")
-        log.warning(conf)
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
         tables = {"FormTable": wordforms, "ExampleTable": df, "TextTable": texts}
         if not cldf_settings.get("no_sentence_slices", False):
             tables["SentenceSlices"] = sentence_slices
         if lexicon is not None:
+            lexicon["Name"] = lexicon["Form_Bare"].apply(
+                lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
+            )
             tables["MorphTable"] = lexicon
-            tables["FormSlices"] = form_slices
+            if not cldf_settings.get("no_form_slices", False):
+                tables["FormSlices"] = form_slices
             tables["MorphsetTable"] = load_lexicon(
                 Path(lexicon_file).parents[0] / "morphemes.csv", conf
+            )
+            tables["SenseTable"] = pd.read_csv(
+                Path(lexicon_file).parents[0] / "senses.csv"
             )
 
         create_cldf(

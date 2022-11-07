@@ -78,7 +78,7 @@ def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
     morpheme_type = get_morph_type(entry)
     poses = []
     morphs = []
-    fields = {}
+    fields = {"Parameter_ID": []}
 
     for sense in entry.find_all("sense", recursive=False):
         # POS are stored in senses
@@ -86,6 +86,7 @@ def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
             poses.append(gramm["value"])
         # and glosses
         glosses = extract_glosses(sense, fields)
+        fields["Parameter_ID"].append(sense.attrs["id"])
         senses.append(
             {
                 "ID": sense.attrs["id"],

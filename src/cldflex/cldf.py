@@ -6,8 +6,8 @@ from cldfbench import CLDFSpec
 from cldfbench.cldf import CLDFWriter
 from cldfbench.metadata import Metadata
 from pycldf.util import metadata2markdown
-from slugify import slugify
 from cldflex import __version__
+from cldflex.helpers import slug
 
 
 log = logging.getLogger(__name__)
@@ -57,6 +57,7 @@ def add_example_slices(sentence_slices, writer):
     writer.cldf.add_foreign_key("ExampleSlices", "Form_ID", "FormTable", "ID")
     writer.cldf.add_foreign_key("ExampleSlices", "Parameter_ID", "ParameterTable", "ID")
     writer.cldf.add_foreign_key("ExampleSlices", "Example_ID", "ExampleTable", "ID")
+
     for ex_slice in sentence_slices.to_dict("records"):
         writer.objects["ExampleSlices"].append(ex_slice)
 
@@ -71,16 +72,27 @@ def add_morphology_tables(tables, writer):
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
         )
         sys.exit()
-    writer.cldf.add_component(FormSlices)
-    writer.cldf.add_component(MorphTable)
-    writer.cldf.add_component(MorphsetTable)
+    tablemap = {
+        "FormSlices": FormSlices,
+        "MorphTable": MorphTable,
+        "MorphsetTable": MorphsetTable,
+    }
     for table, df in tables.items():
-        log.debug(table)
+        writer.cldf.add_component(tablemap[table])
         for rec in df.to_dict("records"):
             writer.objects[table].append(rec)
+    if "FormSlices" in tables:
+        writer.cldf.add_foreign_key("FormSlices", "Form_ID", "FormTable", "ID")
+        writer.cldf.add_foreign_key("FormSlices", "Morph_ID", "MorphTable", "ID")
+        writer.cldf.add_foreign_key(
+            "FormSlices", "Form_Meaning", "ParameterTable", "ID"
+        )
+        writer.cldf.add_foreign_key(
+            "FormSlices", "Morpheme_Meaning", "ParameterTable", "ID"
+        )
 
 
-def create_dataset(
+def create_dataset(  # noqa: MC0001
     tables, glottocode=None, metadata=None, output_dir=Path("."), cwd="."
 ):  # pylint: disable=too-many-locals
     log.debug("Creating dataset")
@@ -94,6 +106,9 @@ def create_dataset(
         records = tables.get("ExampleTable", None)
         sentence_slices = tables.get("SentenceSlices", None)
         morphs = tables.get("MorphTable", None)
+        texts = tables.get("TextTable", None)
+        senses = tables.get("SenseTable", None)
+
         log.debug(tables.keys())
         if forms is not None:
             log.debug("Forms")
@@ -102,13 +117,10 @@ def create_dataset(
             # Gather all encountered meanings and create ID slugs
             meanings = {}
             for form in forms.to_dict("records"):
-                mslug = slugify(form["Meaning"])
+                mslug = slug(form["Meaning"])
                 meanings.setdefault(mslug, form["Meaning"])
                 # Replace the glossed meaning with the slug and write directly to the dataset
                 form["Parameter_ID"] = mslug
-                form["Form"] = (
-                    form["Form"].replace("-", "").replace("=", "").replace("Ø", "")
-                )  # Assuming that we want unsegmented forms in the FormTable
                 writer.objects["FormTable"].append(form)
                 # Write meanings
             for k, v in meanings.items():
@@ -117,6 +129,23 @@ def create_dataset(
         if records is not None:
             log.debug("Examples")
             writer.cldf.add_component("ExampleTable")  # Sentences
+            writer.cldf.add_columns(
+                "ExampleTable",
+                # examples can refer to texts
+                {
+                    "name": "Text_ID",
+                    "dc:extent": "singlevalued",
+                    "dc:description": "The text to which this record belongs",
+                    "datatype": "string",
+                },
+                # if they do, they have a number inside that text
+                {
+                    "name": "Part",
+                    "dc:extent": "singlevalued",
+                    "dc:description": "Position in the text",
+                    "datatype": "integer",
+                },
+            )
             # The default sentence metadata expect a list, not a tab-delimited string.
             for col in ["Analyzed_Word", "Gloss"]:
                 records[col] = records[col].apply(lambda x: x.split("\t"))
@@ -127,9 +156,14 @@ def create_dataset(
             log.debug("Slices")
             add_example_slices(sentence_slices, writer)
 
+        if senses is not None:
+            log.debug("Senses (from lexicon)")
+            senses["Name"] = senses["Description"]
+            for sense in senses.to_dict("records"):
+                writer.objects["ParameterTable"].append(sense)
+
         if morphs is not None:
             log.debug("Morphs and such")
-            morphs.rename(columns={"Form": "Name"}, inplace=True)
             log.debug(tables.keys())
             add_morphology_tables(
                 {
@@ -139,6 +173,25 @@ def create_dataset(
                 },
                 writer,
             )
+        if texts is not None:
+            try:
+                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
+            except ImportError:  # pragma: no cover
+                log.error(
+                    "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
+                )
+                sys.exit()
+            writer.cldf.add_component(TextTable)
+            for text in texts.to_dict("records"):
+                item = {}
+                for k, v in text.items():
+                    if "title_" in k and "Title" not in texts:
+                        item.setdefault("Title", [])
+                        item["Title"].append(v)
+                    item[k] = v
+                item["Title"] = " / ".join(item["Title"])
+                log.warning(item)
+                writer.objects["TextTable"].append(item)
 
         if (Path(cwd) / "languages.csv").is_file():
             log.info("Using languages.csv for CLDF dataset creation")
@@ -171,7 +224,7 @@ def create_dataset(
                 }
             )
         md = Metadata(**metadata)
-        log.warning(md)
+        log.debug(md)
         writer.cldf.properties.setdefault("rdf:ID", md.id)
         writer.cldf.add_provenance(
             wasGeneratedBy=[
@@ -196,7 +249,10 @@ def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cw
     log.debug("Creating readme")
     readme = metadata2markdown(ds, ds.directory)
     with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
-        f.write(readme)
+        f.write(
+            "**Created by [cldflex](https://pypistats.org/packages/cldflex)**\n\n"
+            + readme
+        )
     log.info(f"Created cldf dataset at {ds.directory.resolve()}/{ds.filename}")
 
 
