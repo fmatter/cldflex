@@ -64,15 +64,9 @@ def add_example_slices(sentence_slices, writer):
 
 def add_morphology_tables(tables, writer):
     try:
-        from clld_morphology_plugin.cldf import (
-            FormSlices,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphsetTable,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphTable,
-        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
     except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -181,9 +175,7 @@ def create_dataset(  # noqa: MC0001
             )
         if texts is not None:
             try:
-                from clld_corpus_plugin.cldf import (
-                    TextTable,
-                )  # pylint: disable=import-outside-toplevel
+                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
             except ImportError:  # pragma: no cover
                 log.error(
                     "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -212,12 +204,8 @@ def create_dataset(  # noqa: MC0001
             )
             err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
             try:
-                from cldfbench.catalogs import (
-                    Glottolog,
-                )  # pylint: disable=import-outside-toplevel
-                from cldfbench.catalogs import (
-                    pyglottolog,
-                )  # pylint: disable=import-outside-toplevel
+                from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+                from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
             except ImportError:
                 log.error(err_msg)
             if isinstance(pyglottolog, str):
@@ -268,18 +256,31 @@ def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cw
     log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")
 
 
-def create_dictionary_dataset(morphemes, senses, metadata=None, output_dir="."):
-    log.debug("Creating dataset")
-    metadata = metadata or {}
-    spec = CLDFSpec(
-        dir=output_dir / "cldf", module="Generic", metadata_fname="metadata.json"
-    )
+def write_dictionary_dataset(spec, morphemes, senses):
     with CLDFWriter(spec) as writer:
-        writer.cldf.add_component("EntryTable")
-        writer.cldf.add_component("SenseTable")
         morphemes["Headword"] = morphemes["Name"]
         morphemes["Part_Of_Speech"] = morphemes["Gramm"]
         for morpheme in morphemes.to_dict("records"):
             writer.objects["EntryTable"].append(morpheme)
         for sense in senses.to_dict("records"):
             writer.objects["SenseTable"].append(sense)
+        return writer.cldf
+
+
+def create_dictionary_dataset(morphemes, senses, metadata=None, output_dir="."):
+    log.debug("Creating dataset")
+    metadata = metadata or {}
+    spec = CLDFSpec(
+        dir=output_dir / "cldf", module="Dictionary", metadata_fname="metadata.json"
+    )
+    ds = write_dictionary_dataset(spec, morphemes, senses)
+    log.debug("Validating")
+    ds.validate(log=log)
+    log.debug("Creating readme")
+    readme = metadata2markdown(ds, ds.directory)
+    with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
+        f.write(
+            "**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n"
+            + readme
+        )
+    log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")
