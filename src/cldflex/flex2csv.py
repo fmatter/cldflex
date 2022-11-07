@@ -289,8 +289,9 @@ def load_lexicon(lexicon_file, conf):
             "No lexicon file provided. If you want the output to contain morph IDs, provide a csv file with ID, Form, and Meaning."
         )
         return None
-    if Path(lexicon_file).suffix == ".csv":
-        log.info(f"Adding lexicon from {lexicon_file}")
+    lexicon_file = Path(lexicon_file)
+    if lexicon_file.suffix == ".csv":
+        log.info(f"Reading lexicon file {lexicon_file.resolve()}")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8", keep_default_na=False)
         lexicon["Form_Bare"] = lexicon["Form"].apply(
             lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
@@ -351,7 +352,7 @@ def write_form_slices(form_slices, output_dir):
             all_slices.append(form_slice)
     form_slices = pd.DataFrame.from_dict(all_slices)
     if len(form_slices) > 0:
-        log.debug("Saving form_slices.csv")
+        log.info(f"Saving {(output_dir / 'form_slices.csv').resolve()}")
         form_slices.to_csv(output_dir / "form_slices.csv", index=False)
     return form_slices
 
@@ -369,7 +370,7 @@ def write_sentences(df, output_dir, conf):
 
     # todo: sort columns for humans
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
-    log.debug("Saving sentences.csv")
+    log.info(f"Saving {(output_dir / 'sentences.csv').resolve()}")
     df.to_csv(output_dir / "sentences.csv", index=False)
     return df
 
@@ -383,14 +384,14 @@ def write_wordforms(wordforms, output_dir, conf):
         wordforms[col] = wordforms[col].apply(
             lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
         )
-    log.debug("Saving wordforms.csv")
+    log.info(f"Saving {(output_dir / 'wordforms.csv').resolve()}")
     wordforms.to_csv(output_dir / "wordforms.csv", index=False)
     return wordforms
 
 
 def write_generic(data, name, output_dir):
     df = pd.DataFrame.from_dict(data)
-    log.debug(f"Saving {name}.csv")
+    log.info(f"Saving {(output_dir / f'{name}.csv').resolve()}")
     df.to_csv(output_dir / f"{name}.csv", index=False)
     return df
 
@@ -406,7 +407,8 @@ def convert(
     output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
     output_dir = Path(output_dir)
 
-    log.info("Reading file...")
+    flextext_file = Path(flextext_file)
+    log.info(f"Reading {flextext_file.resolve()}")
     with open(flextext_file, "r", encoding="utf-8") as f:
         texts = BeautifulSoup(f.read(), features="lxml")
 
@@ -462,11 +464,9 @@ def convert(
 
     form_slices = write_form_slices(form_slices, output_dir)
 
-    log.info(f"Saved files in {output_dir}")
     if cldf:
         from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
-        log.info("Creating CLDF dataset")
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
         tables = {"FormTable": wordforms, "ExampleTable": df, "TextTable": texts}

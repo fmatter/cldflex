@@ -190,11 +190,10 @@ def create_dataset(  # noqa: MC0001
                         item["Title"].append(v)
                     item[k] = v
                 item["Title"] = " / ".join(item["Title"])
-                log.warning(item)
                 writer.objects["TextTable"].append(item)
 
         if (Path(cwd) / "languages.csv").is_file():
-            log.info("Using languages.csv for CLDF dataset creation")
+            log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
             lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
             writer.cldf.add_component("LanguageTable")
             for lg in lg_df.to_dict("records"):
@@ -243,6 +242,7 @@ def create_dataset(  # noqa: MC0001
 
 
 def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cwd="."):
+    log.info("Creating CLDF dataset")
     ds = create_dataset(tables, glottocode, metadata, output_dir=output_dir, cwd=cwd)
     log.debug("Validating")
     ds.validate(log=log)
@@ -253,7 +253,7 @@ def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cw
             "**Created by [cldflex](https://pypistats.org/packages/cldflex)**\n\n"
             + readme
         )
-    log.info(f"Created cldf dataset at {ds.directory.resolve()}/{ds.filename}")
+    log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")
 
 
 def create_dictionary_dataset(morphemes, senses, metadata=None, output_dir="."):
