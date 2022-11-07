@@ -48,9 +48,12 @@ def extract_examples(sense, dictionary_examples, entry_id):
                 example_dict["Form"] = child.text
             else:
                 child_form = child.find("form")
-                example_dict[
-                    f"{child.name}-{slugify(child['type'])}-{child_form['lang']}"
-                ] = child_form.text
+                if child_form:
+                    example_dict[
+                        f"{child.name}-{slugify(child['type'])}-{child_form['lang']}"
+                    ] = child_form.text
+                else:
+                    log.warning(f"Entry {entry_id} has empty examples")
         for attr in example.attrs:
             example_dict[attr] = example[attr]
         dictionary_examples.append(example_dict)
