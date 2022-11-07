@@ -250,7 +250,7 @@ def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cw
     readme = metadata2markdown(ds, ds.directory)
     with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
         f.write(
-            "**Created by [cldflex](https://pypistats.org/packages/cldflex)**\n\n"
+            "**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n"
             + readme
         )
     log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")
