@@ -50,7 +50,7 @@ def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
     clitic_dict.setdefault(
         f"pos_{conf['gloss_lg']}_word", clitic_dict[f"msa_{conf['gloss_lg']}"]
     )
-    clitic_dict[gloss_key] = clitic_dict[gloss_key].strip("=")
+    clitic_dict[gloss_key] = clitic_dict[gloss_key]
     clitic_dict.setdefault(gloss_key + "_word", clitic_dict[gloss_key])
     return clitic_dict
 
@@ -149,9 +149,10 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
 
 def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
     wordforms.setdefault(clitic["ID"], {"ID": clitic["ID"], "Form": [], "Meaning": []})
-    for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
-        if gen_col in clitic and clitic[gen_col] not in wordforms[clitic["ID"]][label]:
-            wordforms[clitic["ID"]][label].append(clitic[gen_col])
+    if obj_key in clitic and clitic[obj_key] not in wordforms[clitic["ID"]]["Form"]:
+        wordforms[clitic["ID"]]["Form"].append(clitic[obj_key])
+    if gloss_key in clitic and clitic[gloss_key].strip("=") not in wordforms[clitic["ID"]]["Meaning"]:
+        wordforms[clitic["ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
 
 
 def extract_records(  # noqa: MC0001
@@ -276,9 +277,7 @@ def extract_records(  # noqa: MC0001
         for col in interlinear_lines.columns:
             phrase_dict[col] = "\t".join(
                 interlinear_lines[col]  # pylint: disable=unsubscriptable-object 🙄
-            )
-        if "working" not in phrase_dict["ID"]:
-            print(phrase_dict["ID"])
+            ).replace("\t=", "=").replace("=\t", "=")
         record_list.append(phrase_dict)
     return record_list
 
