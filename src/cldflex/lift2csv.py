@@ -29,14 +29,26 @@ def get_morph_type(entry):
     return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
 
 
-def extract_glosses(sense, fields):
+def extract_meanings(sense, fields, entry_id, sep):
     glosses = []
+    definitions = []
     for gloss in sense.find_all("gloss"):
         key = "gloss_" + gloss["lang"]
         fields.setdefault(key, [])
         fields[key].append(gloss.text)
         glosses.append(gloss.text)
-    return glosses
+    for definition in sense.find_all("definition"):
+        for form in definition.find_all("form"):
+            key = "definition_" + form["lang"]
+            fields.setdefault(key, [])
+            fields[key].append(form.text)
+            definitions.append(form.text)
+    if definitions:
+        return sep.join(definitions)
+    if glosses:
+        return sep.join(glosses)
+    log.warning(f"No definition or gloss for entry {entry_id}")
+    return ""
 
 
 def extract_examples(sense, dictionary_examples, entry_id):
@@ -74,7 +86,7 @@ def extract_forms(
     return form_count
 
 
-def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
+def parse_entry(entry, senses, dictionary_examples, variant_dict=None, sep="; "):
     entry_id = entry["guid"]
     variant_dict = variant_dict or {}
     morpheme_type = get_morph_type(entry)
@@ -87,12 +99,11 @@ def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
         for gramm in sense.find_all("grammatical-info"):
             poses.append(gramm["value"])
         # and glosses
-        glosses = extract_glosses(sense, fields)
         fields["Parameter_ID"].append(sense.attrs["id"])
         senses.append(
             {
                 "ID": sense.attrs["id"],
-                "Description": ", ".join(glosses),
+                "Description": extract_meanings(sense, fields, entry_id, sep),
                 "Entry_ID": entry_id,
             }
         )
@@ -128,6 +139,17 @@ def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
     return morpheme_dict, morphs
 
 
+def figure_out_gloss_language(entry):
+    gloss_lg = None
+    if entry.find("gloss"):
+        gloss_lg = entry.find("gloss")["lang"]
+    elif entry.find("definition"):
+        gloss_lg = entry.find("definition").find("form")["lang"]
+    if gloss_lg:
+        log.info(f"Using [{gloss_lg}] as the main meta language ('Meaning' column)")
+    return gloss_lg
+
+
 def convert(
     lift_file, output_dir=".", config_file=None, cldf=False, conf=None
 ):  # pylint: disable=too-many-locals
@@ -155,13 +177,12 @@ def convert(
             entries.append(entry)
     for entry in entries:
         if not gloss_lg:
-            gloss_lg = entry.find("gloss")["lang"]
-            log.info(f"Using [{gloss_lg}] as the main meta language ('Meaning' column)")
+            gloss_lg = figure_out_gloss_language(entry)
         if not obj_lg:
             obj_lg = entry.find("form")["lang"]
             log.info(f"Assuming [{obj_lg}] to be the object language")
         morpheme, allomorphs = parse_entry(
-            entry, senses, dictionary_examples, variant_dict=variant_dict
+            entry, senses, dictionary_examples, variant_dict=variant_dict, sep=sep
         )
         morphemes.append(morpheme)
         morphs.extend(allomorphs)
