@@ -417,7 +417,6 @@ def convert(
     cldf=False,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or Path(os.path.dirname(os.path.realpath(flextext_file)))
-    print(type(flextext_file))
     log.info(f"Reading {flextext_file.resolve()}")
     with open(flextext_file, "r", encoding="utf-8") as f:
         texts = BeautifulSoup(f.read(), features="lxml")
