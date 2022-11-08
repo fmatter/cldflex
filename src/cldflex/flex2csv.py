@@ -151,7 +151,10 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
     wordforms.setdefault(clitic["ID"], {"ID": clitic["ID"], "Form": [], "Meaning": []})
     if obj_key in clitic and clitic[obj_key] not in wordforms[clitic["ID"]]["Form"]:
         wordforms[clitic["ID"]]["Form"].append(clitic[obj_key])
-    if gloss_key in clitic and clitic[gloss_key].strip("=") not in wordforms[clitic["ID"]]["Meaning"]:
+    if (
+        gloss_key in clitic
+        and clitic[gloss_key].strip("=") not in wordforms[clitic["ID"]]["Meaning"]
+    ):
         wordforms[clitic["ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
 
 
@@ -275,9 +278,13 @@ def extract_records(  # noqa: MC0001
                 phrase_item["type"] + "_" + phrase_item["lang"] + "_phrase"
             ] = phrase_item.text
         for col in interlinear_lines.columns:
-            phrase_dict[col] = "\t".join(
-                interlinear_lines[col]  # pylint: disable=unsubscriptable-object 🙄
-            ).replace("\t=", "=").replace("=\t", "=")
+            phrase_dict[col] = (
+                "\t".join(
+                    interlinear_lines[col]  # pylint: disable=unsubscriptable-object 🙄
+                )
+                .replace("\t=", "=")
+                .replace("=\t", "=")
+            )
         record_list.append(phrase_dict)
     return record_list
 

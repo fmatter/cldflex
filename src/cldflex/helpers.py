@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 
 def retrieve_morpheme_id(o, g, lex, morph_type):
+    g = g.strip("=")
     candidates = lex[
         (lex["Form_Bare"].apply(lambda x: o in x))
         & (lex["Meaning"].apply(lambda x: g in x))
