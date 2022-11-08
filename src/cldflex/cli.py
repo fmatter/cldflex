@@ -12,25 +12,59 @@ def main():
 
 
 @main.command()
-@click.argument("filename")
-@click.option("-c", "--conf", "config_file", default=None)
-@click.option("-o", "--output", "output_dir", default=Path("."))
+@click.argument("filename", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "-c",
+    "--conf",
+    "config_file",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+)
+@click.option(
+    "-o",
+    "--output",
+    "output_dir",
+    type=click.Path(exists=True, path_type=Path),
+    default=Path("."),
+)
 @click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
 def lift2csv(filename, config_file, cldf, output_dir):
     lift2csv_convert(
-        lift_file=filename, config_file=config_file, cldf=cldf, output_dir=output_dir
+        filename, config_file=config_file, cldf=cldf, output_dir=output_dir
     )
 
 
 @main.command()
-@click.argument("filename")
-@click.option("-c", "--conf", "config_file", default=None)
-@click.option("-o", "--output", "output_dir", default=Path("."))
-@click.option("-l", "--lexicon", "lexicon_file", default=None)
+@click.argument("filename", type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "-c",
+    "--conf",
+    "config_file",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+)
+@click.option(
+    "-o",
+    "--output",
+    "output_dir",
+    type=click.Path(exists=True, path_type=Path),
+    default=Path("."),
+)
+@click.option(
+    "-l",
+    "--lexicon",
+    "lexicon_file",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+)
 @click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
 def flex2csv(filename, config_file, lexicon_file, cldf, output_dir):
-    if not config_file and Path("config.yaml").is_file():
-        config_file = "cldflex.yaml"
+    if not config_file:
+        if Path("cldflex.yaml").is_file():
+            config_file = Path("cldflex.yaml")
+        else:
+            config_file = None
+
     flex2csv_convert(
         filename,
         config_file=config_file,

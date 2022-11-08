@@ -9,7 +9,7 @@ def test_lift(data, tmp_path):
 
     for filename in [
         "morphs.csv",
-        # "morphemes.csv",
+        "morphemes.csv",
     ]:
         df1 = pd.read_csv(tmp_path / filename)
         df2 = pd.read_csv(data / "output" / filename)

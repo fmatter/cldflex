@@ -17,7 +17,7 @@ def check_filelist(path, checklist):
 
 
 def check_cldf(path):
-    md_path = Path(path / "cldf/metadata.json")
+    md_path = path / "cldf/metadata.json"
     assert md_path.is_file()
     ds = Dataset.from_metadata(md_path)
     assert ds.validate()
@@ -27,9 +27,9 @@ def check_cldf(path):
 def run_flextext(path, monkeypatch, data, config=None, lexicon=True, cldf=True):
     monkeypatch.chdir(path)
     runner = CliRunner()
-    commands = [str((data / "ikpeng.flextext").resolve()), f"--output", path]
+    commands = [str((data / "ikpeng.flextext").resolve()), f"--output", str(path.resolve())]
     if lexicon:
-        commands.extend(["--lexicon", str((data / "output/morphs.csv"))])
+        commands.extend(["--lexicon", str((data / "output/morphs.csv").resolve())])
     if cldf:
         commands.extend(["--cldf"])
     if config:
@@ -38,7 +38,8 @@ def run_flextext(path, monkeypatch, data, config=None, lexicon=True, cldf=True):
 
 
 def test_sentences1(data, tmp_path, monkeypatch):
-    run_flextext(tmp_path, monkeypatch, data, lexicon=False)
+    result = run_flextext(tmp_path, monkeypatch, data, lexicon=False)
+    assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
         tmp_path,
@@ -51,7 +52,7 @@ def test_sentences1(data, tmp_path, monkeypatch):
 
 
 def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, "config1")
+    result = run_flextext(tmp_path, monkeypatch, data, config="config1")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
@@ -82,7 +83,7 @@ def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
 
 
 def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, "config2")
+    result = run_flextext(tmp_path, monkeypatch, data, config="config2")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(

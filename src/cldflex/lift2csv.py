@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
@@ -130,18 +129,19 @@ def parse_entry(entry, senses, dictionary_examples, variant_dict=None):
 
 
 def convert(
-    lift_file="", output_dir=".", sep="; ", config_file=None, cldf=False
+    lift_file, output_dir=".", config_file=None, cldf=False, conf=None
 ):  # pylint: disable=too-many-locals
-    if not config_file:
+    if not conf and not config_file:
         log.warning("No configuration file or dict provided.")
         conf = {}
-    else:
+    elif not conf:
         with open(config_file, encoding="utf-8") as f:
             conf = yaml.safe_load(f)
+    sep = conf.get("csv_cell_separator", "; ")
     obj_lg = conf.get("obj_lg", None)
     gloss_lg = conf.get("gloss_lg", None)
     lg_id = conf.get("Language_ID", None)
-    output_dir = Path(output_dir)
+    log.info(f"Parsing {lift_file.resolve()}")
     with open(lift_file, "r", encoding="utf-8") as f:
         lexicon = BeautifulSoup(f.read(), features="xml")
     morphemes = []
@@ -178,13 +178,18 @@ def convert(
             if isinstance(df[col].iloc[0], list):
                 df[col] = df[col].apply(sep.join)
 
-    morphs.to_csv(output_dir / "morphs.csv", index=False)
-    morphemes.to_csv(output_dir / "morphemes.csv", index=False)
     senses = pd.DataFrame.from_dict(senses)
-    senses.to_csv(output_dir / "senses.csv", index=False)
+    for label, data in {
+        "morphs": morphs,
+        "morphemes": morphemes,
+        "senses": senses,
+    }.items():
+        data.to_csv(output_dir / f"{label}.csv", index=False)
+    log.info(f"Wrote CSV files to {output_dir.resolve()}")
     if dictionary_examples:
         dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
         dictionary_examples.to_csv(output_dir / "dictionary_examples.csv", index=False)
 
     if cldf:
         create_dictionary_dataset(morphemes, senses, output_dir=output_dir)
+    return morphs

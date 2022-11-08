@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from slugify import slugify
 from cldflex.helpers import retrieve_morpheme_id
 from cldflex.helpers import slug
+from cldflex.lift2csv import convert as lift2csv
 
 
 log = logging.getLogger(__name__)
@@ -295,23 +296,28 @@ def load_lexicon(lexicon_file, conf):
             "No lexicon file provided. If you want the output to contain morph IDs, provide a csv file with ID, Form, and Meaning."
         )
         return None
-    lexicon_file = Path(lexicon_file)
-    if lexicon_file.suffix == ".csv":
+    if lexicon_file.suffix == ".lift":
+        log.info(f"Running lift2csv on {lexicon_file.resolve()}")
+        lexicon = lift2csv(
+            lift_file=lexicon_file, output_dir=lexicon_file.parents[0], conf=conf
+        )
+    elif lexicon_file.suffix == ".csv":
         log.info(f"Reading lexicon file {lexicon_file.resolve()}")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8", keep_default_na=False)
-        lexicon["Form_Bare"] = lexicon["Form"].apply(
-            lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
+    else:
+        log.error(f"Please specify a .csv or .lift file ({lexicon_file})")
+        return None
+    lexicon["Form_Bare"] = lexicon["Form"].apply(
+        lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
+    )
+    for split_col in ["Form_Bare", "Form", "Meaning", "Parameter_ID"]:
+        lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
+    morpheme_lg = lexicon.iloc[0]["Language_ID"]
+    if morpheme_lg != conf["Language_ID"]:
+        log.info(
+            f"Changing language ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
         )
-        for split_col in ["Form_Bare", "Form", "Meaning", "Parameter_ID"]:
-            lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
-        morpheme_lg = lexicon.iloc[0]["Language_ID"]
-        if morpheme_lg != conf["Language_ID"]:
-            log.info(
-                f"Changing language ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
-            )
-            lexicon["Language_ID"] = conf["Language_ID"]
-        return lexicon
-    log.error(f"{lexicon_file} is not a valid lexicon file format, ignoring.")
+        lexicon["Language_ID"] = conf["Language_ID"]
     return lexicon
 
 
@@ -358,7 +364,7 @@ def write_form_slices(form_slices, output_dir):
             all_slices.append(form_slice)
     form_slices = pd.DataFrame.from_dict(all_slices)
     if len(form_slices) > 0:
-        log.info(f"Saving {(output_dir / 'form_slices.csv').resolve()}")
+        log.debug(f"Saving {(output_dir / 'form_slices.csv').resolve()}")
         form_slices.to_csv(output_dir / "form_slices.csv", index=False)
     return form_slices
 
@@ -373,10 +379,10 @@ def write_sentences(df, output_dir, conf):
         rename_dict.setdefault(gen_col, label)
     df.rename(columns=rename_dict, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
-
+    log.debug(type(output_dir))
     # todo: sort columns for humans
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
-    log.info(f"Saving {(output_dir / 'sentences.csv').resolve()}")
+    log.debug(f"Saving {(output_dir / 'sentences.csv').resolve()}")
     df.to_csv(output_dir / "sentences.csv", index=False)
     return df
 
@@ -390,30 +396,28 @@ def write_wordforms(wordforms, output_dir, conf):
         wordforms[col] = wordforms[col].apply(
             lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
         )
-    log.info(f"Saving {(output_dir / 'wordforms.csv').resolve()}")
+    log.debug(f"Saving {(output_dir / 'wordforms.csv').resolve()}")
     wordforms.to_csv(output_dir / "wordforms.csv", index=False)
     return wordforms
 
 
 def write_generic(data, name, output_dir):
     df = pd.DataFrame.from_dict(data)
-    log.info(f"Saving {(output_dir / f'{name}.csv').resolve()}")
+    log.debug(f"Saving {(output_dir / f'{name}.csv').resolve()}")
     df.to_csv(output_dir / f"{name}.csv", index=False)
     return df
 
 
 def convert(
-    flextext_file="",
+    flextext_file,
     lexicon_file=None,
     config_file=None,
     output_dir=None,
     conf=None,
     cldf=False,
 ):  # pylint: disable=too-many-locals,too-many-arguments
-    output_dir = output_dir or os.path.dirname(os.path.realpath(flextext_file))
-    output_dir = Path(output_dir)
-
-    flextext_file = Path(flextext_file)
+    output_dir = output_dir or Path(os.path.dirname(os.path.realpath(flextext_file)))
+    print(type(flextext_file))
     log.info(f"Reading {flextext_file.resolve()}")
     with open(flextext_file, "r", encoding="utf-8") as f:
         texts = BeautifulSoup(f.read(), features="lxml")
@@ -470,6 +474,8 @@ def convert(
 
     form_slices = write_form_slices(form_slices, output_dir)
 
+    log.info(f"Wrote CSV files to {output_dir.resolve()}")
+
     if cldf:
         from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
@@ -486,16 +492,14 @@ def convert(
             if not cldf_settings.get("no_form_slices", False):
                 tables["FormSlices"] = form_slices
             tables["MorphsetTable"] = load_lexicon(
-                Path(lexicon_file).parents[0] / "morphemes.csv", conf
+                lexicon_file.parents[0] / "morphemes.csv", conf
             )
-            tables["SenseTable"] = pd.read_csv(
-                Path(lexicon_file).parents[0] / "senses.csv"
-            )
+            tables["SenseTable"] = pd.read_csv(lexicon_file.parents[0] / "senses.csv")
 
         create_cldf(
             tables=tables,
             glottocode=conf.get("Glottocode", conf.get("Language_ID", "minn1241")),
             metadata=metadata,
             output_dir=output_dir,
-            cwd=Path(flextext_file).parents[0],
+            cwd=flextext_file.parents[0],
         )
