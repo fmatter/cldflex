@@ -1,4 +1,4 @@
-ID,Form,Type,Morpheme_ID,Parameter_ID,Meaning,Language_ID
+ID,Form,Type,Morpheme_ID,Parameter_ID,Gloss,Language_ID
 3fcda9bb-60e3-4033-a77b-beb26abdc524-0,ïna,root,3fcda9bb-60e3-4033-a77b-beb26abdc524,c129ae7d-5d5a-44f7-a07e-12232769f313,OBL,txi
 3fcda9bb-60e3-4033-a77b-beb26abdc524-1,na,root,3fcda9bb-60e3-4033-a77b-beb26abdc524,c129ae7d-5d5a-44f7-a07e-12232769f313,OBL,txi
 f7f464d2-824c-4b7b-a22c-54b9b25eb849-0,mami,root,f7f464d2-824c-4b7b-a22c-54b9b25eb849,71ee588a-0695-496e-8c6f-41ebfa2da9c2,work,txi

@@ -1,4 +1,4 @@
-ID,Gramm,Type,Form,Name,Parameter_ID,Meaning,Language_ID
+ID,Gramm,Type,Form,Name,Parameter_ID,Gloss,Language_ID
 3fcda9bb-60e3-4033-a77b-beb26abdc524,Postposition,root,ïna; na,ïna,c129ae7d-5d5a-44f7-a07e-12232769f313,OBL,txi
 f7f464d2-824c-4b7b-a22c-54b9b25eb849,Noun,root,mami,mami,71ee588a-0695-496e-8c6f-41ebfa2da9c2,work,txi
 a9ba86f7-59df-4204-8e7e-bd677b5bd8a2,Noun,suffix,-n,-n,4f0ac3fa-3d9f-4d8b-ac57-2b517b93d1c3,PERT,txi
