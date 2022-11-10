@@ -53,10 +53,10 @@
 <lexical-unit>
 <form lang="txi"><text>ïna</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <variant>
 <form lang="txi"><text>na</text></form>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 </variant>
 <sense id="c129ae7d-5d5a-44f7-a07e-12232769f313">
 <grammatical-info value="Postposition">
@@ -68,7 +68,7 @@
 <lexical-unit>
 <form lang="txi"><text>mami</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="71ee588a-0695-496e-8c6f-41ebfa2da9c2">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -115,7 +115,7 @@
 <lexical-unit>
 <form lang="txi"><text>ero</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="be3f64e1-632b-4720-a260-71cb774ce53a">
 <grammatical-info value="Verb">
 </grammatical-info>
@@ -126,7 +126,7 @@
 <lexical-unit>
 <form lang="txi"><text>ekïrï</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="2d8e08c8-ca4f-4ddb-a9d6-1db35df1489a">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -137,7 +137,7 @@
 <lexical-unit>
 <form lang="txi"><text>ru</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="55cb809f-dc56-4d2f-8b5d-a221b85fb077">
 <grammatical-info value="Particle">
 </grammatical-info>
@@ -148,7 +148,7 @@
 <lexical-unit>
 <form lang="txi"><text>man</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="0d045237-9717-466d-9d57-b7a62d389a74">
 <grammatical-info value="Particle">
 </grammatical-info>
@@ -159,10 +159,10 @@
 <lexical-unit>
 <form lang="txi"><text>uwy</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <variant>
 <form lang="txi"><text>uwi</text></form>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 </variant>
 <sense id="255cf260-5cac-4492-83b8-017663f91f0a">
 <grammatical-info value="Verb">
@@ -190,10 +190,10 @@
 <lexical-unit>
 <form lang="txi"><text>wï</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <variant>
 <form lang="txi"><text>uwï</text></form>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 </variant>
 <sense id="a8558f9a-8acf-4298-a68b-3be26cb99b0c">
 <grammatical-info value="Noun">
@@ -214,7 +214,7 @@
 <lexical-unit>
 <form lang="txi"><text>k</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="a4f99dcf-0a46-4c7f-b05d-3e561ff844f8">
 <grammatical-info value="Verb">
 </grammatical-info>
@@ -237,7 +237,7 @@
 <lexical-unit>
 <form lang="txi"><text>mun</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="a5a559e2-160c-4209-8904-0f0ad7508f33">
 <grammatical-info value="Pronoun">
 </grammatical-info>
@@ -248,7 +248,7 @@
 <lexical-unit>
 <form lang="txi"><text>eto</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="60c8afc0-1d73-4655-a023-5385926b81db">
 <grammatical-info value="Particle">
 </grammatical-info>
@@ -271,7 +271,7 @@
 <lexical-unit>
 <form lang="txi"><text>rïk</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="14b9d4a7-ae50-457d-9bcd-fe64410e35f1">
 <grammatical-info value="Ideophone">
 </grammatical-info>
@@ -282,7 +282,7 @@
 <lexical-unit>
 <form lang="txi"><text>orotpot</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="b52c4122-87d0-4396-a39b-d0245d4616df">
 <grammatical-info value="Intransitive verb">
 </grammatical-info>
@@ -293,7 +293,7 @@
 <lexical-unit>
 <form lang="txi"><text>patxang</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="97a66f7f-152e-4d80-892d-455b91ca2bd6">
 <grammatical-info value="Ideophone">
 </grammatical-info>
@@ -304,7 +304,7 @@
 <lexical-unit>
 <form lang="txi"><text>owro</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="f7178fd5-5aa6-4dfa-a63f-3d464e23c958">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -324,7 +324,7 @@
 <lexical-unit>
 <form lang="txi"><text>wara</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="ef2ed4d5-8beb-43e1-ab2e-f35461a3af5a">
 <gloss lang="en"><text>inside</text></gloss>
 </sense>
@@ -345,7 +345,7 @@
 <lexical-unit>
 <form lang="txi"><text>eneng</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="818f0998-0a8c-4c42-b4cb-6b1b48c52540">
 <gloss lang="en"><text>see</text></gloss>
 </sense>
@@ -354,7 +354,7 @@
 <lexical-unit>
 <form lang="txi"><text>payng</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="ad44465a-eb3f-479e-95d1-5164ac4bc736">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -365,7 +365,7 @@
 <lexical-unit>
 <form lang="txi"><text>muye</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="9d7133b7-5441-4e8e-a462-c7e7cac7e401">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -396,7 +396,7 @@
 <lexical-unit>
 <form lang="txi"><text>aptak</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="9212fa41-ee79-46b7-9cae-e0df848a8bee">
 <gloss lang="en"><text>arm</text></gloss>
 </sense>
@@ -414,7 +414,7 @@
 <lexical-unit>
 <form lang="txi"><text>otumunto</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="d01bbe47-3281-4890-98ae-e4d8db682594">
 <gloss lang="en"><text>where</text></gloss>
 </sense>
@@ -432,7 +432,7 @@
 <lexical-unit>
 <form lang="txi"><text>mtxi</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="c46b2547-b8e6-4d08-ae79-688c6c667e36">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -443,7 +443,7 @@
 <lexical-unit>
 <form lang="txi"><text>nen</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="38042263-9196-4620-9e19-7a378a0beeac">
 <grammatical-info value="Pronoun">
 </grammatical-info>
@@ -478,7 +478,7 @@
 <lexical-unit>
 <form lang="txi"><text>eng</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="ab0f10c0-9c91-4df9-8add-bde1047ed349">
 <grammatical-info value="Verb">
 </grammatical-info>
@@ -489,7 +489,7 @@
 <lexical-unit>
 <form lang="txi"><text>mu</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="e9d44cc8-a412-4299-8a5c-0594111244e3">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -500,7 +500,7 @@
 <lexical-unit>
 <form lang="txi"><text>pupa</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="219f99a4-7edb-48d4-9ffb-d2db9184ea16">
 <grammatical-info value="Noun">
 </grammatical-info>
@@ -524,7 +524,7 @@
 <lexical-unit>
 <form lang="txi"><text>keni</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="378cbbd9-e8f1-43b3-a1ac-8ff80f7d1a74">
 <grammatical-info value="Relativizer">
 </grammatical-info>
@@ -544,7 +544,7 @@
 <lexical-unit>
 <form lang="txi"><text>tan</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="31c3a4e9-4f8b-4ddc-bda8-032b4627f518">
 <gloss lang="en"><text>here</text></gloss>
 </sense>
@@ -575,7 +575,7 @@
 <lexical-unit>
 <form lang="txi"><text>tïmo</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="b37a2e33-d559-4dde-ad7f-5b3c28bbab06">
 <grammatical-info value="Intransitive verb">
 </grammatical-info>
@@ -599,7 +599,7 @@
 <lexical-unit>
 <form lang="txi"><text>arawï</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="bee286ed-6812-439f-9014-96b4ed244f6d">
 <gloss lang="en"><text>begin</text></gloss>
 </sense>
@@ -608,7 +608,7 @@
 <lexical-unit>
 <form lang="txi"><text>mnop</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="bc43600f-6609-4ed1-a031-d02b7634a120">
 <grammatical-info value="Transitive verb">
 </grammatical-info>
@@ -643,7 +643,7 @@
 <lexical-unit>
 <form lang="txi"><text>Kïkïkï</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="8ef32c28-9474-47e8-aa72-101c90a14c9d">
 <grammatical-info value="Ideophone">
 </grammatical-info>
@@ -654,7 +654,7 @@
 <lexical-unit>
 <form lang="txi"><text>ningkïn</text></form>
 </lexical-unit>
-<trait  name="morph-type" value="stem"/>
+<trait  name="morph-type" value="root"/>
 <sense id="751cd08e-df57-4f02-b5f9-b22e2feaef5c">
 <gloss lang="en"><text>PL</text></gloss>
 </sense>
