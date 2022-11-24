@@ -3,60 +3,21 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from cldflex.cldf import create_dictionary_dataset
-
+from cldflex.cldf import create_dictionary_dataset, create_cldf
+from cldflex.helpers import delistify, deduplicate, add_to_list_in_dict
+from pathlib import Path
+import re
+import sys
 
 log = logging.getLogger(__name__)
 
 
-def gather_variants(entry, variant_dict):
-    relations = entry.find_all("relation")
-    if relations:
-        for relation in relations:
-            if relation.select("trait[name='variant-type']") and relation["ref"] != "":
-                main_entry_id = relation["ref"].split("_")[-1]
-                variant_dict.setdefault(main_entry_id, [])
-                variant_dict[main_entry_id].append(
-                    {
-                        "ID": slugify(entry["id"]),
-                        "Form": entry.find("form").text,
-                        "Type": entry.select("trait[name='morph-type']")[0]["value"],
-                    }
-                )
-
-
-def get_morph_type(entry):
-    return entry.select("trait[name='morph-type']", recursive=False)[0]["value"]
-
-
-def extract_meanings(sense, fields, entry_id, sep):
-    glosses = []
-    definitions = []
-    for gloss in sense.find_all("gloss"):
-        key = "gloss_" + gloss["lang"]
-        fields.setdefault(key, [])
-        fields[key].append(gloss.text)
-        glosses.append(gloss.text)
-    for definition in sense.find_all("definition"):
-        for form in definition.find_all("form"):
-            key = "definition_" + form["lang"]
-            fields.setdefault(key, [])
-            fields[key].append(form.text)
-            definitions.append(form.text)
-    if definitions:
-        return sep.join(definitions)
-    if glosses:
-        return sep.join(glosses)
-    log.warning(f"No definition or gloss for entry {entry_id}")
-    return ""
-
-
-def extract_examples(sense, dictionary_examples, entry_id):
+def extract_examples(sense, dictionary_examples, sense_id):
     for ex_count, example in enumerate(sense.find_all("example")):
-        example_dict = {"ID": f"{entry_id}-{ex_count}"}
+        example_dict = {"ID": f"{sense_id}-{ex_count}", "Sense_ID": sense_id}
         for child in example.find_all(recursive=False):
             if child.name == "form":
-                example_dict["Form"] = child.text
+                example_dict["Primary_Text"] = child.text
             else:
                 child_form = child.find("form")
                 if child_form:
@@ -64,79 +25,10 @@ def extract_examples(sense, dictionary_examples, entry_id):
                         f"{child.name}-{slugify(child['type'])}-{child_form['lang']}"
                     ] = child_form.text
                 else:
-                    log.warning(f"Entry {entry_id} has empty examples")
+                    log.warning(f"Sense {sense_id} has empty examples")
         for attr in example.attrs:
             example_dict[attr] = example[attr]
         dictionary_examples.append(example_dict)
-
-
-def extract_forms(
-    entry_part, entry_id, morph_type, morphs, fields, form_count
-):  # pylint: disable=too-many-arguments
-    for form in entry_part.find_all("form"):
-        f_dict = {
-            "ID": f"{entry_id}-{form_count}",
-            "Form": form.text,
-            "Type": morph_type,
-            "Morpheme_ID": entry_id,
-        }
-        f_dict.update(**fields)
-        morphs.append(f_dict)
-        form_count += 1
-    return form_count
-
-
-def parse_entry(entry, senses, dictionary_examples, variant_dict=None, sep="; "):
-    entry_id = entry["guid"]
-    variant_dict = variant_dict or {}
-    morpheme_type = get_morph_type(entry)
-    poses = []
-    morphs = []
-    fields = {"Parameter_ID": []}
-
-    for sense in entry.find_all("sense", recursive=False):
-        # POS are stored in senses
-        for gramm in sense.find_all("grammatical-info"):
-            poses.append(gramm["value"])
-        # and glosses
-        fields["Parameter_ID"].append(sense.attrs["id"])
-        senses.append(
-            {
-                "ID": sense.attrs["id"],
-                "Description": extract_meanings(sense, fields, entry_id, sep),
-                "Entry_ID": entry_id,
-            }
-        )
-        # examples are stored in senses
-        extract_examples(sense, dictionary_examples, entry_id)
-
-    # go through form(s?)
-    form_count = 0
-    form_count = extract_forms(
-        entry.find("lexical-unit"), entry_id, morpheme_type, morphs, fields, form_count
-    )
-
-    # go through allomorphs / variants
-    for variant in entry.find_all("variant"):
-        form_count = extract_forms(
-            variant, entry_id, get_morph_type(variant), morphs, fields, form_count
-        )
-
-    # gather variants stored in other dictionary entries
-    for variant in variant_dict.get(entry_id, []):
-        variant["Morpheme_ID"] = entry_id
-        variant.update(**fields)
-        morphs.append(variant)
-
-    morpheme_dict = {
-        "ID": entry_id,
-        "Gramm": poses,
-        "Type": morpheme_type,
-        "Form": [x["Form"] for x in morphs],
-        "Name": morphs[0]["Form"],
-    }
-    morpheme_dict.update(**fields)
-    return morpheme_dict, morphs
 
 
 def figure_out_gloss_language(entry):
@@ -150,11 +42,93 @@ def figure_out_gloss_language(entry):
     return gloss_lg
 
 
+def parse_entries(entries):
+    parsed = []
+    morph_list = []
+    senses = []
+    dictionary_examples = []
+    for entry in entries:
+        fields = {"Gramm": [], "Parameter_ID": []}
+        entry_id = entry["guid"]
+        fields["ID"] = entry_id
+        main_morph = {"ID": entry["guid"] + "-0", "Morpheme_ID": entry["guid"]}
+        for trait in entry.find_all("trait", recursive=False):
+            fields[trait["name"]] = trait["value"]
+        for lexical_unit in entry.find_all("lexical-unit", recursive=False):
+            for form in lexical_unit.find_all("form"):
+                fields["form_" + form["lang"]] = form.text
+                main_morph["form_" + form["lang"]] = form.text
+        for field in entry.find_all("field", recursive=False):
+            for pseudoform in field.find_all("form"):
+                fields[
+                    slugify(field["type"]) + "_" + pseudoform["lang"]
+                ] = pseudoform.text
+        for relation in entry.find_all("relation", recursive=False):
+            for trait in relation.find_all("trait"):
+                if "_" not in relation["ref"]:
+                    continue
+                add_to_list_in_dict(
+                    fields,
+                    f"""relation{relation["type"]}_{trait["name"]}_{slugify(trait["value"])}""",
+                    relation["ref"].split("_")[1],
+                )
+
+        for sense in entry.find_all("sense", recursive=False):
+            sense_id = sense["id"]  # todo human-readable option
+            sense_dict = {"ID": sense_id, "Entry_ID": entry_id}
+            fields["Parameter_ID"].append(sense["id"])
+            for gramm in sense.find_all("grammatical-info"):
+                fields["Gramm"].append(gramm["value"])
+            for definition in sense.find_all("definition"):
+                for pseudoform in definition.find_all("form"):
+                    for x in [fields, sense_dict]:
+                        add_to_list_in_dict(
+                            x, "definition_" + pseudoform["lang"], pseudoform.text
+                        )
+            for gloss in sense.find_all("gloss"):
+                key = "gloss_" + gloss["lang"]
+                for x in [fields, main_morph, sense_dict]:
+                    add_to_list_in_dict(x, key, gloss.text)
+            for note in sense.find_all("note"):
+                note_type = ("note_" + note.get("type", "")).strip("_")
+                for pseudoform in note.find_all("form"):
+                    add_to_list_in_dict(
+                        fields, note_type + "_" + pseudoform["lang"], pseudoform.text
+                    )
+            for reversal in sense.find_all("reversal"):
+                for form in reversal.find_all("form"):
+                    add_to_list_in_dict(fields, "reversal_" + form["lang"], form.text)
+            senses.append(sense_dict)
+            extract_examples(sense, dictionary_examples, sense_id)
+
+        main_morph["morph-type"] = fields.get("morph-type", "?")
+        main_morph["Parameter_ID"] = fields.get("Parameter_ID", "na")
+        morph_list.append(main_morph)
+        for i, allomorph in enumerate(entry.find_all("variant", recursive=False)):
+            form = allomorph.find("form")
+            add_to_list_in_dict(fields, "variant_" + form["lang"], form.text)
+            new_morph = main_morph.copy()
+            new_morph["ID"] = f"""{entry["guid"]}-{i+1}"""
+            new_morph["Parameter_ID"] = fields.get("Parameter_ID", "na")
+            new_morph["morph-type"] = allomorph.select("trait[name='morph-type']")[0][
+                "value"
+            ]
+            for form in allomorph.find_all("form"):
+                new_morph["form_" + form["lang"]] = form.text
+            morph_list.append(new_morph)
+        fields["Gramm"] = deduplicate(fields["Gramm"])
+        parsed.append(fields)
+    return parsed, morph_list, senses, dictionary_examples
+
+
 def convert(
     lift_file, output_dir=".", config_file=None, cldf=False, conf=None
 ):  # pylint: disable=too-many-locals
+    if not lift_file.suffix == ".lift":
+        log.error("Please provide a .lift file.")
+        sys.exit()
     if not conf and not config_file:
-        log.warning("No configuration file or dict provided.")
+        log.info("Running without configuration file or dict.")
         conf = {}
     elif not conf:
         with open(config_file, encoding="utf-8") as f:
@@ -166,51 +140,266 @@ def convert(
     log.info(f"Parsing {lift_file.resolve()}")
     with open(lift_file, "r", encoding="utf-8") as f:
         lexicon = BeautifulSoup(f.read(), features="xml")
-    morphemes = []
-    morphs = []
-    entries = []
-    senses = []
-    variant_dict = {}
-    dictionary_examples = []
+
     for entry in lexicon.find_all("entry"):
-        if not gather_variants(entry, variant_dict):
-            entries.append(entry)
-    for entry in entries:
         if not gloss_lg:
             gloss_lg = figure_out_gloss_language(entry)
         if not obj_lg:
             obj_lg = entry.find("form")["lang"]
-            log.info(f"Assuming [{obj_lg}] to be the object language")
-        morpheme, allomorphs = parse_entry(
-            entry, senses, dictionary_examples, variant_dict=variant_dict, sep=sep
-        )
-        morphemes.append(morpheme)
-        morphs.extend(allomorphs)
-    morphemes = pd.DataFrame.from_dict(morphemes)
-    morphs = pd.DataFrame.from_dict(morphs)
-    for df in [morphs, morphemes]:
-        df.rename(columns={f"gloss_{gloss_lg}": "Meaning"}, inplace=True)
-        if lg_id:
-            df["Language_ID"] = lg_id
-        else:
-            df["Language_ID"] = obj_lg
-        df.fillna("", inplace=True)
-        for col in df.columns:
-            if isinstance(df[col].iloc[0], list):
-                df[col] = df[col].apply(sep.join)
 
+    obj_key = f"form_{obj_lg}"
+    definition_key = f"definition_{gloss_lg}"
+    gloss_key = f"gloss_{gloss_lg}"
+    var_key = "variant_" + obj_lg
+
+    var_dict = {}
+    entries, morph_list, senses, dictionary_examples = parse_entries(
+        lexicon.find_all("entry")
+    )
+    entries = pd.DataFrame.from_dict(entries)
     senses = pd.DataFrame.from_dict(senses)
-    for label, data in {
-        "morphs": morphs,
-        "morphemes": morphemes,
-        "senses": senses,
-    }.items():
-        data.to_csv(output_dir / f"{label}.csv", index=False)
-    log.info(f"Wrote CSV files to {output_dir.resolve()}")
-    if dictionary_examples:
-        dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
-        dictionary_examples.to_csv(output_dir / "dictionary_examples.csv", index=False)
+    senses["Description"] = senses.apply(
+        lambda x: x[definition_key]
+        if not pd.isnull(x[definition_key])
+        else x[gloss_key],
+        axis=1,
+    )
+    senses["Name"] = senses.apply(
+        lambda x: " / ".join(x[gloss_key]) if not pd.isnull(x[gloss_key]).any() else x[definition_key],
+        axis=1,
+    )
+    unmodified_entries = entries.copy()
 
+    def entry_repr(entry_id):
+        entry = entries[entries["ID"] == entry_id].iloc[0]
+        if not isinstance(entry[gloss_key], list):
+            ggg = "unknown meaning"
+        elif len(entry[gloss_key]) == 0:
+            ggg = "unknown meaning"
+        else:
+            ggg = " / ".join(entry[gloss_key])
+        if isinstance(entry.get(obj_key, None), list):
+            form_str = " / ".join(entry[obj_key])
+        else:
+            form_str = entry.get(obj_key, "MISSING FORM")
+        return f"""{form_str} '{ggg}' ({','.join(entry["Gramm"])}, {entry["morph-type"]}) [{entry["ID"]}]"""
+
+    for col in entries.columns:
+        if "variant-type" not in col:
+            continue
+        variants = entries[~(pd.isnull(entries[col]))]
+        for entry in variants.to_dict("records"):
+            if len(entry[col]) > 1:
+                msg = f"""The entry {entry_repr(entry["ID"])} is stored as a variant ({col}) of multiple main entries:"""
+                for entry_id in entry[col]:
+                    msg += "\n" + entry_repr(entry_id)
+                log.warning(msg)
+            for entry_id in entry[col]:
+                add_to_list_in_dict(var_dict, entry_id, entry)
+
+    if var_key in entries.columns:
+        check_variants = True
+    else:
+        check_variants = False
+
+    entries["Name"] = entries[obj_key]
+    entries[obj_key] = entries[obj_key].apply(
+        lambda x: [x] if isinstance(x, str) else []
+    )
+    for key in [gloss_key, definition_key]:
+        if key in entries:
+            entries[key] = entries[key].apply(
+                lambda x: [] if not isinstance(x, list) else x
+            )
+
+    def process_variant(entry, variant, new_variant_morphs, var_dict, var_count, i):
+        if variant["ID"] in var_dict:
+            for varvariant in var_dict[variant["ID"]]:
+                log.warning(
+                    f"""The variant {entry_repr(variant["ID"])} of the entry {entry_repr(entry["ID"])} has the subvariant {entry_repr(varvariant["ID"])}. Is this accurate?"""
+                )
+                varvariant = varvariant.copy()
+                process_variant(
+                    entry, varvariant, new_variant_morphs, var_dict, var_count, i
+                )
+                var_count += 1
+        log.debug(
+            f"""Adding variant {variant["ID"]} {variant[obj_key]} to entry {entry_repr(entry["ID"])}"""
+        )
+        if variant["Gramm"] and variant["Gramm"] != entry["Gramm"]:
+            log.warning(
+                f"""The entry {entry_repr(variant["ID"])} is stored as a variant of {entry_repr(entry["ID"])}. It will not retain its part of speech."""
+            )
+        if gloss_key in variant and not pd.isnull(variant[gloss_key]):
+            entry[gloss_key] = deduplicate(entry[gloss_key] + variant[gloss_key])
+            if variant[gloss_key] != entry[gloss_key]:
+                log.warning(
+                    f"""The entry {entry_repr(entry["ID"])} is stored as having a different meaning than its variant {entry_repr(variant["ID"])}"""
+                )
+        else:
+            log.debug(
+                f"""inheriting gloss from {entry_repr(entry["ID"])} for {entry_repr(variant["ID"])}"""
+            )
+            variant[gloss_key] = entry[gloss_key]
+        variant["Parameter_ID"] = entry["Parameter_ID"]
+        entry[obj_key].append(variant[obj_key])
+        variant["Variant_ID"] = variant["ID"]
+        variant["Morpheme_ID"] = entry["ID"]
+        variant["ID"] = f"""{entry["ID"]}-{var_count+i}"""
+        new_variant_morphs.append(variant)
+
+    morphs = pd.DataFrame.from_dict(morph_list)
+
+    new_variant_morphs = []
+    for entry in entries.to_dict("records"):
+        var_count = 1
+        if check_variants and isinstance(entry[var_key], list):
+            for variant in entry[var_key]:
+                var_count += 1
+                entry[obj_key].append(variant)
+        if entry["ID"] in var_dict:
+            for i, variant in enumerate(var_dict[entry["ID"]]):
+                variant = variant.copy()
+                process_variant(
+                    entry, variant, new_variant_morphs, var_dict, var_count, i
+                )
+
+    new_variant_morphs = pd.DataFrame.from_dict(new_variant_morphs)
+
+    if len(new_variant_morphs) > 0:
+        morphs = morphs[~(morphs["Morpheme_ID"].isin(new_variant_morphs["Variant_ID"]))]
+        morphs = pd.concat([morphs, new_variant_morphs])
+    morphs["Language_ID"] = obj_lg
+    morphs.rename(
+        columns={obj_key: "Form", gloss_key: "Gloss", "morph-type": "Type"},
+        inplace=True,
+    )
+
+    for col in entries.columns:
+        if "variant-type" not in col:
+            continue
+        variants = entries[~(pd.isnull(entries[col]))]
+        entries = entries.loc[~entries.index.isin(variants.index)]
+
+    entries[obj_key] = entries[obj_key].apply(sorted)
+    entries[obj_key] = entries[obj_key].apply(deduplicate)
+    entries = delistify(entries, sep)
+    entries["Language_ID"] = obj_lg
+
+    morphemes = entries.copy()[(~(entries["morph-type"].isin(["phrase"])))]
+    morphemes.rename(
+        columns={
+            gloss_key: "Gloss",
+            definition_key: "Meaning",
+            obj_key: "Form",
+            "morph-type": "Type",
+        },
+        inplace=True,
+    )
+    morphs = morphs[(morphs["Morpheme_ID"].isin(list(morphemes["ID"])))]
+
+    # if len(dictionary_examples)
+    sentence_path = Path(output_dir / "sentences.csv")
+    ref_pattern = re.compile(r"^(\d+.\d)+$")
+    if len(dictionary_examples):
+        if sentence_path.is_file():
+            log.info(
+                f"Found {sentence_path.resolve()}, adding segmentation to examples"
+            )
+            glossed_examples = pd.read_csv(sentence_path, dtype=str, keep_default_na=False)
+            juicy_columns = ["Analyzed_Word", "Gloss"]
+            glossed_examples.dropna(subset=juicy_columns, inplace=True)
+            for col in juicy_columns:
+                glossed_examples[col] = glossed_examples[col].apply(
+                    lambda x: x.split("\t")
+                )
+            enriched_examples = []
+            for ex in dictionary_examples:
+                successful = False
+                if " " in ex["source"]:
+                    text_id, phrase_rec = ex["source"].split(" ")
+                    if ref_pattern.match(phrase_rec):
+                        rec, subrec = phrase_rec.split(".")
+                        if subrec == "1":
+                            subrec = ""
+                        cands = glossed_examples[
+                            (glossed_examples["Record_Number"] == rec) & (glossed_examples["Phrase_Number"] == subrec) & glossed_examples["Text_ID"].str.contains(text_id)
+                        ]
+                        if len(cands) == 1:
+                            successful = True
+                            enriched_examples.append(dict(cands.iloc[0]))
+                        elif len(cands) > 1:
+                            log.error(f"Could not resolve ambiguous example reference [{text_id} {phrase_rec}]\n" + cands.to_string())
+                        else:
+                            log.warning(f"Could not resolve example reference [{text_id} {phrase_rec}]")
+                if not successful:
+                    enriched_examples.append(ex)
+            dictionary_examples = pd.DataFrame.from_dict(enriched_examples)
+        else:
+            log.warning(
+                f"There are dictionary examples. If you want to retrieve segmentation and glosses from the corpus, run cldflex flex2csv <your_file>.flextext and place sentences.csv in {output_dir.resolve()}"
+            )
+            dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
+    else:
+        dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
+
+    dictionary_examples.fillna("", inplace=True)
+
+    glottocode = conf.get("Glottocode", conf.get("Language_ID", None))
+    with pd.option_context("mode.chained_assignment", None):
+        if glottocode:
+            for df in [unmodified_entries, morphemes, morphs, dictionary_examples]:
+                df["Language_ID"] = glottocode
+        else:
+            for df in [unmodified_entries, morphemes, morphs, dictionary_examples]:
+                df["Language_ID"] = obj_lg
+
+    morphemes.fillna("", inplace=True)
+    morphemes.to_csv(output_dir / "morphemes.csv", index=False)
+    delistify(senses, sep)
+    senses.to_csv(output_dir / "senses.csv", index=False)
+    delistify(morphs, sep)
+    morphs.drop_duplicates(
+        subset=[x for x in morphs.columns if x != "ID"], inplace=True
+    )  # entries may be "variants" of other entries in multiple ways
+
+    morphs.to_csv(output_dir / "morphs.csv", index=False)
+
+    unmodified_entries["Name"] = unmodified_entries[obj_key]
+    delistify(unmodified_entries, sep)
+    unmodified_entries.to_csv(output_dir / "entries.csv", index=False)
     if cldf:
-        create_dictionary_dataset(morphemes, senses, output_dir=output_dir)
+        cldf_settings = conf.get("cldf", {})
+        metadata = cldf_settings.get("metadata", {})
+        if cldf_settings.get("lexicon", None) == "wordlist":
+            unmodified_entries.rename(
+                columns={gloss_key: "Meaning", obj_key: "Form"}, inplace=True
+            )
+            morphemes["Form"] = morphemes["Form"].apply(lambda x: x.split(sep))
+            morphemes["Parameter_ID"] = morphemes["Parameter_ID"].apply(
+                lambda x: x.split(sep)
+            )
+            tables = {
+                "FormTable": morphemes,
+                # "ExampleTable": dictionary_examples,
+                "ParameterTable": senses,
+            }
+            create_cldf(
+                tables=tables,
+                glottocode=glottocode,
+                metadata=metadata,
+                output_dir=output_dir,
+                cwd=lift_file.parents[0],
+            )
+        else:
+            create_dictionary_dataset(
+                unmodified_entries,
+                senses,
+                metadata=metadata,
+                examples=dictionary_examples,
+                glottocode=glottocode,
+                output_dir=output_dir,
+                cwd=lift_file.parents[0],
+            )
+
     return morphs

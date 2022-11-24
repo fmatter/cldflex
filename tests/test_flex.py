@@ -27,6 +27,16 @@ def test_convert(flextext, monkeypatch, tmp_path, data):
         pd.testing.assert_frame_equal(df1, df2)
 
 
+def test_duplicate(flextext, monkeypatch, tmp_path, data, caplog):
+
+    convert(
+        flextext, lexicon_file=data / "output" / "morphs_dup.csv", output_dir=tmp_path
+    )
+    print("HERE WE GO")
+    print(caplog.text)
+    assert "using the first hit" in caplog.text
+
+
 def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
     convert(flextext, lexicon_file=data / "output" / "morphs.csv", output_dir=tmp_path)
 
@@ -50,9 +60,3 @@ def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
         pd.testing.assert_frame_equal(df1, df2)
 
 
-def test_duplicate(flextext, monkeypatch, tmp_path, data, caplog):
-
-    convert(
-        flextext, lexicon_file=data / "output" / "morphs_dup.csv", output_dir=tmp_path
-    )
-    assert "using the first hit" in caplog.text

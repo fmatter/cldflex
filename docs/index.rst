@@ -10,12 +10,15 @@ cldflex
    :maxdepth: 2
    :caption: Contents:
 
+   lift2csv.md
 
-Many descriptive linguists have annotated language data in a FLEx (`SIL's Fieldworks Lexical Explorer <https://software.sil.org/fieldworks/>`_) database.
-This project aims to build a bridge between said data and the `CLDF standard <https://cldf.clld.org/>`_.
-It provides commands to convert `.flextext` (corpora) and `.lift` (lexica) files to `CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`_ files.
-CSV files are much easier to process than the formats exportable from FLEx, for many purposes: working with a spreadsheet app, reading them into a dataframe in `R <https://www.r-project.org/>`_ or `pandas <https://pandas.pydata.org/>`_, etc.
-They are also readily available for use with `cldfbench <https://github.com/cldf/cldfbench>`_; however, ``cldflex`` also allows for (simple) CLDF creation out of the box.
+Many descriptive linguists have annotated language data in a FLEx (`SIL's Fieldworks Lexical Explorer <https://software.sil.org/fieldworks/>`_) database, perhaps the most popular and accessible assisted segmentation and annotation workflow.
+However, a reasonably complete data export is only available in XML, which is not human-friendly, and is not readily converted to other data.
+A data format growing in popularity is the `CLDF standard <https://cldf.clld.org/>`_, a table-based approach with human-readable datasets, designed to be used in `CLLD <https://clld.org/>`_ apps and easily processable by any software that can read `CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`_ files, including `R <https://www.r-project.org/>`_, `pandas <https://pandas.pydata.org/>`_, or spreadsheet applications.
+
+The goal of ``cldflex`` is to convert lexicon and corpus data stored in FLEx to CSV tables, primarily for use in CLDF datasets.
+At the moment, it has two commands: ``cldflex flex2csv`` processes `.flextext` (corpora), and ``cldflex lift2csv`` processes `.lift` (lexica) files.
+Then, one can either use `cldfbench <https://github.com/cldf/cldfbench>`_ to create one's own CLDF datasets, or use the ``cldflex``' built-in workflows to create (simple) datasets.
 
 Indices and tables
 ==================

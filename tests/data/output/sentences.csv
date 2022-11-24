@@ -1,4 +1,4 @@
-ID,Primary_Text,Text_ID,guid,Part,Translated_Text,gls_en_word,POS,Analyzed_Word,cf_txi,Gloss,msa_en,hn_txi,Language_ID
+ID,Primary_Text,Text_ID,guid,segnum_en_phrase,gls_en_phrase,gls_en_word,pos_en_word,Analyzed_Word,cf_txi,Gloss,msa_en,hn_txi,Language_ID
 ekiri-1,ekïrï ru man eroang tïmamin ïna,ekiri,674114d7-6707-42e1-af99-16b5d7079777,1,"The old man went to his work,",old one	PART	AFF	go	work	OBL,n	prt	prt	v	n	post,ekïrï	ru	man	ero-ang	tï-mami-n	ïna,ekïrï	ru	man	ero-ang	tï-mami-n	ïna,old one	PART	AFF	go-REM.CONT	3COR-work-PERT	OBL,n	prt	prt	v-v:Any	n:Any-n-n:Any	post,,txi
 ekiri-2,yuwyang man tïwïn,ekiri,726fb6d1-b426-430d-80ba-620fca4aed42,2,He looked for his machete.,search	AFF	machete,v	prt	n,y-uwy-ang	man	tï-wï-n,y-uwy-ang	man	tï-wï-n,3>3-search-REM.CONT	AFF	3COR-machete-PERT,v:Any-v-v:Any	prt	n:Any-n-n:Any,1		,txi
 ekiri-3,ïwïn mun eto ankang man,ekiri,0ff18c26-8fe0-4a7f-bace-dc9bf615160f,3,"“Where might my machete be?”, he asked.",machete	INAN.DIST	UNCERT	say	AFF,n	pro	prt	v	prt,ï-wï-n	mun	eto	an-k-ang	man,ï-wï-n	mun	eto	an-k-ang	man,1-machete-PERT	INAN.DIST	UNCERT	3-say-REM.CONT	AFF,Attaches to any category-n-n:Any	pro	prt	v:Any-v-v:Any	prt,,txi

@@ -64,9 +64,15 @@ def add_example_slices(sentence_slices, writer):
 
 def add_morphology_tables(tables, writer):
     try:
-        from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            FormSlices,
+        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            MorphsetTable,
+        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            MorphTable,
+        )  # pylint: disable=import-outside-toplevel
     except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -107,24 +113,61 @@ def create_dataset(  # noqa: MC0001
         sentence_slices = tables.get("SentenceSlices", None)
         morphs = tables.get("MorphTable", None)
         texts = tables.get("TextTable", None)
-        senses = tables.get("SenseTable", None)
+        meanings = tables.get("ParameterTable", None)
+        contributors = tables.get("ContributorTable", None)
+
+        if meanings is not None:
+            writer.cldf.add_component("ParameterTable")
+            for meaning in meanings.to_dict("records"):
+                writer.objects["ParameterTable"].append(meaning)
 
         log.debug(tables.keys())
         if forms is not None:
             log.debug("Forms")
             writer.cldf.add_component("FormTable")
-            writer.cldf.add_component("ParameterTable")  # Form meanings
+            if (
+                "Parameter_ID" in forms
+            ):  # this means that we are getting a modified lexicon (and not a list of glossed words from a corpus). they can have multiple meanings and forms
+                writer.cldf.remove_columns("FormTable", "Form")
+                writer.cldf.add_columns(
+                    "FormTable",
+                    {
+                        "name": "Form",
+                        "required": True,
+                        "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#form",
+                        "dc:extent": "singlevalued",
+                        "dc:description": "The written expression of the form. If possible the transcription system used for the written form should be described in CLDF metadata (e.g. via adding a common property `dc:conformsTo` to the column description using concept URLs of the GOLD Ontology (such as [phonemicRep](http://linguistics-ontology.org/gold/2010/phonemicRep) or [phoneticRep](http://linguistics-ontology.org/gold/2010/phoneticRep)) as values).",
+                        "datatype": "string",
+                        "separator": "; ",
+                    },
+                )
+                writer.cldf.remove_columns("FormTable", "Parameter_ID")
+                writer.cldf.add_columns(
+                    "FormTable",
+                    {
+                        "name": "Parameter_ID",
+                        "required": True,
+                        "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#parameterReference",
+                        "dc:description": "A reference to the meaning denoted by the form",
+                        "datatype": "string",
+                        "separator": "; ",
+                    },
+                )
+
             # Gather all encountered meanings and create ID slugs
-            meanings = {}
+            meaning_dict = {}
             for form in forms.to_dict("records"):
-                mslug = slug(form["Meaning"])
-                meanings.setdefault(mslug, form["Meaning"])
-                # Replace the glossed meaning with the slug and write directly to the dataset
-                form["Parameter_ID"] = mslug
+                if "Parameter_ID" not in form:
+                    mslug = slug(form["Meaning"])
+                    meaning_dict.setdefault(mslug, form["Meaning"])
+                    form["Parameter_ID"] = mslug
                 writer.objects["FormTable"].append(form)
-                # Write meanings
-            for k, v in meanings.items():
-                writer.objects["ParameterTable"].append({"ID": k, "Name": v})
+            if meanings is None:  # in case no dedicated ParameterTable was passed in
+                writer.cldf.add_component("ParameterTable")
+            for k, v in meaning_dict.items():
+                writer.objects["ParameterTable"].append(
+                    {"ID": k, "Name": v, "Description": v}
+                )
 
         if records is not None:
             log.debug("Examples")
@@ -140,27 +183,30 @@ def create_dataset(  # noqa: MC0001
                 },
                 # if they do, they have a number inside that text
                 {
-                    "name": "Part",
+                    "name": "Record_Number",
                     "dc:extent": "singlevalued",
                     "dc:description": "Position in the text",
                     "datatype": "integer",
                 },
+                # sometimes there are multiple "phrases" in a record
+                {
+                    "name": "Phrase_Number",
+                    "dc:extent": "singlevalued",
+                    "dc:description": "Position in the text record",
+                    "datatype": "integer",
+                },
+
             )
             # The default sentence metadata expect a list, not a tab-delimited string.
             for col in ["Analyzed_Word", "Gloss"]:
-                records[col] = records[col].apply(lambda x: x.split("\t"))
+                if not isinstance(records.iloc[0][col], list):
+                    records[col] = records[col].apply(lambda x: [y if y else "…" for y in x.split("\t")])
             for ex in records.to_dict("records"):
                 writer.objects["ExampleTable"].append(ex)
 
         if sentence_slices is not None:
             log.debug("Slices")
             add_example_slices(sentence_slices, writer)
-
-        if senses is not None:
-            log.debug("Senses (from lexicon)")
-            senses["Name"] = senses["Description"]
-            for sense in senses.to_dict("records"):
-                writer.objects["ParameterTable"].append(sense)
 
         if morphs is not None:
             log.debug("Morphs and such")
@@ -175,7 +221,9 @@ def create_dataset(  # noqa: MC0001
             )
         if texts is not None:
             try:
-                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
+                from clld_corpus_plugin.cldf import (
+                    TextTable,
+                )  # pylint: disable=import-outside-toplevel
             except ImportError:  # pragma: no cover
                 log.error(
                     "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -189,39 +237,52 @@ def create_dataset(  # noqa: MC0001
                         item.setdefault("Title", [])
                         item["Title"].append(v)
                     item[k] = v
-                item["Title"] = " / ".join(item["Title"])
+                if not isinstance(item["Title"], list):
+                    item["Title"] = "unknown title"
+                else:
+                    item["Title"] = " / ".join(
+                        [x for x in item["Title"] if not pd.isnull(x)]
+                    )
                 writer.objects["TextTable"].append(item)
+        if contributors is not None:
+            writer.cldf.add_component(
+{
+    "url": "ContributorTable",
+    "dc:conformsTo": None,
+    "dc:extent": 55,
+    "tableSchema": {
+        "columns": [
+            {
+                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#id",
+                "required": True,
+                "name": "ID"
+            },
+            {
+                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#name",
+                "required": True,
+                "name": "Name"
+            },
+            {
+                "name": "Email"
+            },
+            {
+                "name": "Url"
+            },
+            {
+                "datatype": "integer",
+                "name": "Order"
+            }
+        ],
+        "primaryKey": [
+            "ID"
+        ]
+    }
+})
+            for contributor in contributors.to_dict("records"):
+                writer.objects["ContributorTable"].append(contributor)
 
-        if (Path(cwd) / "languages.csv").is_file():
-            log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
-            lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
-            writer.cldf.add_component("LanguageTable")
-            for lg in lg_df.to_dict("records"):
-                writer.objects["LanguageTable"].append(lg)
-        else:  # pragma: no cover
-            log.info(
-                f"No languages.csv file found, fetching language info for [{glottocode}] from glottolog"
-            )
-            err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
-            try:
-                from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
-                from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
-            except ImportError:
-                log.error(err_msg)
-            if isinstance(pyglottolog, str):
-                log.error(err_msg)
+        add_language(writer, cwd, glottocode)
 
-            glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
-            languoid = glottolog.languoid(glottocode)
-            writer.cldf.add_component("LanguageTable")
-            writer.objects["LanguageTable"].append(
-                {
-                    "ID": languoid.id,
-                    "Latitude": languoid.latitude,
-                    "Longitude": languoid.longitude,
-                    "Name": languoid.name,
-                }
-            )
         md = Metadata(**metadata)
         log.debug(md)
         writer.cldf.properties.setdefault("rdf:ID", md.id)
@@ -235,10 +296,49 @@ def create_dataset(  # noqa: MC0001
             ]
         )
         for k, v in md.common_props().items():
+            if k == "dc:license":
+                v = v.replace(" ", "-")
             writer.cldf.properties.setdefault(k, v)
-
+        if "dc:license" not in writer.cldf.properties:
+            log.warning("You have not specified a license in your CLDF metadata.")
         writer.write()
         return writer.cldf
+
+
+def add_language(writer, cwd, glottocode):
+    if (Path(cwd) / "languages.csv").is_file():
+        log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
+        lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
+        writer.cldf.add_component("LanguageTable")
+        for lg in lg_df.to_dict("records"):
+            writer.objects["LanguageTable"].append(lg)
+    else:  # pragma: no cover
+        log.info(
+            f"No languages.csv file found, fetching language info for [{glottocode}] from glottolog"
+        )
+        err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
+        try:
+            from cldfbench.catalogs import (
+                Glottolog,
+            )  # pylint: disable=import-outside-toplevel
+            from cldfbench.catalogs import (
+                pyglottolog,
+            )  # pylint: disable=import-outside-toplevel
+        except ImportError:
+            log.error(err_msg)
+        if isinstance(pyglottolog, str):
+            log.error(err_msg)
+        glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
+        languoid = glottolog.languoid(glottocode)
+        writer.cldf.add_component("LanguageTable")
+        writer.objects["LanguageTable"].append(
+            {
+                "ID": languoid.id,
+                "Latitude": languoid.latitude,
+                "Longitude": languoid.longitude,
+                "Name": languoid.name,
+            }
+        )
 
 
 def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cwd="."):
@@ -256,26 +356,34 @@ def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cw
     log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")
 
 
-def write_dictionary_dataset(spec, morphemes, senses):
+def write_dictionary_dataset(
+    spec,
+    entries,
+    senses,
+    examples,
+    glottocode=None,
+    metadata=None,
+    output_dir=".",
+    cwd=".",
+):
     with CLDFWriter(spec) as writer:
-        morphemes["Headword"] = morphemes["Name"]
-        morphemes["Part_Of_Speech"] = morphemes["Gramm"]
-        for morpheme in morphemes.to_dict("records"):
-            writer.objects["EntryTable"].append(morpheme)
+        entries["Headword"] = entries["Name"]
+        entries["Part_Of_Speech"] = entries["Gramm"]
+        for entry in entries.to_dict("records"):
+            writer.objects["EntryTable"].append(entry)
         for sense in senses.to_dict("records"):
             writer.objects["SenseTable"].append(sense)
+        if len(examples) > 0:
+            writer.cldf.add_component("ExampleTable")
+            for example in examples.to_dict("records"):
+                writer.objects["ExampleTable"].append(example)
+        if glottocode:
+            add_language(writer, cwd, glottocode)
+
         return writer.cldf
 
 
-def create_dictionary_dataset(morphemes, senses, metadata=None, output_dir="."):
-    log.debug("Creating dataset")
-    metadata = metadata or {}
-    spec = CLDFSpec(
-        dir=output_dir / "cldf", module="Dictionary", metadata_fname="metadata.json"
-    )
-    ds = write_dictionary_dataset(spec, morphemes, senses)
-    log.debug("Validating")
-    ds.validate(log=log)
+def write_readme(ds):
     log.debug("Creating readme")
     readme = metadata2markdown(ds, ds.directory)
     with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
@@ -283,4 +391,28 @@ def create_dictionary_dataset(morphemes, senses, metadata=None, output_dir="."):
             "**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n"
             + readme
         )
+
+
+def create_dictionary_dataset(
+    entries, senses, examples, glottocode=None, metadata=None, output_dir=".", cwd="."
+):
+    log.debug("Creating dataset")
+    metadata = metadata or {}
+    spec = CLDFSpec(
+        dir=output_dir / "cldf", module="Dictionary", metadata_fname="metadata.json"
+    )
+    ds = write_dictionary_dataset(
+        spec,
+        entries,
+        senses,
+        examples,
+        glottocode=glottocode,
+        metadata=metadata,
+        output_dir=output_dir,
+        cwd=cwd,
+    )
+    log.debug("Validating")
+    ds.validate(log=log)
+
+    write_readme(ds)
     log.info(f"Created CLDF dataset at {ds.directory.resolve()}/{ds.filename}")

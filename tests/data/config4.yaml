@@ -7,5 +7,5 @@ cldf:
     license: "CC-BY-SA-4.0"
     url: "https://github.com/fmatter/cldflex"
     citation: "Matter, Florian. 2022. Example data from Ikpeng (ikpe1245)."
-  no_form_slices: true
-  no_sentence_slices: true
+form_slices: false
+sentence_slices: false

@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from cldflex.helpers import retrieve_morpheme_id
+from cldflex.helpers import LexiconRetriever
 from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
 
@@ -49,7 +49,8 @@ def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
         clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***")
     )
     clitic_dict.setdefault(
-        f"pos_{conf['gloss_lg']}_word", clitic_dict[f"msa_{conf['gloss_lg']}"]
+        f"pos_{conf['msa_lg']}_word",
+        clitic_dict.get(f"msa_{conf['msa_lg']}", "<Not Sure>"),
     )
     clitic_dict[gloss_key] = clitic_dict[gloss_key]
     clitic_dict.setdefault(gloss_key + "_word", clitic_dict[gloss_key])
@@ -97,11 +98,16 @@ def iterate_morphemes(word, word_dict, obj_key, gloss_key, conf):
             )
         else:
             extract_morpheme_data(morpheme, morpheme_type, word_dict, gloss_key, conf)
+    for key in [obj_key, gloss_key]:
+        if key not in word_dict:
+            word_dict[key] = "=".join(
+                [x[key] for x in proclitics] + [x[key] for x in enclitics]
+            )
     return proclitics, enclitics
 
 
 def get_form_slices(
-    word_dict, word_id, lexicon, form_slices, obj_key, gloss_key, ex_id
+    word_dict, word_id, lexicon, form_slices, obj_key, gloss_key, ex_id, retriever
 ):  # pylint: disable=too-many-arguments
     """For a given word consisting of a number of morphemes, establish what morphemes occur in which position, based on the lexicon information"""
     if word_id not in form_slices:
@@ -113,25 +119,26 @@ def get_form_slices(
                 word_dict["morph_type"],
             )
         ):
-            m_id, m_gloss = retrieve_morpheme_id(
-                morph_obj, morph_gloss, lexicon, morph_type
-            )
-            if m_id:
-                form_slices[word_id].append(
-                    {
-                        "ID": f"{word_id}-{str(m_c)}",
-                        "Form_ID": word_id,
-                        "Form": re.sub("|".join(delimiters), "", word_dict[obj_key]),
-                        "Form_Meaning": slug(word_dict[gloss_key]),
-                        "Morph_ID": m_id,
-                        "Morpheme_Meaning": m_gloss,
-                        "Index": str(m_c),
-                    }
+            if morph_gloss:
+                m_id, sense_id = retriever.retrieve_morpheme_id(
+                    morph_obj, morph_gloss, lexicon, morph_type, ex_id
                 )
+                if m_id:
+                    form_slices[word_id].append(
+                        {
+                            "ID": f"{word_id}-{str(m_c)}",
+                            "Form_ID": word_id,
+                            "Form": re.sub(
+                                "|".join(delimiters), "", word_dict[obj_key]
+                            ),
+                            "Form_Meaning": slug(word_dict[gloss_key]),
+                            "Morph_ID": m_id,
+                            "Morpheme_Meaning": sense_id,
+                            "Index": str(m_c),
+                        }
+                    )
             else:
-                log.warning(
-                    f"No hits for {morph_obj} '{morph_gloss}' in lexicon! ({ex_id})"
-                )
+                log.warning(f"Unglossed morpheme /{morph_obj}/ in {ex_id}")
 
 
 def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id):
@@ -172,6 +179,7 @@ def extract_records(  # noqa: MC0001
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
+    retriever = LexiconRetriever()
 
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
         text.find_all("phrase")
@@ -184,7 +192,7 @@ def extract_records(  # noqa: MC0001
         else:
             segnum = phrase_count
 
-        ex_id = f"{text_id}-{segnum}"
+        ex_id = slugify(f"{text_id}-{segnum}")
         log.debug(f"{ex_id}")
 
         word_count = 0
@@ -195,11 +203,10 @@ def extract_records(  # noqa: MC0001
             proclitics, enclitics = iterate_morphemes(
                 word, word_dict, obj_key, gloss_key, conf
             )
-
             # sentence slices are only for analyzed word forms
             if word.find_all("morphemes"):
 
-                if lexicon is not None:
+                if lexicon is not None and conf.get("form_slices", True):
                     get_form_slices(
                         word_dict,
                         word_id,
@@ -208,6 +215,7 @@ def extract_records(  # noqa: MC0001
                         obj_key,
                         gloss_key,
                         ex_id,
+                        retriever,
                     )
                     for clitic in proclitics + enclitics:
                         get_form_slices(
@@ -218,6 +226,7 @@ def extract_records(  # noqa: MC0001
                             obj_key,
                             gloss_key,
                             ex_id,
+                            retriever,
                         )
 
                 for clitic in proclitics:
@@ -265,7 +274,8 @@ def extract_records(  # noqa: MC0001
 
         surface = compose_surface_string(surface)
         interlinear_lines = pd.DataFrame.from_dict(interlinear_lines).fillna("")
-        interlinear_lines.drop(columns=["morph_type"], inplace=True)
+        if len(interlinear_lines) != 0:
+            interlinear_lines.drop(columns=["morph_type"], inplace=True)
         phrase_dict = {
             "ID": ex_id,
             "Primary_Text": surface,
@@ -290,7 +300,7 @@ def extract_records(  # noqa: MC0001
     return record_list
 
 
-def load_lexicon(lexicon_file, conf):
+def load_lexicon(lexicon_file, conf, sep, output_dir="."):
     if lexicon_file is None:
         log.warning(
             "No lexicon file provided. If you want the output to contain morph IDs, provide a csv file with ID, Form, and Meaning."
@@ -298,9 +308,7 @@ def load_lexicon(lexicon_file, conf):
         return None
     if lexicon_file.suffix == ".lift":
         log.info(f"Running lift2csv on {lexicon_file.resolve()}")
-        lexicon = lift2csv(
-            lift_file=lexicon_file, output_dir=lexicon_file.parents[0], conf=conf
-        )
+        lexicon = lift2csv(lift_file=lexicon_file, output_dir=output_dir, conf=conf)
     elif lexicon_file.suffix == ".csv":
         log.info(f"Reading lexicon file {lexicon_file.resolve()}")
         lexicon = pd.read_csv(lexicon_file, encoding="utf-8", keep_default_na=False)
@@ -310,8 +318,8 @@ def load_lexicon(lexicon_file, conf):
     lexicon["Form_Bare"] = lexicon["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
-    for split_col in ["Form_Bare", "Form", "Meaning", "Parameter_ID"]:
-        lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split("; "))
+    for split_col in ["Form_Bare", "Form", "Gloss", "Parameter_ID"]:
+        lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split(sep))
     morpheme_lg = lexicon.iloc[0]["Language_ID"]
     if morpheme_lg != conf["Language_ID"]:
         log.info(
@@ -323,13 +331,15 @@ def load_lexicon(lexicon_file, conf):
 
 def load_keys(conf, texts):
     if "gloss_lg" not in conf:
-        log.warning("No glossing language specified, assuming [en].")
+        log.info("No glossing language specified, assuming [en].")
         conf["gloss_lg"] = "en"
+    if "msa_lg" not in conf:
+        conf["msa_lg"] = conf["gloss_lg"]
     gloss_key = "gls_" + conf["gloss_lg"]
 
     if "obj_lg" not in conf:
         conf["obj_lg"] = texts.select(f"item[lang!={conf['gloss_lg']}]")[0]["lang"]
-        log.warning(f"No object language specified, assuming [{conf['obj_lg']}].")
+        log.info(f"No object language specified, assuming [{conf['obj_lg']}].")
     obj_key = "txt_" + conf["obj_lg"]
     punct_key = "punct_" + conf["obj_lg"]
 
@@ -345,7 +355,7 @@ def get_text_id(text):
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
             text_id = slugify(abbrev.text)
-            log.info(f"Using language [{abbrev['lang']}] for text ID: {text_id}")
+            log.info(f"{text_id}")
     return text_id
 
 
@@ -369,32 +379,45 @@ def write_form_slices(form_slices, output_dir):
     return form_slices
 
 
+def split_part_col(rec):
+    if "." in rec["Record_Number"]:
+        rec["Record_Number"], rec["Phrase_Number"] = rec["Record_Number"].split(".")
+    return rec
+
+
 def write_sentences(df, output_dir, conf):
     rename_dict = conf.get("mappings", {})
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
-        (f"pos_{conf['gloss_lg']}_word", "POS"),
-        (f"segnum_{conf['gloss_lg']}_phrase", "Part"),
+        (f"pos_{conf['gloss_lg']}_word", "Part_Of_Speech"),
+        (f"segnum_{conf['gloss_lg']}_phrase", "Record_Number"),
     ]:
         rename_dict.setdefault(gen_col, label)
-    df.rename(columns=rename_dict, inplace=True)
+    for k, v in rename_dict.items():
+        if v in df.columns:
+            log.warning(
+                f"Renaming '{k}' to '{v}' is overwriting an existing column '{v}'"
+            )
+        df.rename(columns={k: v}, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
+    # resolve records with multiple phrases
+    df = df.apply(lambda x: split_part_col(x), axis=1)
     log.debug(type(output_dir))
     # todo: sort columns for humans
     # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
     log.debug(f"Saving {(output_dir / 'sentences.csv').resolve()}")
     df.to_csv(output_dir / "sentences.csv", index=False)
-    return df
+    return df.fillna("")
 
 
-def write_wordforms(wordforms, output_dir, conf):
+def write_wordforms(wordforms, output_dir, conf, sep):
     wordforms = pd.DataFrame.from_dict(wordforms.values())
     lg_id = conf.get("Language_ID", None)
     if lg_id:
         wordforms["Language_ID"] = lg_id
     for col in ["Form", "Meaning"]:
         wordforms[col] = wordforms[col].apply(
-            lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
+            lambda x: sep.join(x)  # pylint: disable=unnecessary-lambda 🙄
         )
     log.debug(f"Saving {(output_dir / 'wordforms.csv').resolve()}")
     wordforms.to_csv(output_dir / "wordforms.csv", index=False)
@@ -429,7 +452,8 @@ def convert(
             with open(config_file, encoding="utf-8") as f:
                 conf = yaml.safe_load(f)
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
-    lexicon = load_lexicon(lexicon_file, conf)
+    sep = conf.get("csv_cell_separator", "; ")
+    lexicon = load_lexicon(lexicon_file, conf, sep, output_dir)
 
     wordforms = {}
 
@@ -463,41 +487,51 @@ def convert(
         .fillna("")
     )
 
-    write_sentences(df, output_dir, conf)
+    df = write_sentences(df, output_dir, conf)
 
-    wordforms = write_wordforms(wordforms, output_dir, conf)
+    wordforms = write_wordforms(wordforms, output_dir, conf, sep)
 
-    sentence_slices = write_generic(sentence_slices, "sentence_slices", output_dir)
+    if conf.get("sentence_slices", True):
+        sentence_slices = write_generic(sentence_slices, "sentence_slices", output_dir)
 
     texts = write_generic(text_list, "texts", output_dir)
 
     form_slices = write_form_slices(form_slices, output_dir)
 
     log.info(f"Wrote CSV files to {output_dir.resolve()}")
-
     if cldf:
         from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
         tables = {"FormTable": wordforms, "ExampleTable": df, "TextTable": texts}
-        if not cldf_settings.get("no_sentence_slices", False):
+        contributors = cldf_settings.get("contributors", {})
+        if contributors:
+            for contributor in contributors:
+                if "id" not in contributor and "name" in contributor:
+                    contributor["ID"] = slugify(contributor["name"])
+                else:
+                    contributor["ID"] = contributor["id"]
+                for k in contributor.keys():
+                    if k != "ID":
+                        contributor[k.capitalize()] = contributor.pop(k)
+            tables["ContributorTable"] = pd.DataFrame.from_dict(contributors)
+        if conf.get("sentence_slices", True):
             tables["SentenceSlices"] = sentence_slices
         if lexicon is not None:
             lexicon["Name"] = lexicon["Form_Bare"].apply(
-                lambda x: "; ".join(x)  # pylint: disable=unnecessary-lambda 🙄
+                lambda x: sep.join(x)  # pylint: disable=unnecessary-lambda 🙄
             )
             tables["MorphTable"] = lexicon
-            if not cldf_settings.get("no_form_slices", False):
+            if conf.get("form_slices", True):
                 tables["FormSlices"] = form_slices
-            tables["MorphsetTable"] = load_lexicon(
-                lexicon_file.parents[0] / "morphemes.csv", conf
-            )
-            tables["SenseTable"] = pd.read_csv(lexicon_file.parents[0] / "senses.csv")
+            tables["MorphsetTable"] = load_lexicon(output_dir / "morphemes.csv", conf, sep)
+            # tables["MorphsetTable"] = morphemes["Parameter_ID"] = morphemes["Parameter_ID"].apply(lambda x: x.split(sep))
+            tables["ParameterTable"] = pd.read_csv(output_dir / "senses.csv")
 
         create_cldf(
             tables=tables,
-            glottocode=conf.get("Glottocode", conf.get("Language_ID", "minn1241")),
+            glottocode=conf.get("Glottocode", conf.get("Language_ID", None)),
             metadata=metadata,
             output_dir=output_dir,
             cwd=flextext_file.parents[0],

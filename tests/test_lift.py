@@ -25,4 +25,6 @@ def test_lift(data, tmp_path):
         df1 = df1[sorted(df1.columns)]
         df2 = df2[sorted(df2.columns)]
 
+        print(df1)
+        print(df2)
         pd.testing.assert_frame_equal(df1, df2)
