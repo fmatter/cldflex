@@ -1,5 +1,7 @@
 # cldflex
 
+Convert FLEx data to CLDF-ready CSV.
+
 ![License](https://img.shields.io/github/license/fmatter/cldflex)
 [![Documentation Status](https://readthedocs.org/projects/cldflex/badge/?version=latest)](https://cldflex.readthedocs.io/en/latest/?badge=latest)
 [![Tests](https://img.shields.io/github/workflow/status/fmatter/cldflex/tests?label=tests)](https://github.com/fmatter/cldflex/actions/workflows/tests.yml)
@@ -8,8 +10,12 @@
 [![PyPI](https://img.shields.io/pypi/v/cldflex.svg)](https://pypi.org/project/cldflex)
 ![Versions](https://img.shields.io/pypi/pyversions/cldflex)
 
-Convert FLEx data to CLDF-ready CSV.
+## Installation
 
+`cldflex` is available on [PyPI](https://pypi.org/project/cldflex):
+```shell
+pip install cldflex
+```
 
-* Documentation: https://cldflex.readthedocs.io
-
+## Documentation
+Read the full documentation [here](https://cldflex.readthedocs.io).
