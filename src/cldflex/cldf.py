@@ -99,7 +99,7 @@ def add_morphology_tables(tables, writer):
 
 
 def create_dataset(  # noqa: MC0001
-    tables, glottocode=None, metadata=None, output_dir=Path("."), cwd="."
+    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."
 ):  # pylint: disable=too-many-locals
     log.debug("Creating dataset")
     metadata = metadata or {}
@@ -107,6 +107,14 @@ def create_dataset(  # noqa: MC0001
         dir=output_dir / "cldf", module="Generic", metadata_fname="metadata.json"
     )
     with CLDFWriter(spec) as writer:
+
+        lg_tables = ["FormTable", "ExampleTable", "MorphTable", "MorphsetTable"]
+
+        glottocode = add_language(writer, cwd, glottocode, iso)
+        if glottocode:
+            for table_id in lg_tables:
+                if table_id in tables:
+                    tables[table_id]["Language_ID"] = glottocode
 
         forms = tables.get("FormTable", None)
         records = tables.get("ExampleTable", None)
@@ -281,8 +289,6 @@ def create_dataset(  # noqa: MC0001
             for contributor in contributors.to_dict("records"):
                 writer.objects["ContributorTable"].append(contributor)
 
-        add_language(writer, cwd, glottocode)
-
         md = Metadata(**metadata)
         log.debug(md)
         writer.cldf.properties.setdefault("rdf:ID", md.id)
@@ -305,16 +311,17 @@ def create_dataset(  # noqa: MC0001
         return writer.cldf
 
 
-def add_language(writer, cwd, glottocode):
+def add_language(writer, cwd, glottocode, iso):
     if (Path(cwd) / "languages.csv").is_file():
         log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
         lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
         writer.cldf.add_component("LanguageTable")
         for lg in lg_df.to_dict("records"):
             writer.objects["LanguageTable"].append(lg)
+        return None
     else:  # pragma: no cover
         log.info(
-            f"No languages.csv file found, fetching language info for [{glottocode}] from glottolog"
+            f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog"
         )
         err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
         try:
@@ -329,7 +336,14 @@ def add_language(writer, cwd, glottocode):
         if isinstance(pyglottolog, str):
             log.error(err_msg)
         glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
-        languoid = glottolog.languoid(glottocode)
+        if glottocode or iso:
+            if glottocode:
+                languoid = glottolog.languoid(glottocode)
+            elif iso:
+                languoid = glottolog.languoid(iso)
+        else:
+            raise ValueError("Missing value: glottocode or iso")
+
         writer.cldf.add_component("LanguageTable")
         writer.objects["LanguageTable"].append(
             {
@@ -339,11 +353,12 @@ def add_language(writer, cwd, glottocode):
                 "Name": languoid.name,
             }
         )
+        return languoid.id
 
 
-def create_cldf(tables, glottocode=None, metadata=None, output_dir=Path("."), cwd="."):
+def create_cldf(tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."):
     log.info("Creating CLDF dataset")
-    ds = create_dataset(tables, glottocode, metadata, output_dir=output_dir, cwd=cwd)
+    ds = create_dataset(tables, glottocode, iso, metadata, output_dir=output_dir, cwd=cwd)
     log.debug("Validating")
     ds.validate(log=log)
     log.debug("Creating readme")
