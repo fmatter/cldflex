@@ -529,9 +529,16 @@ def convert(
             # tables["MorphsetTable"] = morphemes["Parameter_ID"] = morphemes["Parameter_ID"].apply(lambda x: x.split(sep))
             tables["ParameterTable"] = pd.read_csv(output_dir / "senses.csv")
 
+        glottocode = conf.get("Glottocode", None)
+        if not glottocode:
+            log.warning("You have not specified a glottocode in your configuration.")
+            iso = conf.get("Language_ID", None)
+        else:
+            iso = None
         create_cldf(
             tables=tables,
-            glottocode=conf.get("Glottocode", conf.get("Language_ID", None)),
+            glottocode=glottocode,
+            iso=iso,
             metadata=metadata,
             output_dir=output_dir,
             cwd=flextext_file.parents[0],
