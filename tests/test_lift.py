@@ -5,7 +5,7 @@ from cldflex.lift2csv import convert
 
 
 def test_lift(data, tmp_path):
-    convert(lift_file=data / "ikpeng_lift.lift", output_dir=tmp_path)
+    convert(lift_file=data / "apalai.lift", output_dir=tmp_path)
 
     for filename in [
         "morphs.csv",

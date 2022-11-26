@@ -11,8 +11,6 @@ def check_filelist(path, checklist):
     for d in ["requirements.txt", "metadata.json", ".gitattributes", "README.md"]:
         if d in file_list:
             file_list.remove(d)
-    print(sorted(checklist))
-    print(sorted(file_list))
     assert sorted(checklist) == sorted(file_list)
 
 
@@ -24,35 +22,29 @@ def check_cldf(path):
     return ds
 
 
-def run_flextext(path, monkeypatch, data, config=None, lexicon=True, cldf=True):
+def run_flextext(
+    path, monkeypatch, data, tmp_path, config=None, lexicon=True, cldf=True
+):
     monkeypatch.chdir(path)
     runner = CliRunner()
-    commands = [str((data / "ikpeng.flextext").resolve()), f"--output", str(path.resolve())]
+    shutil.copy(data / "output" / "senses.csv", tmp_path)
+    shutil.copy(data / "output" / "morphemes.csv", tmp_path)
+    commands = [
+        str((data / "apalai.flextext").resolve()),
+        "--output",
+        str(path.resolve()),
+    ]
     if lexicon:
         commands.extend(["--lexicon", str((data / "output/morphs.csv").resolve())])
     if cldf:
         commands.extend(["--cldf"])
     if config:
         commands.extend(["--conf", str((data / f"{config}.yaml"))])
-    return runner.invoke(flex2csv, commands)
+    return runner.invoke(flex2csv, commands, catch_exceptions=False)
 
 
 def test_sentences1(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, lexicon=False)
-    assert result.exit_code == 0
-    check_cldf(tmp_path)
-    check_filelist(
-        tmp_path,
-        ["wordforms.csv", "sentences.csv", "sentence_slices.csv", "texts.csv", "cldf"],
-    )
-    check_filelist(
-        tmp_path / "cldf",
-        ["languages.csv", "examples.csv", "forms.csv", "parameters.csv", "ExampleSlices", "TextTable"],
-    )
-
-
-def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, config="config1")
+    result = run_flextext(tmp_path, monkeypatch, data, tmp_path, lexicon=False)
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
@@ -62,6 +54,37 @@ def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
             "sentences.csv",
             "sentence_slices.csv",
             "texts.csv",
+            "morphemes.csv",
+            "senses.csv",
+            "cldf",
+        ],
+    )
+    check_filelist(
+        tmp_path / "cldf",
+        [
+            "languages.csv",
+            "examples.csv",
+            "forms.csv",
+            "parameters.csv",
+            "ExampleSlices",
+            "TextTable",
+        ],
+    )
+
+
+def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
+    result = run_flextext(tmp_path, monkeypatch, data, tmp_path, config="config1")
+    assert result.exit_code == 0
+    check_cldf(tmp_path)
+    check_filelist(
+        tmp_path,
+        [
+            "wordforms.csv",
+            "sentences.csv",
+            "sentence_slices.csv",
+            "texts.csv",
+            "morphemes.csv",
+            "senses.csv",
             "cldf",
             "form_slices.csv",
         ],
@@ -83,7 +106,7 @@ def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
 
 
 def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, config="config2")
+    result = run_flextext(tmp_path, monkeypatch, data, tmp_path, config="config2")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
@@ -102,7 +125,7 @@ def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
 
 
 def test_sentences_with_lexicon_no_form_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, "config3")
+    result = run_flextext(tmp_path, monkeypatch, data, tmp_path, "config3")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
@@ -121,7 +144,7 @@ def test_sentences_with_lexicon_no_form_slices(data, tmp_path, monkeypatch):
 
 
 def test_sentences_with_lexicon_no_slices(data, tmp_path, monkeypatch):
-    result = run_flextext(tmp_path, monkeypatch, data, "config4")
+    result = run_flextext(tmp_path, monkeypatch, data, tmp_path, "config4")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
@@ -143,7 +166,7 @@ def test_lift(data, tmp_path, monkeypatch):
     runner = CliRunner()
     result = runner.invoke(
         lift2csv,
-        [str((data / "ikpeng_lift.lift").resolve()), f"--output", tmp_path, "--cldf"],
+        [str((data / "apalai.lift").resolve()), f"--output", tmp_path, "--cldf"],
     )
     assert result.exit_code == 0
     assert Path(tmp_path / "senses.csv").is_file()

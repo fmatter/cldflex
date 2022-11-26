@@ -1,0 +1,1744 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- See https://github.com/sillsdev/lift-standard for more information on the format used here. -->
+<lift producer="SIL.FLEx 9.0.17.44391" version="0.13">
+<header>
+<ranges>
+<range id="dialect" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="etymology" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="grammatical-info" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="lexical-relation" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="note-type" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="paradigm" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="reversal-type" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="semantic-domain-ddp4" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="status" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="users" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="location" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<!-- The following ranges are produced by FieldWorks Language Explorer, and are not part of the LIFT standard. -->
+<range id="anthro-code" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="translation-type" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<!-- The parts of speech are duplicated in another range because derivational affixes require a "From" PartOfSpeech as well as a "To" PartOfSpeech. -->
+<range id="from-part-of-speech" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="morph-type" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="exception-feature" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="inflection-feature" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="inflection-feature-type" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+<range id="do-not-publish-in" href="file:///home/florianm/Dropbox/development/cldflex/var/apalai/apalai.lift-ranges"/>
+</ranges>
+<fields>
+<field tag="cv-pattern">
+<form lang="en"><text>This records the syllable pattern for a LexPronunciation in FieldWorks.</text></form>
+</field>
+<field tag="tone">
+<form lang="en"><text>This records the tone information for a LexPronunciation in FieldWorks.</text></form>
+</field>
+<field tag="comment">
+<form lang="en"><text>This records a comment (note) in a LexEtymology in FieldWorks.</text></form>
+</field>
+<field tag="import-residue">
+<form lang="en"><text>This records residue left over from importing a standard format file into FieldWorks (or LinguaLinks).</text></form>
+</field>
+<field tag="literal-meaning">
+<form lang="en"><text>This field is used to store a literal meaning of the entry.  Typically, this field is necessary only for a compound or an idiom where the meaning of the whole is different from the sum of its parts.</text></form>
+</field>
+<field tag="summary-definition">
+<form lang="en"><text>A summary definition (located at the entry level in the Entry pane) is a general definition summarizing all the senses of a primary entry. It has no theoretical value; its use is solely pragmatic.</text></form>
+</field>
+<field tag="scientific-name">
+<form lang="en"><text>This field stores the scientific name pertinent to the current sense.</text></form>
+</field>
+</fields>
+</header>
+<entry dateCreated="2022-11-11T16:53:50Z" dateModified="2022-11-11T16:53:50Z" id="kae_0120348c-3314-4b4a-b1a7-af670f998f36" guid="0120348c-3314-4b4a-b1a7-af670f998f36">
+<lexical-unit>
+<form lang="apy"><text>kae</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="86751791-855e-43d9-98b1-6657ac110330">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>high</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:05:48Z" dateModified="2022-11-12T01:05:48Z" id="taky_016021f9-25e5-4201-afa8-2248c1aa7f00" guid="016021f9-25e5-4201-afa8-2248c1aa7f00">
+<lexical-unit>
+<form lang="apy"><text>taky</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="9fa89a43-3eb9-4087-9d34-ff9da3acebcf">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>bow</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:55:20Z" dateModified="2022-11-14T22:55:20Z" id="ywy_04f7475f-f1e6-49da-b26e-1bf38424f539" guid="04f7475f-f1e6-49da-b26e-1bf38424f539">
+<lexical-unit>
+<form lang="apy"><text>ywy</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="351d2ad7-de22-49d2-a9df-330045a9f549">
+<grammatical-info value="Pronoun">
+</grammatical-info>
+<gloss lang="en"><text>1</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:42:46Z" dateModified="2022-11-15T05:34:30Z" id="-no1_061e8b95-05d4-4100-965e-fb2fc225dfda" guid="061e8b95-05d4-4100-965e-fb2fc225dfda" order="1">
+<lexical-unit>
+<form lang="apy"><text>-no</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="c9997b50-01e4-476c-88b6-d448e3277903">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>HORT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:14:34Z" dateModified="2022-11-14T23:14:34Z" id="-hnao_06766d5b-eac6-4f3b-9a53-a6fc8b5f90fc" guid="06766d5b-eac6-4f3b-9a53-a6fc8b5f90fc">
+<lexical-unit>
+<form lang="apy"><text>-hnao</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="98bfbd66-1b3b-4ed8-b27b-455ee42a24cc">
+<grammatical-info value="Adverb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Noun"/>
+</grammatical-info>
+<gloss lang="en"><text>PRIV.ADVZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:00:02Z" dateModified="2022-11-11T17:00:02Z" id="kakoxi_088662ea-b4b9-42f4-a8b2-ced25656d52f" guid="088662ea-b4b9-42f4-a8b2-ced25656d52f">
+<lexical-unit>
+<form lang="apy"><text>kakoxi</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="24dacbbd-866c-4f22-a010-8b7879d912cc">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>above</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:48:49Z" dateModified="2022-11-11T16:48:49Z" id="rahkene_0b0d5da3-a94c-4fd8-9a58-870c3e30609b" guid="0b0d5da3-a94c-4fd8-9a58-870c3e30609b">
+<lexical-unit>
+<form lang="apy"><text>rahkene</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="046589c6-eb1d-4d42-bdd3-f7c86bed8e00">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>really</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:54:41Z" dateModified="2022-11-22T04:54:41Z" id="poeto_0d8fdbc4-52fe-4be4-8b6b-3a6b7db0e02b" guid="0d8fdbc4-52fe-4be4-8b6b-3a6b7db0e02b">
+<lexical-unit>
+<form lang="apy"><text>poeto</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="ab38e3ff-b00e-438f-94ae-15b4e6c66ff5">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>child</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:42:10Z" dateModified="2022-11-22T04:42:10Z" id="tuhke_0f962105-d2f5-4e33-8f61-b567022f82b1" guid="0f962105-d2f5-4e33-8f61-b567022f82b1">
+<lexical-unit>
+<form lang="apy"><text>tuhke</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="04850425-8307-4aec-a0f6-f5d0920eb1ad">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>many</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:59:06Z" dateModified="2022-11-11T23:59:06Z" id="osema_10b28661-a298-4e83-9894-b31fe18e55dc" guid="10b28661-a298-4e83-9894-b31fe18e55dc">
+<lexical-unit>
+<form lang="apy"><text>osema</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="41709b19-c4dd-4e27-863d-a1a2bdbc6bfe">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>path</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:03:30Z" dateModified="2022-11-11T17:03:30Z" id="ryhpoka_14135ae7-70f4-4e02-a099-e47e3028a896" guid="14135ae7-70f4-4e02-a099-e47e3028a896">
+<lexical-unit>
+<form lang="apy"><text>ryhpoka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="97a81f87-1b05-4f74-8e8f-d91606fdc4fa">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>unstick</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:56:14Z" dateModified="2022-11-11T16:56:14Z" id="zaraimo_14e8a68b-03a2-444e-a3c8-b6ec12f697cf" guid="14e8a68b-03a2-444e-a3c8-b6ec12f697cf">
+<lexical-unit>
+<form lang="apy"><text>zaraimo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="f2e3da23-172b-4b07-8ec8-d360027b2a5c">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>angelim tree</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:59:16Z" dateModified="2022-11-11T23:59:16Z" id="zuh_16c96bdf-3058-4165-abf7-c977a364b15a" guid="16c96bdf-3058-4165-abf7-c977a364b15a">
+<lexical-unit>
+<form lang="apy"><text>zuh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="f560cac0-eb3b-4517-be4d-b962e600c559">
+<gloss lang="en"><text>head</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:57:24Z" dateModified="2022-11-11T16:57:24Z" id="ehma_16d02f66-fb39-422b-8ed5-488bbe210da8" guid="16d02f66-fb39-422b-8ed5-488bbe210da8">
+<lexical-unit>
+<form lang="apy"><text>ehma</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="de083532-714a-472d-8a43-5a9114c53011">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>fork</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:07:15Z" dateModified="2022-11-11T17:07:15Z" id="-htao_16e4d6cc-4539-4070-af6f-ec70e4ec9c9e" guid="16e4d6cc-4539-4070-af6f-ec70e4ec9c9e">
+<lexical-unit>
+<form lang="apy"><text>-htao</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="d001d9a1-3159-432f-ae15-9c8e57d32b38">
+<grammatical-info value="Adverb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>ADVZ.when</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:47:58Z" dateModified="2022-11-12T03:20:46Z" id="xine_1974fd5c-f5e9-4453-bab3-e3c7cc7ac146" guid="1974fd5c-f5e9-4453-bab3-e3c7cc7ac146">
+<lexical-unit>
+<form lang="apy"><text>xine</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="484e05d0-daf8-4f86-9192-a36ca26627b5">
+<gloss lang="en"><text>PL</text></gloss>
+<example source="po2 6.2">
+<form lang="apy"><text>Tuose eya xine.</text></form>
+<translation type="Free translation">
+<form lang="en"><text>They shot it.</text></form>
+</translation>
+<note type="reference">
+<form lang="apy"><text><span href="silfw://localhost/link?tool%3dinterlinearEdit%26guid%3d688a40f6-a54b-4343-b875-c8e206684b84%26tag%3d" class="Hyperlink">po2 6.2</span></text></form>
+</note>
+</example>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:04:58Z" dateModified="2022-11-11T20:04:58Z" id="-ase_1b939b1a-dfae-4064-a8f9-59d01f8b348f" guid="1b939b1a-dfae-4064-a8f9-59d01f8b348f">
+<lexical-unit>
+<form lang="apy"><text>-ase</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<variant>
+<form lang="apy"><text>-se</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<sense id="83dec5a3-af2f-4120-b6ff-eb778fb06b7d">
+<grammatical-info value="Pro-form">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>REC.CPL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:01:10Z" dateModified="2022-11-14T23:01:10Z" id="pika_1c7ff07e-7cda-4e9c-a0fb-edcdc2ee2371" guid="1c7ff07e-7cda-4e9c-a0fb-edcdc2ee2371">
+<lexical-unit>
+<form lang="apy"><text>pika</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="585de2e3-889b-437a-94fc-c2dc2b8f69db">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>peel</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:24:41Z" dateModified="2022-11-15T05:24:41Z" id="aja_1cd87dcc-dd28-4562-a969-ba227edf000e" guid="1cd87dcc-dd28-4562-a969-ba227edf000e">
+<lexical-unit>
+<form lang="apy"><text>aja</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="35881b8b-0354-4cdb-9eeb-dad5e451f540">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>1.mother</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:08:51Z" dateModified="2022-11-14T23:08:51Z" id="eunoh_1feb1b22-6f31-4ec0-9703-171473166aaf" guid="1feb1b22-6f31-4ec0-9703-171473166aaf">
+<lexical-unit>
+<form lang="apy"><text>eunoh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="ccb895d1-071f-461c-9b47-2d8fb603c67a">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>laugh</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:53:07Z" dateModified="2022-11-22T04:53:07Z" id="muku_20108cb9-81f8-490d-858e-753561731e1d" guid="20108cb9-81f8-490d-858e-753561731e1d">
+<lexical-unit>
+<form lang="apy"><text>muku</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="6fe10c7e-3921-4344-8afb-673ebfbe0c42">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>son</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:08:01Z" dateModified="2022-11-11T20:00:36Z" id="eta_225aff67-8fb6-4d1e-aedb-c02e36d3ac8d" guid="225aff67-8fb6-4d1e-aedb-c02e36d3ac8d">
+<lexical-unit>
+<form lang="apy"><text>eta</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>ota</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="7d6b2505-ea04-46fa-80fd-66876c698096">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>hear</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:42:45Z" dateModified="2022-11-14T23:00:37Z" id="-ry1_23a227f1-f318-494a-82d5-db4f8e53470f" guid="23a227f1-f318-494a-82d5-db4f8e53470f" order="1">
+<lexical-unit>
+<form lang="apy"><text>-ry</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="3205af74-ddd1-4d84-bc4c-5603900c3efd">
+<grammatical-info value="Noun">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>NMLZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:51:08Z" dateModified="2022-11-14T22:51:08Z" id="ynara_2472384d-2f8c-4795-94fd-a2bdfde4aa4d" guid="2472384d-2f8c-4795-94fd-a2bdfde4aa4d">
+<lexical-unit>
+<form lang="apy"><text>ynara</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="8b215dd7-e651-4cd2-a913-5db8cedf74a4">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>thus</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:16:40Z" dateModified="2022-11-11T20:16:40Z" id="ropa_24838d21-b3f5-4903-a0c9-89de0f837bf2" guid="24838d21-b3f5-4903-a0c9-89de0f837bf2">
+<lexical-unit>
+<form lang="apy"><text>ropa</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="d93cea73-24d0-4d28-8db8-9ce8bf752bef">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>again</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:46:47Z" dateModified="2022-11-22T04:46:47Z" id="aro_28eeeb5e-4ca0-4d3b-a0f2-c3e5af25c030" guid="28eeeb5e-4ca0-4d3b-a0f2-c3e5af25c030">
+<lexical-unit>
+<form lang="apy"><text>aro</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="17401a71-2cbe-4d96-9eba-bd8fed23a5e1">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>bring</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T03:26:14Z" dateModified="2022-11-12T03:26:14Z" id="urakana_2b01fa0a-0157-4503-8145-cda8d73c6b89" guid="2b01fa0a-0157-4503-8145-cda8d73c6b89">
+<lexical-unit>
+<form lang="apy"><text>urakana</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="49e7c212-7b51-47b1-b589-9b08b89838b2">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>hunt</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:55:08Z" dateModified="2022-11-22T04:55:08Z" id="pyrou_2bb56888-dfe0-4b49-9f8e-7bcc82d6ec4d" guid="2bb56888-dfe0-4b49-9f8e-7bcc82d6ec4d">
+<lexical-unit>
+<form lang="apy"><text>pyrou</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="d735523e-9a7b-43c3-b6dd-0dce9e5486c0">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>arrow</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:38:51Z" dateModified="2022-11-22T04:38:51Z" id="konohno_2d1ed357-4019-42e0-b6a5-2a71a85e8077" guid="2d1ed357-4019-42e0-b6a5-2a71a85e8077">
+<lexical-unit>
+<form lang="apy"><text>konohno</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="6782db43-c6b6-4913-bf65-28c2ea08817f">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>brother in law</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:50:30Z" dateModified="2022-11-14T22:50:30Z" id="pona_3913ca4b-ea26-4f68-89c2-e8055f1f9ae6" guid="3913ca4b-ea26-4f68-89c2-e8055f1f9ae6">
+<lexical-unit>
+<form lang="apy"><text>pona</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="0cdaf1c1-29ed-492a-adda-40a44eae8f6e">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>to flat place</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:14:34Z" dateModified="2022-11-11T20:14:34Z" id="mokyro_39a338a8-24aa-4f9c-87dc-5ac90e6ce800" guid="39a338a8-24aa-4f9c-87dc-5ac90e6ce800">
+<lexical-unit>
+<form lang="apy"><text>mokyro</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="72791042-50bb-4ac7-b1d7-9753d81e8fc8">
+<grammatical-info value="Demonstrative">
+</grammatical-info>
+<gloss lang="en"><text>MED.ANIM</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T03:33:11Z" dateModified="2022-11-12T03:33:11Z" id="-Ṽpo_3a75f10e-81e0-45be-adff-ba5d094cb6e7" guid="3a75f10e-81e0-45be-adff-ba5d094cb6e7">
+<lexical-unit>
+<form lang="apy"><text>-Ṽpo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="d113afd4-3a15-4553-b799-55b279cc8f86">
+<grammatical-info value="">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PST</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:05:23Z" dateModified="2022-11-11T15:09:14Z" id="kaikuxi_3c3a2771-591b-4dda-80b9-0ce540799acb" guid="3c3a2771-591b-4dda-80b9-0ce540799acb">
+<lexical-unit>
+<form lang="apy"><text>kaikuxi</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="e16801c5-32e2-4c25-8375-5b1a93fec30c">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>jaguar</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:23:39Z" dateModified="2022-11-22T04:53:19Z" id="y-_44a62cab-6487-4f39-ba66-491326d330b3" guid="44a62cab-6487-4f39-ba66-491326d330b3">
+<lexical-unit>
+<form lang="apy"><text>y-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<variant>
+<form lang="apy"><text>u-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="5f67e358-99ed-4fcd-916f-eeb64dd6d183">
+<gloss lang="en"><text>1</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:58:41Z" dateModified="2022-11-11T16:58:41Z" id="onuh_47360607-a329-419a-8463-5f1e58e2c87f" guid="47360607-a329-419a-8463-5f1e58e2c87f">
+<lexical-unit>
+<form lang="apy"><text>onuh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="e8ae3759-5f57-4286-9e21-116daf8fedcd">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>climb</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:57:10Z" dateModified="2022-11-11T17:33:17Z" id="=tao_4bf8ce2f-7609-40d2-8b38-3622564e8749" guid="4bf8ce2f-7609-40d2-8b38-3622564e8749">
+<lexical-unit>
+<form lang="apy"><text>=tao</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="7d7c7f36-cac3-4cb6-bf93-ae7092aa46ff">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>on large place</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:24:47Z" dateModified="2022-11-12T01:24:47Z" id="morara_4f483866-87bf-4e3a-b530-946f70e670b5" guid="4f483866-87bf-4e3a-b530-946f70e670b5">
+<lexical-unit>
+<form lang="apy"><text>morara</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="def5442a-6066-41a4-bfd5-f7a195ae4213">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>thus</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:31:44Z" dateModified="2022-11-15T05:31:44Z" id="eny_50341947-eae5-42ca-bf94-7145e6735f6e" guid="50341947-eae5-42ca-bf94-7145e6735f6e">
+<lexical-unit>
+<form lang="apy"><text>eny</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="23b1163b-b329-4376-a30f-cd77a60aa62f">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>mother.PERT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:55:59Z" dateModified="2022-11-22T04:55:59Z" id="seromaroro_503e34a6-8dd8-4cdb-82b9-401471fafd5a" guid="503e34a6-8dd8-4cdb-82b9-401471fafd5a">
+<lexical-unit>
+<form lang="apy"><text>seromaroro</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="b5d09777-0366-44fa-9047-76ebabff2526">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>today</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:42:05Z" dateModified="2022-11-14T22:42:05Z" id="oseka_51ba05c7-b09a-4273-8a71-7c1e910626f5" guid="51ba05c7-b09a-4273-8a71-7c1e910626f5">
+<lexical-unit>
+<form lang="apy"><text>oseka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="ddef695a-96ef-449f-841d-2eb0c9d35277">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>bite</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:24:48Z" dateModified="2022-11-11T15:24:48Z" id="yto_5289904a-8c71-4453-a4f7-f44dc9eebf22" guid="5289904a-8c71-4453-a4f7-f44dc9eebf22">
+<lexical-unit>
+<form lang="apy"><text>yto</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c844299a-5390-4254-bfad-6571e4b25035">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>go</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:52:58Z" dateModified="2022-11-11T16:52:58Z" id="yryh_58e9fed7-a0f1-489f-92a9-ceed8cad24b0" guid="58e9fed7-a0f1-489f-92a9-ceed8cad24b0">
+<lexical-unit>
+<form lang="apy"><text>yryh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="119d01f5-12db-4525-adb4-72bf839490df">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>get stuck</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T03:30:58Z" dateModified="2022-11-15T05:26:38Z" id="-topo_5dc1bd3a-a91e-4b30-99d3-7398821b2c77" guid="5dc1bd3a-a91e-4b30-99d3-7398821b2c77">
+<lexical-unit>
+<form lang="apy"><text>-topo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<variant>
+<form lang="apy"><text>-toh</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<sense id="a789a7d8-fd79-4fc0-b064-e465ce871f7d">
+<grammatical-info value="Noun">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>NMLZ</text></gloss>
+<example source="ner1 1.1">
+<form lang="apy"><text>Urakanase ytotopõpo poko.</text></form>
+<translation type="Free translation">
+<form lang="en"><text>About a hunting trip.</text></form>
+</translation>
+<note type="reference">
+<form lang="en"><text><span href="silfw://localhost/link?tool%3dinterlinearEdit%26guid%3d230ffee1-c6dd-41d7-9153-875a512b0158%26tag%3d" class="Hyperlink">ner1 1.1</span></text></form>
+</note>
+</example>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:44:54Z" dateModified="2022-11-11T20:01:32Z" id="amorepa_5e94b6cb-2d6e-49da-9cfa-c56d0bcc9f96" guid="5e94b6cb-2d6e-49da-9cfa-c56d0bcc9f96">
+<lexical-unit>
+<form lang="apy"><text>amorepa</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="da7b4130-8f0b-46fa-b13e-740372280396">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>call</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:46:14Z" dateModified="2022-11-12T02:13:46Z" id="e-_60546e44-e131-4e87-be92-2165b5fb660f" guid="60546e44-e131-4e87-be92-2165b5fb660f">
+<lexical-unit>
+<form lang="apy"><text>e-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<sense id="5573c593-2ebd-4b3a-ba9b-e478d1a33462">
+<grammatical-info value="Postposition">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>3</text></gloss>
+<relation type="Synonyms" ref="1d489937-5561-43c6-afb3-43baad678b4a"/>
+<relation type="Synonyms" ref="578f6f9c-b6cd-4b5a-95ed-fc39be3cc383"/>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:55:04Z" dateModified="2022-11-14T22:55:04Z" id="mety_6145228e-2983-4178-9dc8-0be0515eac4d" guid="6145228e-2983-4178-9dc8-0be0515eac4d">
+<lexical-unit>
+<form lang="apy"><text>mety</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="1134e807-e762-4c7e-a2c2-44d73bd8ce54">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>loincloth</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:25:27Z" dateModified="2022-11-12T02:04:00Z" id="=ro_6568ae4e-5d16-4dcd-b178-e8de693033dd" guid="6568ae4e-5d16-4dcd-b178-e8de693033dd">
+<lexical-unit>
+<form lang="apy"><text>=ro</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<variant>
+<form lang="apy"><text>ro</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="4d522a34-6fb6-446f-9abf-0b40a2733ccd">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>EMP</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:13:41Z" dateModified="2022-11-12T02:06:56Z" id="arimi_663523ab-41ca-4004-81b1-29efaac9bd55" guid="663523ab-41ca-4004-81b1-29efaac9bd55">
+<lexical-unit>
+<form lang="apy"><text>arimi</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="8fc813be-dd71-4153-a57d-86ce507c142e">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>spider monkey</text></gloss>
+<definition>
+<form lang="en"><text>Ateles geoffroyi</text></form>
+</definition>
+<example source="po2 20.1">
+<form lang="apy"><text>Mame arimi tynomose eya xine.</text></form>
+<translation type="Free translation">
+<form lang="en"><text>They left the monkey.</text></form>
+</translation>
+<note type="reference">
+<form lang="apy"><text><span href="silfw://localhost/link?tool%3dinterlinearEdit%26guid%3d688a40f6-a54b-4343-b875-c8e206684b84%26tag%3d" class="Hyperlink">po2 20.1</span></text></form>
+</note>
+</example>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:33:24Z" dateModified="2022-11-15T05:33:24Z" id="yna_67fb3566-0211-434f-9048-e0a6c37d1c98" guid="67fb3566-0211-434f-9048-e0a6c37d1c98">
+<lexical-unit>
+<form lang="apy"><text>yna</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="d6b3b7ba-b2cf-4a98-8a88-32c3d538f553">
+<grammatical-info value="Pro-form">
+</grammatical-info>
+<gloss lang="en"><text>1+3</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:45:06Z" dateModified="2022-11-22T04:45:06Z" id="=ke_690cd663-3f93-4fa9-9f64-1adbb2247b17" guid="690cd663-3f93-4fa9-9f64-1adbb2247b17">
+<lexical-unit>
+<form lang="apy"><text>=ke</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="cf8e0de6-19fb-43be-bb20-0df6801419bf">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>INS</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T03:33:24Z" dateModified="2022-11-12T03:33:24Z" id="poko_6bd36b0d-da31-4deb-aa64-9c9464a5ff32" guid="6bd36b0d-da31-4deb-aa64-9c9464a5ff32">
+<lexical-unit>
+<form lang="apy"><text>poko</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="75ef6968-07de-454a-a098-7b0dd6f67f0f">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>about</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:08:02Z" dateModified="2022-11-11T17:06:55Z" id="a1_6fc5a927-e032-41a7-9c99-ee5075018c07" guid="6fc5a927-e032-41a7-9c99-ee5075018c07" order="1">
+<lexical-unit>
+<form lang="apy"><text>a</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>ya</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="11c8a600-dc2c-47b7-8cb4-a7cfd92f6c22">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>ERG</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:44:27Z" dateModified="2022-11-11T23:44:27Z" id="=me_70801edd-45c0-403d-b4a0-179678f6bb9c" guid="70801edd-45c0-403d-b4a0-179678f6bb9c">
+<lexical-unit>
+<form lang="apy"><text>=me</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="d047a0f1-ce1e-4fbf-93fe-de19fc60486c">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>ESS</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:40:03Z" dateModified="2022-11-22T04:40:03Z" id="-ka_725ccbfe-c74f-435f-8639-fd1a1e5ccef4" guid="725ccbfe-c74f-435f-8639-fd1a1e5ccef4">
+<lexical-unit>
+<form lang="apy"><text>-ka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="564febe0-4026-4052-9365-13f8ad49f92b">
+<grammatical-info value="Transitive verb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Noun"/>
+</grammatical-info>
+<gloss lang="en"><text>VBZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:17:30Z" dateModified="2022-11-11T20:17:30Z" id="nomo_7289a08f-df74-48bb-8449-8c635e997a45" guid="7289a08f-df74-48bb-8449-8c635e997a45">
+<lexical-unit>
+<form lang="apy"><text>nomo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="7fecdc66-7107-45b7-ab15-0dcc50d22e76">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>leave</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:56:19Z" dateModified="2022-11-22T04:56:19Z" id="arakapusa_73a7d081-bacb-447a-af3a-240bfa92fc4c" guid="73a7d081-bacb-447a-af3a-240bfa92fc4c">
+<lexical-unit>
+<form lang="apy"><text>arakapusa</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c4c83122-f97a-432a-8e85-d1aad25f2a98">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>shotgun</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:22:47Z" dateModified="2022-11-14T22:22:47Z" id="-sasaka_74fb382e-abf9-47e2-999b-baa8b8db6481" guid="74fb382e-abf9-47e2-999b-baa8b8db6481">
+<lexical-unit>
+<form lang="apy"><text>-sasaka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="dedb461f-3d3b-4216-8fd7-b6174fc57dac">
+<grammatical-info value="Adverb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>PROSP.ADVZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:44:39Z" dateModified="2022-11-11T23:44:39Z" id="oh_75e4e8e2-5694-4c70-b43f-6749e0e285cd" guid="75e4e8e2-5694-4c70-b43f-6749e0e285cd">
+<lexical-unit>
+<form lang="apy"><text>oh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c28f3eef-ec06-42d1-ae33-739c6295bdd1">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>meat</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:22:39Z" dateModified="2022-11-12T01:22:39Z" id="=po_786546d3-73db-4097-97f3-2e61c1c51e39" guid="786546d3-73db-4097-97f3-2e61c1c51e39">
+<lexical-unit>
+<form lang="apy"><text>=po</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="80e7734c-99b9-408c-aaf9-1436621d8bf7">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>in</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:52:21Z" dateModified="2022-11-22T04:30:25Z" id="t-...-ke_7b9fb5b9-108f-4e0e-8038-2956f0a9ac00" guid="7b9fb5b9-108f-4e0e-8038-2956f0a9ac00">
+<lexical-unit>
+<form lang="apy"><text>t-...-ke</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="circumfix"/>
+<variant>
+<form lang="apy"><text>-ke</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<variant>
+<form lang="apy"><text>ty-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<variant>
+<form lang="apy"><text>t-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="ae042706-2542-41be-98b2-e58d8ced994b">
+<grammatical-info value="Adverb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Noun"/>
+</grammatical-info>
+<gloss lang="en"><text>ADVZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:45:07Z" dateModified="2022-11-14T22:45:07Z" id="roropa_7d5e6845-3440-4e3b-9a63-f3c89d7f58a4" guid="7d5e6845-3440-4e3b-9a63-f3c89d7f58a4">
+<lexical-unit>
+<form lang="apy"><text>roropa</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="45e6058f-5dfc-4ebb-9cdf-d4221ed5e004">
+<gloss lang="en"><text>also</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:09:25Z" dateModified="2022-11-11T17:09:25Z" id="to_7da144f0-5422-4cf0-be11-0641836cdc0d" guid="7da144f0-5422-4cf0-be11-0641836cdc0d">
+<lexical-unit>
+<form lang="apy"><text>to</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="0e009595-037b-46a1-a1e4-efc52eaf9f4c">
+<grammatical-info value="Interjection">
+</grammatical-info>
+<gloss lang="en"><text>oh</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:34:30Z" dateModified="2022-11-15T05:34:30Z" id="-no2_802a6a34-80c4-44fc-8538-df4a3d8c5992" guid="802a6a34-80c4-44fc-8538-df4a3d8c5992" order="2">
+<lexical-unit>
+<form lang="apy"><text>-no</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="b57b3fc4-c95f-4bef-bdf3-e64bd9da575e">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>IP</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:27:15Z" dateModified="2022-11-11T15:27:15Z" id="repe_81157356-1af9-4c65-953b-213b7fbc7082" guid="81157356-1af9-4c65-953b-213b7fbc7082">
+<lexical-unit>
+<form lang="apy"><text>repe</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="6f222b88-f94d-481b-99bf-6768beb0712b">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>FRUS</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:30:15Z" dateModified="2022-11-14T22:30:15Z" id="pitiko_82329f3a-57b3-4e2d-ac30-096dbd2ab282" guid="82329f3a-57b3-4e2d-ac30-096dbd2ab282">
+<lexical-unit>
+<form lang="apy"><text>pitiko</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c02da344-d24e-468e-942f-39b4f06b2ee0">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>small</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:00:37Z" dateModified="2022-11-14T23:00:37Z" id="-ry2_827f1f2c-1e95-4521-bf15-79b41a910ed7" guid="827f1f2c-1e95-4521-bf15-79b41a910ed7" order="2">
+<lexical-unit>
+<form lang="apy"><text>-ry</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="a7ca30f4-b759-4202-af56-8179ffc4fb01">
+<grammatical-info value="Noun">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PERT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:00:48Z" dateModified="2022-11-14T23:00:48Z" id="pihpy_83cbce8d-6c72-4370-abba-af5df4e6e029" guid="83cbce8d-6c72-4370-abba-af5df4e6e029">
+<lexical-unit>
+<form lang="apy"><text>pihpy</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="9cc5adfd-3e9d-4587-aecb-f4cb510c8dbe">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>skin</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:50:47Z" dateModified="2022-11-15T05:35:21Z" id="ekahma_8694a165-7794-4d75-814e-ebe40ae85d12" guid="8694a165-7794-4d75-814e-ebe40ae85d12">
+<lexical-unit>
+<form lang="apy"><text>ekahma</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>okahma</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="7e7b6e32-f294-4e4e-bd15-e280ec6b9354">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>follow</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:18:38Z" dateModified="2022-11-15T05:18:38Z" id="-ry3_8793dff6-789b-4d66-986d-9d1f57df0ac1" guid="8793dff6-789b-4d66-986d-9d1f57df0ac1" order="3">
+<lexical-unit>
+<form lang="apy"><text>-ry</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="0ce75aa1-8da8-46cf-b9d6-2012c37754a4">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>HYP</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:59:44Z" dateModified="2022-11-11T23:59:44Z" id="okomino_894bff00-cb1d-4442-ab94-64ac126fbaba" guid="894bff00-cb1d-4442-ab94-64ac126fbaba">
+<lexical-unit>
+<form lang="apy"><text>okomino</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="47eed34e-e496-4c3d-a34d-28603de8a774">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>after</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:41:29Z" dateModified="2022-11-11T16:41:29Z" id="epory_8a0590fc-4edf-4ff2-b331-4ea9fccd7ecb" guid="8a0590fc-4edf-4ff2-b331-4ea9fccd7ecb">
+<lexical-unit>
+<form lang="apy"><text>epory</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="4eebfc49-203b-4c01-b051-4948d553a5d7">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>find</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:19:59Z" dateModified="2022-11-11T19:58:47Z" id="hna_8a088d8f-2bd8-4dff-8e05-3bd95f57d367" guid="8a088d8f-2bd8-4dff-8e05-3bd95f57d367">
+<lexical-unit>
+<form lang="apy"><text>hna</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="02902aa2-2a36-42c2-a979-064cfd764beb">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>3.be.NPST</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T00:01:28Z" dateModified="2022-11-12T00:01:28Z" id="-pyra_8bc939d6-5ab5-453a-8ae2-d067e3bf001a" guid="8bc939d6-5ab5-453a-8ae2-d067e3bf001a">
+<lexical-unit>
+<form lang="apy"><text>-pyra</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="5e848e4e-62f3-4392-9d2a-dc388131a18f">
+<grammatical-info value="Adverb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>NEG</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:43:01Z" dateModified="2022-11-22T04:41:34Z" id="exi_8faf586f-f6e9-4cfe-b4b3-89be7ae57bea" guid="8faf586f-f6e9-4cfe-b4b3-89be7ae57bea">
+<lexical-unit>
+<form lang="apy"><text>exi</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>eh</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="8ebfc418-4bf9-41ff-9fab-f05368f47ed4">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>be</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:27:18Z" dateModified="2022-11-15T05:27:18Z" id="oty=_90fddd67-b194-4a42-84c0-91af8cae3e5b" guid="90fddd67-b194-4a42-84c0-91af8cae3e5b">
+<lexical-unit>
+<form lang="apy"><text>oty=</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="proclitic"/>
+<sense id="69fecdfc-e977-408a-b241-f89298ba3b33">
+<gloss lang="en"><text>what</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:23:44Z" dateModified="2022-11-11T17:10:00Z" id="t-...-se_91bc5bb3-fb77-4c19-b2f9-69a45016edbe" guid="91bc5bb3-fb77-4c19-b2f9-69a45016edbe">
+<lexical-unit>
+<form lang="apy"><text>t-...-se</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="circumfix"/>
+<variant>
+<form lang="apy"><text>t-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<variant>
+<form lang="apy"><text>-se</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<variant>
+<form lang="apy"><text>ty-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="27f4afb0-5a66-4174-8608-32e592035d43">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PST.CPL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:24:25Z" dateModified="2022-11-15T05:24:25Z" id="-po_92df9223-a10d-4344-899e-d32b2dd59ef8" guid="92df9223-a10d-4344-899e-d32b2dd59ef8">
+<lexical-unit>
+<form lang="apy"><text>-po</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="d4543339-49ce-4741-9bd4-c2c0a5993b79">
+<grammatical-info value="Transitive verb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>CAUS</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:52:04Z" dateModified="2022-11-22T04:52:04Z" id="yse_93bf34bb-4ca8-4472-8edf-325964438c91" guid="93bf34bb-4ca8-4472-8edf-325964438c91">
+<lexical-unit>
+<form lang="apy"><text>yse</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="9ca169a4-5191-4fba-86b3-d2714fe92096">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>mother</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:50:20Z" dateModified="2022-11-11T23:50:20Z" id="pyra_93e627ce-f4fc-472b-b353-94f87dd1fffb" guid="93e627ce-f4fc-472b-b353-94f87dd1fffb">
+<lexical-unit>
+<form lang="apy"><text>pyra</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c639a87b-357b-4db5-a8e9-fb6043561938">
+<gloss lang="en"><text>NEG</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:19:06Z" dateModified="2022-11-14T22:19:06Z" id="xita_9669d142-550f-446c-81e1-fbd0a247caf8" guid="9669d142-550f-446c-81e1-fbd0a247caf8">
+<lexical-unit>
+<form lang="apy"><text>xita</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="a66ce97b-ab2f-49f0-afbc-8b7341ff9482">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>cry</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:23:27Z" dateModified="2022-11-15T05:23:27Z" id="-Ṽ_976a4f82-ce2a-49b4-af82-b8953432c37d" guid="976a4f82-ce2a-49b4-af82-b8953432c37d">
+<lexical-unit>
+<form lang="apy"><text>-Ṽ</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="2510a187-0b27-4194-b58a-80b531e257fb">
+<grammatical-info value="Noun">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PERT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:09:44Z" dateModified="2022-11-11T17:09:44Z" id="onoky_979f8742-fcb0-4922-874d-8b9a6f241c6e" guid="979f8742-fcb0-4922-874d-8b9a6f241c6e">
+<lexical-unit>
+<form lang="apy"><text>onoky</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="20a859d3-fcce-42d0-ab1a-a1089eab8f68">
+<grammatical-info value="Pronoun">
+</grammatical-info>
+<gloss lang="en"><text>who</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:48:05Z" dateModified="2022-11-11T23:48:05Z" id="yrome_97c599b3-4897-4e54-a122-23f1d2b4d957" guid="97c599b3-4897-4e54-a122-23f1d2b4d957">
+<lexical-unit>
+<form lang="apy"><text>yrome</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="0a400793-cc45-44fb-90a7-81fe5cc94ff8">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>but</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:16:50Z" dateModified="2022-11-14T23:08:27Z" id="-Ṽko_97f4d08b-29d8-43b1-a85d-9e09f5f1a3db" guid="97f4d08b-29d8-43b1-a85d-9e09f5f1a3db">
+<lexical-unit>
+<form lang="apy"><text>-Ṽko</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<variant>
+<form lang="apy"><text>-nõko</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<sense id="f472df02-7832-4836-b546-640b73bff6de">
+<grammatical-info value="Intransitive verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PROG</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:16:06Z" dateModified="2022-11-11T20:16:06Z" id="axĩ_9e5c5eb7-ee70-471c-8f38-3d602a0dcae1" guid="9e5c5eb7-ee70-471c-8f38-3d602a0dcae1">
+<lexical-unit>
+<form lang="apy"><text>axĩ</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="68ed3253-e5d7-4a6e-a210-e60a5e57962b">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>quickly</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:28:48Z" dateModified="2022-11-14T22:28:48Z" id="kuaka_a11fd08e-ee14-42af-9941-a4ef0a021d40" guid="a11fd08e-ee14-42af-9941-a4ef0a021d40">
+<lexical-unit>
+<form lang="apy"><text>kuaka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="e699457a-1f55-4798-96de-8f1a940d8602">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>into liquid</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:10:03Z" dateModified="2022-11-11T15:11:21Z" id="mame_a1bb9d9e-7cd0-439e-8a9b-6fd2439ff266" guid="a1bb9d9e-7cd0-439e-8a9b-6fd2439ff266">
+<lexical-unit>
+<form lang="apy"><text>mame</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="d6c52e18-f50d-481d-a0fa-e3b9f7bb01b6">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>then</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:06:55Z" dateModified="2022-11-11T20:05:08Z" id="a2_a2086c42-fa51-48d6-8b33-9c4322833464" guid="a2086c42-fa51-48d6-8b33-9c4322833464" order="2">
+<lexical-unit>
+<form lang="apy"><text>a</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>ah</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="1ecd80dc-278c-4edd-8d2c-e871e434fb19" order="0">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>be</text></gloss>
+</sense>
+<sense id="8edb2d80-eb56-43ba-aac2-49c34eb6563d" order="1">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>say</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:11:42Z" dateModified="2022-11-11T20:11:42Z" id="ü_a2169cd4-7f68-4996-a30a-0739bac3c827" guid="a2169cd4-7f68-4996-a30a-0739bac3c827">
+<lexical-unit>
+<form lang="apy"><text>ü</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="a57658a3-7307-4561-91eb-dc813fae135e">
+<grammatical-info value="Interjection">
+</grammatical-info>
+<gloss lang="en"><text>of course</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:53:58Z" dateModified="2022-11-22T04:53:58Z" id="tãkye_a2200c2d-02f0-49de-8a6e-3c456fb7c429" guid="a2200c2d-02f0-49de-8a6e-3c456fb7c429">
+<lexical-unit>
+<form lang="apy"><text>tãkye</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="e4e70cfa-a869-4c01-9105-d5c2f4cd46da">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>happy</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:02:52Z" dateModified="2022-11-11T20:02:52Z" id="reh_a31e905e-810c-4657-9dff-ff250add8492" guid="a31e905e-810c-4657-9dff-ff250add8492">
+<lexical-unit>
+<form lang="apy"><text>reh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c2f7b366-eab5-4c25-a356-bf771531ce5c">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>EXPECT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:23:24Z" dateModified="2022-11-12T01:23:25Z" id="-ty_a4b7c492-759c-4736-b268-3243ca7bf7cf" guid="a4b7c492-759c-4736-b268-3243ca7bf7cf">
+<lexical-unit>
+<form lang="apy"><text>-ty</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<variant>
+<form lang="apy"><text>-h</text></form>
+<trait  name="morph-type" value="suffix"/>
+</variant>
+<sense id="51783b4c-35f2-4b8f-999e-f5c8d1ab9687">
+<grammatical-info value="Noun">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PERT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:08:32Z" dateModified="2022-11-11T15:08:54Z" id="ahno_ab52db85-e876-4342-a009-08dc0f1cc376" guid="ab52db85-e876-4342-a009-08dc0f1cc376">
+<lexical-unit>
+<form lang="apy"><text>ahno</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="6884541b-26f8-451e-bb39-cfac0abe495c">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>people</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T00:01:03Z" dateModified="2022-11-12T00:01:03Z" id="moe_adadeb0d-69ef-4c74-be60-2fc6ef8c05df" guid="adadeb0d-69ef-4c74-be60-2fc6ef8c05df">
+<lexical-unit>
+<form lang="apy"><text>moe</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="c14a31fb-8fdf-402a-95df-303ba10e2690">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>far</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:46:00Z" dateModified="2022-11-14T22:46:00Z" id="pynoh_adf72f0f-6287-4f3c-acfe-aba7d9db256d" guid="adf72f0f-6287-4f3c-acfe-aba7d9db256d">
+<lexical-unit>
+<form lang="apy"><text>pynoh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="c5448831-17f4-42c3-862e-1b9e9dc63b16">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>save</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:01:34Z" dateModified="2022-11-14T23:32:03Z" id="ty-_ae661f78-7709-4ea1-862b-5fa14192dfe5" guid="ae661f78-7709-4ea1-862b-5fa14192dfe5">
+<lexical-unit>
+<form lang="apy"><text>ty-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<variant>
+<form lang="apy"><text>to-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="f24afe83-afe9-429e-abbe-999f1e3a0392">
+<grammatical-info value="Noun">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>3COR</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:24:30Z" dateModified="2022-11-11T15:24:30Z" id="o-_af4f3b2a-246c-4fcd-949c-3f9f8ddcf910" guid="af4f3b2a-246c-4fcd-949c-3f9f8ddcf910">
+<lexical-unit>
+<form lang="apy"><text>o-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<sense id="2314f3de-7120-49e0-ac8a-2215f6317eaa">
+<grammatical-info value="vi">
+<trait name="type" value="affix"/>
+</grammatical-info>
+<gloss lang="en"><text>Sa</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:13:52Z" dateModified="2022-11-11T20:13:52Z" id="=hxo_b1dc25b7-86c4-427f-b8da-797edb531803" guid="b1dc25b7-86c4-427f-b8da-797edb531803">
+<lexical-unit>
+<form lang="apy"><text>=hxo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="df91d700-8f0d-4aa7-a0dc-e5ad7f85f44b">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>INTS</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:07:31Z" dateModified="2022-11-11T20:07:31Z" id="=se_b4e396e9-7bc6-417b-b8e3-dffcc1388e06" guid="b4e396e9-7bc6-417b-b8e3-dffcc1388e06">
+<lexical-unit>
+<form lang="apy"><text>=se</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="enclitic"/>
+<sense id="94634eb8-0a2f-49ce-84a2-8c1a8f9f5106">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>POL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:13:04Z" dateModified="2022-11-14T23:13:04Z" id="m-_b5240d98-1915-48ec-a311-bab76058f0d8" guid="b5240d98-1915-48ec-a311-bab76058f0d8">
+<lexical-unit>
+<form lang="apy"><text>m-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<sense id="e4784767-a0bd-444d-9d6e-b83c066a56e1">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>2</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:08:12Z" dateModified="2022-11-11T20:08:12Z" id="pahne_b8417d6f-2982-4573-bc10-b2eb89b068a7" guid="b8417d6f-2982-4573-bc10-b2eb89b068a7">
+<lexical-unit>
+<form lang="apy"><text>pahne</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="2ab317b3-71c0-4028-8bc1-3c8df790967b">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>pleaase</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:25:08Z" dateModified="2022-11-11T15:25:08Z" id="papa_b96cd56a-c128-427a-8faa-6a4a64fad0a4" guid="b96cd56a-c128-427a-8faa-6a4a64fad0a4">
+<lexical-unit>
+<form lang="apy"><text>papa</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="d2cd8e2f-a29c-4bea-b4ff-2e04e6e350c4">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>1.father</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:31:03Z" dateModified="2022-11-15T05:31:03Z" id="-e_b9c50f1f-7b1b-4e33-8b6a-9e1b72cffd85" guid="b9c50f1f-7b1b-4e33-8b6a-9e1b72cffd85">
+<lexical-unit>
+<form lang="apy"><text>-e</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="443b7663-09bc-4c92-8e11-9ed9a3179754">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>NPST.UNCERT</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:50:52Z" dateModified="2022-11-14T22:50:52Z" id="eporehka_bb5a96a0-bcc5-417e-888a-2975abb86f4e" guid="bb5a96a0-bcc5-417e-888a-2975abb86f4e">
+<lexical-unit>
+<form lang="apy"><text>eporehka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="95df7797-5385-4d12-bcc1-104f211822ff">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>arrive</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:38:48Z" dateModified="2022-11-11T15:38:48Z" id="poe_bd3a28ea-6a28-4291-8816-cf53c0ac84f6" guid="bd3a28ea-6a28-4291-8816-cf53c0ac84f6">
+<lexical-unit>
+<form lang="apy"><text>poe</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="31f1c3e1-63db-46c5-b087-c4aff19f43f9">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>from flat place</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:49:26Z" dateModified="2022-11-11T23:49:26Z" id="se_bd66c8e1-7561-478c-ac19-aa20532af107" guid="bd66c8e1-7561-478c-ac19-aa20532af107">
+<lexical-unit>
+<form lang="apy"><text>se</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="dd5a0cb3-ab43-43b1-a5c1-99cb5a761991">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>DES</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:06:10Z" dateModified="2022-11-11T20:06:10Z" id="-ko_c05aef1f-670f-4b88-89bc-370258e5c377" guid="c05aef1f-670f-4b88-89bc-370258e5c377">
+<lexical-unit>
+<form lang="apy"><text>-ko</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="783e865a-aab2-4fa3-aaa8-60e6fb7a40db">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>IMP</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:36:31Z" dateModified="2022-11-11T15:36:31Z" id="imepỹ_c2078edc-bcb0-4e92-866e-093ead9bffbe" guid="c2078edc-bcb0-4e92-866e-093ead9bffbe">
+<lexical-unit>
+<form lang="apy"><text>imepỹ</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="4e66c60c-9e2a-4501-8336-bccaf4a178cc">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>other</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:11:02Z" dateModified="2022-11-11T17:11:02Z" id="moky_c3f3c9bd-c5f8-43ce-8280-034fe1ad731d" guid="c3f3c9bd-c5f8-43ce-8280-034fe1ad731d">
+<lexical-unit>
+<form lang="apy"><text>moky</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="6be5bd6c-4fc9-4987-8439-bfe041549344">
+<grammatical-info value="Demonstrative">
+</grammatical-info>
+<gloss lang="en"><text>DIST.ANIM</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:41:54Z" dateModified="2022-11-22T04:39:32Z" id="os-_c4155c1a-1362-49f1-82d2-ed1f274b71f6" guid="c4155c1a-1362-49f1-82d2-ed1f274b71f6">
+<lexical-unit>
+<form lang="apy"><text>os-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<variant>
+<form lang="apy"><text>e-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="0997c268-d9d1-400d-8b30-1396429eb557">
+<grammatical-info value="Intransitive verb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Transitive verb"/>
+</grammatical-info>
+<gloss lang="en"><text>DETRZ</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:12:27Z" dateModified="2022-11-11T17:12:27Z" id="hko_c497fc9e-cc21-4b7e-a99d-adca262c7352" guid="c497fc9e-cc21-4b7e-a99d-adca262c7352">
+<lexical-unit>
+<form lang="apy"><text>hko</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="463db46c-277a-4fdb-82ab-fb74b7bc434c">
+<grammatical-info value="Particle">
+</grammatical-info>
+<gloss lang="en"><text>EVAL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:45:52Z" dateModified="2022-11-22T04:50:53Z" id="enakũnuh_c5dd819f-c45c-4670-9a99-fd82819f46bb" guid="c5dd819f-c45c-4670-9a99-fd82819f46bb">
+<lexical-unit>
+<form lang="apy"><text>enakũnuh</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="0104e022-663f-4498-a7fe-64db5e648441">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>choke</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:06:15Z" dateModified="2022-11-12T03:47:56Z" id="rokene_cc5be557-c4fc-4618-b325-a8e5b95a0a47" guid="cc5be557-c4fc-4618-b325-a8e5b95a0a47">
+<lexical-unit>
+<form lang="apy"><text>rokene</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>rokẽ</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="3551f520-a3b4-4776-9d3f-c52330c1a466">
+<gloss lang="en"><text>only</text></gloss>
+<example source="po2 28.1">
+<form lang="apy"><text>Taky rokẽ papa emahpo.</text></form>
+<translation type="Free translation">
+<form lang="en"><text>Father only had a bow in his hand.</text></form>
+</translation>
+<note type="reference">
+<form lang="apy"><text><span href="silfw://localhost/link?tool%3dinterlinearEdit%26guid%3d688a40f6-a54b-4343-b875-c8e206684b84%26tag%3d" class="Hyperlink">po2 28.1</span></text></form>
+</note>
+</example>
+<example source="koehn1986apalai[61]">
+<form lang="apy"><text>ikuhxi rokene</text></form>
+<translation type="Free translation">
+<form lang="en"><text>Let me just try it.</text></form>
+</translation>
+<note type="reference">
+<form lang="en"><text>koehn1986apalai[61]</text></form>
+</note>
+</example>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:10:18Z" dateModified="2022-11-11T17:10:18Z" id="ka_d0c3a667-5a7d-4b23-8a3a-5b5ba8d2a14e" guid="d0c3a667-5a7d-4b23-8a3a-5b5ba8d2a14e">
+<lexical-unit>
+<form lang="apy"><text>ka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="510c3379-c9e7-4f7c-a3cb-110615883b88">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>say</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:14:22Z" dateModified="2022-11-11T16:48:59Z" id="wo_d0e0c8d5-181b-4f61-b54c-85f82aac5eea" guid="d0e0c8d5-181b-4f61-b54c-85f82aac5eea">
+<lexical-unit>
+<form lang="apy"><text>wo</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>uo</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="28aa5192-4cfc-4443-8c16-2f453b1f341c">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>shoot</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:26:36Z" dateModified="2022-11-14T22:26:36Z" id="iporiry_d319967c-7680-4045-9389-02dcc433800a" guid="d319967c-7680-4045-9389-02dcc433800a">
+<lexical-unit>
+<form lang="apy"><text>iporiry</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="ea66fc04-41f9-4e7b-94d6-c301db341ba6">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>creek</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T01:23:04Z" dateModified="2022-11-12T01:23:04Z" id="ema_d321f9b5-0cbe-4692-8bd3-090c05c45c7b" guid="d321f9b5-0cbe-4692-8bd3-090c05c45c7b">
+<lexical-unit>
+<form lang="apy"><text>ema</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="bd50dc27-960f-43e8-bd93-344fc0367634">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>hand</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:41:05Z" dateModified="2022-11-22T04:41:05Z" id="emese_d863c125-5e64-43dd-b177-aefca72c6126" guid="d863c125-5e64-43dd-b177-aefca72c6126">
+<lexical-unit>
+<form lang="apy"><text>emese</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>omese</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="d26fbe03-74da-4ff2-b8ba-747a79b94956">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>care</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:34:54Z" dateModified="2022-11-11T15:34:54Z" id="moino_d8713d52-69fc-42ba-8d96-7ecf39453922" guid="d8713d52-69fc-42ba-8d96-7ecf39453922">
+<lexical-unit>
+<form lang="apy"><text>moino</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="409316d2-a4e5-4fd9-80ea-e2e9a4ea531b">
+<grammatical-info value="Postposition">
+</grammatical-info>
+<gloss lang="en"><text>from there</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:35:23Z" dateModified="2022-11-11T15:35:23Z" id="pata_da279e03-69b1-40d2-91f5-bcdc59485734" guid="da279e03-69b1-40d2-91f5-bcdc59485734">
+<lexical-unit>
+<form lang="apy"><text>pata</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="d5d8d69c-9d00-46bb-bbff-2736b960207e">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>village</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:29:13Z" dateModified="2022-11-14T22:29:13Z" id="epuka_db9bec72-8a4f-4ef7-9da9-6615452534a4" guid="db9bec72-8a4f-4ef7-9da9-6615452534a4">
+<lexical-unit>
+<form lang="apy"><text>epuka</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="5ae18092-1ac1-4bd3-8b63-e2bfd06c7ef5">
+<grammatical-info value="Intransitive verb">
+</grammatical-info>
+<gloss lang="en"><text>fall</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:41:42Z" dateModified="2022-11-14T22:41:42Z" id="pake_dc834ac7-7ace-405c-8f09-cc329a9b4ffb" guid="dc834ac7-7ace-405c-8f09-cc329a9b4ffb">
+<lexical-unit>
+<form lang="apy"><text>pake</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="fb95882b-fcbc-42fd-b86c-be765b7dce1b">
+<gloss lang="en"><text>long ago</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T16:43:15Z" dateModified="2022-11-11T20:14:47Z" id="toto_de02c35d-c45c-40ee-ae58-42af7d3f3549" guid="de02c35d-c45c-40ee-ae58-42af7d3f3549">
+<lexical-unit>
+<form lang="apy"><text>toto</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>toh</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="6b126b9b-56b0-4df0-9266-42f5b359e067">
+<gloss lang="en"><text>3PL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T17:14:40Z" dateModified="2022-11-11T17:14:40Z" id="otara_e0984cab-569d-4658-94f4-e379efc8d589" guid="e0984cab-569d-4658-94f4-e379efc8d589">
+<lexical-unit>
+<form lang="apy"><text>otara</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="883cd683-6a2c-4574-a0ba-686e5d0c775e">
+<grammatical-info value="Pronoun">
+</grammatical-info>
+<gloss lang="en"><text>what</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:39:12Z" dateModified="2022-11-11T23:39:12Z" id="taro_e0a38f35-4dd2-4fbd-b1e4-b755cdf1e9e2" guid="e0a38f35-4dd2-4fbd-b1e4-b755cdf1e9e2">
+<lexical-unit>
+<form lang="apy"><text>taro</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<sense id="77b8e9f7-a162-41f8-90c5-aaea2f995a27">
+<grammatical-info value="Adverb">
+</grammatical-info>
+<gloss lang="en"><text>here</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:32:47Z" dateModified="2022-11-11T15:32:47Z" id="kono_e38a86e4-7821-4296-965a-899fc7d96cf5" guid="e38a86e4-7821-4296-965a-899fc7d96cf5">
+<lexical-unit>
+<form lang="apy"><text>kono</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="cb28b065-b47f-4343-a387-f11a2d5ac45c">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>brother in law</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T22:27:10Z" dateModified="2022-11-14T22:27:10Z" id="ene_e3f061a2-eb2e-41fa-b8bb-e7db5abb9180" guid="e3f061a2-eb2e-41fa-b8bb-e7db5abb9180">
+<lexical-unit>
+<form lang="apy"><text>ene</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<variant>
+<form lang="apy"><text>one</text></form>
+<trait  name="morph-type" value="root"/>
+</variant>
+<sense id="f1305aef-e4af-4b7a-acae-866a9a11df60">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>see</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-15T05:24:07Z" dateModified="2022-11-15T05:24:07Z" id="enepy_e666e02c-faf0-41d8-aaac-33306f03316e" guid="e666e02c-faf0-41d8-aaac-33306f03316e">
+<lexical-unit>
+<form lang="apy"><text>enepy</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>eneh</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="01469842-2e34-45a4-8249-2af7e48d5d42">
+<grammatical-info value="Transitive verb">
+</grammatical-info>
+<gloss lang="en"><text>bring</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:33:05Z" dateModified="2022-11-12T02:13:28Z" id="a-_e985bd7f-41ff-46a0-a72e-7119a7064241" guid="e985bd7f-41ff-46a0-a72e-7119a7064241">
+<lexical-unit>
+<form lang="apy"><text>a-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<sense id="1d489937-5561-43c6-afb3-43baad678b4a">
+<grammatical-info value="Noun">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>3</text></gloss>
+<relation type="Synonyms" ref="5573c593-2ebd-4b3a-ba9b-e478d1a33462"/>
+<relation type="Synonyms" ref="578f6f9c-b6cd-4b5a-95ed-fc39be3cc383"/>
+</sense>
+</entry>
+<entry dateCreated="2022-11-12T03:53:36Z" dateModified="2022-11-12T03:54:02Z" id="oepy_ed5d0fa1-7a81-4b7d-afab-1d6f1f2801b9" guid="ed5d0fa1-7a81-4b7d-afab-1d6f1f2801b9">
+<lexical-unit>
+<form lang="apy"><text>oepy</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="stem"/>
+<variant>
+<form lang="apy"><text>eh</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<variant>
+<form lang="apy"><text>oeh</text></form>
+<trait  name="morph-type" value="stem"/>
+</variant>
+<sense id="46d5bd90-1ac8-46e6-8884-17e05e06ef9e">
+<gloss lang="en"><text>come</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T23:46:33Z" dateModified="2022-11-15T05:31:32Z" id="i-_f09f256e-4419-4dcd-b1d7-933278bf1b41" guid="f09f256e-4419-4dcd-b1d7-933278bf1b41">
+<lexical-unit>
+<form lang="apy"><text>i-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<variant>
+<form lang="apy"><text>z-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<variant>
+<form lang="apy"><text>j-</text></form>
+<trait  name="morph-type" value="prefix"/>
+</variant>
+<sense id="578f6f9c-b6cd-4b5a-95ed-fc39be3cc383">
+<grammatical-info value="">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>3</text></gloss>
+<relation type="Synonyms" ref="5573c593-2ebd-4b3a-ba9b-e478d1a33462"/>
+<relation type="Synonyms" ref="1d489937-5561-43c6-afb3-43baad678b4a"/>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T20:05:22Z" dateModified="2022-11-11T20:05:22Z" id="n-_f4d93427-3003-4938-af13-b2def09ab939" guid="f4d93427-3003-4938-af13-b2def09ab939">
+<lexical-unit>
+<form lang="apy"><text>n-</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="prefix"/>
+<sense id="b811d6d1-323a-41ef-ba44-d76dc4f7f717">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>3</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:29:22Z" dateModified="2022-11-11T15:29:22Z" id="-se_f5916922-e707-4c35-a0dc-300be24b2fbd" guid="f5916922-e707-4c35-a0dc-300be24b2fbd">
+<lexical-unit>
+<form lang="apy"><text>-se</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="4d4ea0af-7457-46a1-aa65-1dd1aa5c8236">
+<grammatical-info value="Adverb">
+<trait name="type" value="derivAffix"/>
+<trait  name="from-part-of-speech" value="Verb"/>
+</grammatical-info>
+<gloss lang="en"><text>SUP</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-11T15:05:10Z" dateModified="2022-11-11T15:05:10Z" id="sero_f8602b4e-ab7e-44fc-a3eb-c5e6e98efe58" guid="f8602b4e-ab7e-44fc-a3eb-c5e6e98efe58">
+<lexical-unit>
+<form lang="apy"><text>sero</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="482dd662-e88d-470c-95aa-bbcadc361dcd">
+<grammatical-info value="Demonstrative">
+</grammatical-info>
+<gloss lang="en"><text>PROX.INAN</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-22T04:41:46Z" dateModified="2022-11-22T04:41:46Z" id="-to_fd6bd9b9-2438-40ea-ad09-03ca3c7f5c04" guid="fd6bd9b9-2438-40ea-ad09-03ca3c7f5c04">
+<lexical-unit>
+<form lang="apy"><text>-to</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="suffix"/>
+<sense id="997e5a79-f682-4b53-84ba-979c8a322ee6">
+<grammatical-info value="Verb">
+<trait name="type" value="inflAffix"/>
+</grammatical-info>
+<gloss lang="en"><text>PL</text></gloss>
+</sense>
+</entry>
+<entry dateCreated="2022-11-14T23:00:04Z" dateModified="2022-11-14T23:00:04Z" id="wewe_ff7c9a69-2460-4960-9ade-171ec8995b43" guid="ff7c9a69-2460-4960-9ade-171ec8995b43">
+<lexical-unit>
+<form lang="apy"><text>wewe</text></form>
+</lexical-unit>
+<trait  name="morph-type" value="root"/>
+<sense id="9c4224d5-7053-4fb0-89de-683a4862cc25">
+<grammatical-info value="Noun">
+</grammatical-info>
+<gloss lang="en"><text>tree</text></gloss>
+</sense>
+</entry>
+</lift>
