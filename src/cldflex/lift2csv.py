@@ -1,13 +1,17 @@
 import logging
+import re
+import sys
+from pathlib import Path
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from cldflex.cldf import create_dictionary_dataset, create_cldf
-from cldflex.helpers import delistify, deduplicate, add_to_list_in_dict
-from pathlib import Path
-import re
-import sys
+from cldflex.cldf import create_cldf
+from cldflex.cldf import create_dictionary_dataset
+from cldflex.helpers import add_to_list_in_dict
+from cldflex.helpers import deduplicate
+from cldflex.helpers import delistify
+
 
 log = logging.getLogger(__name__)
 
@@ -165,7 +169,9 @@ def convert(
         axis=1,
     )
     senses["Name"] = senses.apply(
-        lambda x: " / ".join(x[gloss_key]) if not pd.isnull(x[gloss_key]).any() else x[definition_key],
+        lambda x: " / ".join(x[gloss_key])
+        if not pd.isnull(x[gloss_key]).any()
+        else x[definition_key],
         axis=1,
     )
     unmodified_entries = entries.copy()
@@ -306,7 +312,9 @@ def convert(
             log.info(
                 f"Found {sentence_path.resolve()}, adding segmentation to examples"
             )
-            glossed_examples = pd.read_csv(sentence_path, dtype=str, keep_default_na=False)
+            glossed_examples = pd.read_csv(
+                sentence_path, dtype=str, keep_default_na=False
+            )
             juicy_columns = ["Analyzed_Word", "Gloss"]
             glossed_examples.dropna(subset=juicy_columns, inplace=True)
             for col in juicy_columns:
@@ -323,15 +331,22 @@ def convert(
                         if subrec == "1":
                             subrec = ""
                         cands = glossed_examples[
-                            (glossed_examples["Record_Number"] == rec) & (glossed_examples["Phrase_Number"] == subrec) & glossed_examples["Text_ID"].str.contains(text_id)
+                            (glossed_examples["Record_Number"] == rec)
+                            & (glossed_examples["Phrase_Number"] == subrec)
+                            & glossed_examples["Text_ID"].str.contains(text_id)
                         ]
                         if len(cands) == 1:
                             successful = True
                             enriched_examples.append(dict(cands.iloc[0]))
                         elif len(cands) > 1:
-                            log.error(f"Could not resolve ambiguous example reference [{text_id} {phrase_rec}]\n" + cands.to_string())
+                            log.error(
+                                f"Could not resolve ambiguous example reference [{text_id} {phrase_rec}]\n"
+                                + cands.to_string()
+                            )
                         else:
-                            log.warning(f"Could not resolve example reference [{text_id} {phrase_rec}]")
+                            log.warning(
+                                f"Could not resolve example reference [{text_id} {phrase_rec}]"
+                            )
                 if not successful:
                     enriched_examples.append(ex)
             dictionary_examples = pd.DataFrame.from_dict(enriched_examples)

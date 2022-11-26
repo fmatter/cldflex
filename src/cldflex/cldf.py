@@ -64,15 +64,9 @@ def add_example_slices(sentence_slices, writer):
 
 def add_morphology_tables(tables, writer):
     try:
-        from clld_morphology_plugin.cldf import (
-            FormSlices,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphsetTable,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphTable,
-        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
     except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -203,12 +197,13 @@ def create_dataset(  # noqa: MC0001
                     "dc:description": "Position in the text record",
                     "datatype": "integer",
                 },
-
             )
             # The default sentence metadata expect a list, not a tab-delimited string.
             for col in ["Analyzed_Word", "Gloss"]:
                 if not isinstance(records.iloc[0][col], list):
-                    records[col] = records[col].apply(lambda x: [y if y else "…" for y in x.split("\t")])
+                    records[col] = records[col].apply(
+                        lambda x: [y if y else "…" for y in x.split("\t")]
+                    )
             for ex in records.to_dict("records"):
                 writer.objects["ExampleTable"].append(ex)
 
@@ -229,9 +224,7 @@ def create_dataset(  # noqa: MC0001
             )
         if texts is not None:
             try:
-                from clld_corpus_plugin.cldf import (
-                    TextTable,
-                )  # pylint: disable=import-outside-toplevel
+                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
             except ImportError:  # pragma: no cover
                 log.error(
                     "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -254,38 +247,30 @@ def create_dataset(  # noqa: MC0001
                 writer.objects["TextTable"].append(item)
         if contributors is not None:
             writer.cldf.add_component(
-{
-    "url": "ContributorTable",
-    "dc:conformsTo": None,
-    "dc:extent": 55,
-    "tableSchema": {
-        "columns": [
-            {
-                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#id",
-                "required": True,
-                "name": "ID"
-            },
-            {
-                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#name",
-                "required": True,
-                "name": "Name"
-            },
-            {
-                "name": "Email"
-            },
-            {
-                "name": "Url"
-            },
-            {
-                "datatype": "integer",
-                "name": "Order"
-            }
-        ],
-        "primaryKey": [
-            "ID"
-        ]
-    }
-})
+                {
+                    "url": "ContributorTable",
+                    "dc:conformsTo": None,
+                    "dc:extent": 55,
+                    "tableSchema": {
+                        "columns": [
+                            {
+                                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#id",
+                                "required": True,
+                                "name": "ID",
+                            },
+                            {
+                                "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#name",
+                                "required": True,
+                                "name": "Name",
+                            },
+                            {"name": "Email"},
+                            {"name": "Url"},
+                            {"datatype": "integer", "name": "Order"},
+                        ],
+                        "primaryKey": ["ID"],
+                    },
+                }
+            )
             for contributor in contributors.to_dict("records"):
                 writer.objects["ContributorTable"].append(contributor)
 
@@ -325,12 +310,8 @@ def add_language(writer, cwd, glottocode, iso):
         )
         err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
         try:
-            from cldfbench.catalogs import (
-                Glottolog,
-            )  # pylint: disable=import-outside-toplevel
-            from cldfbench.catalogs import (
-                pyglottolog,
-            )  # pylint: disable=import-outside-toplevel
+            from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+            from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
         except ImportError:
             log.error(err_msg)
         if isinstance(pyglottolog, str):
@@ -356,9 +337,13 @@ def add_language(writer, cwd, glottocode, iso):
         return languoid.id
 
 
-def create_cldf(tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."):
+def create_cldf(
+    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."
+):
     log.info("Creating CLDF dataset")
-    ds = create_dataset(tables, glottocode, iso, metadata, output_dir=output_dir, cwd=cwd)
+    ds = create_dataset(
+        tables, glottocode, iso, metadata, output_dir=output_dir, cwd=cwd
+    )
     log.debug("Validating")
     ds.validate(log=log)
     log.debug("Creating readme")

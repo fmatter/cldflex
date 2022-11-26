@@ -525,7 +525,9 @@ def convert(
             tables["MorphTable"] = lexicon
             if conf.get("form_slices", True):
                 tables["FormSlices"] = form_slices
-            tables["MorphsetTable"] = load_lexicon(output_dir / "morphemes.csv", conf, sep)
+            tables["MorphsetTable"] = load_lexicon(
+                output_dir / "morphemes.csv", conf, sep
+            )
             # tables["MorphsetTable"] = morphemes["Parameter_ID"] = morphemes["Parameter_ID"].apply(lambda x: x.split(sep))
             tables["ParameterTable"] = pd.read_csv(output_dir / "senses.csv")
 
