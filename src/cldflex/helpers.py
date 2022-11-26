@@ -1,5 +1,4 @@
 import logging
-import pandas as pd
 from slugify import slugify
 
 
@@ -14,7 +13,7 @@ class LexiconRetriever:
     def retrieve_morpheme_id(self, o, g, lex, morph_type, entry_id):
         if (o, g) in self.cache:
             return self.cache[(o, g)]
-        elif (o, g) in self.failed_cache:  # failing silently (except for the first try)
+        if (o, g) in self.failed_cache:  # failing silently (except for the first try)
             return None, None
         bg = g.strip("=")
         candidates = lex[

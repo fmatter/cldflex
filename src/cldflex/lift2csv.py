@@ -140,7 +140,6 @@ def convert(
     sep = conf.get("csv_cell_separator", "; ")
     obj_lg = conf.get("obj_lg", None)
     gloss_lg = conf.get("gloss_lg", None)
-    lg_id = conf.get("Language_ID", None)
     log.info(f"Parsing {lift_file.resolve()}")
     with open(lift_file, "r", encoding="utf-8") as f:
         lexicon = BeautifulSoup(f.read(), features="xml")
@@ -203,10 +202,7 @@ def convert(
             for entry_id in entry[col]:
                 add_to_list_in_dict(var_dict, entry_id, entry)
 
-    if var_key in entries.columns:
-        check_variants = True
-    else:
-        check_variants = False
+    check_variants = var_key in entries.columns
 
     entries["Name"] = entries[obj_key]
     entries[obj_key] = entries[obj_key].apply(
@@ -285,14 +281,15 @@ def convert(
         if "variant-type" not in col:
             continue
         variants = entries[~(pd.isnull(entries[col]))]
-        entries = entries.loc[~entries.index.isin(variants.index)]
+        entries = entries.loc[~(entries.index.isin(variants.index))]
 
     entries[obj_key] = entries[obj_key].apply(sorted)
     entries[obj_key] = entries[obj_key].apply(deduplicate)
     entries = delistify(entries, sep)
     entries["Language_ID"] = obj_lg
 
-    morphemes = entries.copy()[(~(entries["morph-type"].isin(["phrase"])))]
+    morphemes = entries.copy()
+    morphemes = morphemes[(~(morphemes["morph-type"].isin(["phrase"])))]
     morphemes.rename(
         columns={
             gloss_key: "Gloss",
@@ -304,10 +301,9 @@ def convert(
     )
     morphs = morphs[(morphs["Morpheme_ID"].isin(list(morphemes["ID"])))]
 
-    # if len(dictionary_examples)
     sentence_path = Path(output_dir / "sentences.csv")
     ref_pattern = re.compile(r"^(\d+.\d)+$")
-    if len(dictionary_examples):
+    if dictionary_examples:
         if sentence_path.is_file():
             log.info(
                 f"Found {sentence_path.resolve()}, adding segmentation to examples"

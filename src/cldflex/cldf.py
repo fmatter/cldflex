@@ -274,29 +274,31 @@ def create_dataset(  # noqa: MC0001
             for contributor in contributors.to_dict("records"):
                 writer.objects["ContributorTable"].append(contributor)
 
-        md = Metadata(**metadata)
-        log.debug(md)
-        writer.cldf.properties.setdefault("rdf:ID", md.id)
-        writer.cldf.add_provenance(
-            wasGeneratedBy=[
-                {
-                    "dc:title": "cldflex",
-                    "dc:description": __version__,
-                    "dc:url": "https://pypi.org/project/cldflex",
-                }
-            ]
-        )
-        for k, v in md.common_props().items():
-            if k == "dc:license":
-                v = v.replace(" ", "-")
-            writer.cldf.properties.setdefault(k, v)
-        if "dc:license" not in writer.cldf.properties:
-            log.warning("You have not specified a license in your CLDF metadata.")
+        add_metadata(writer, metadata)
         writer.write()
         return writer.cldf
 
+def add_metadata(writer, metadata):
+    md = Metadata(**metadata)
+    log.debug(md)
+    writer.cldf.properties.setdefault("rdf:ID", md.id)
+    writer.cldf.add_provenance(
+        wasGeneratedBy=[
+            {
+                "dc:title": "cldflex",
+                "dc:description": __version__,
+                "dc:url": "https://pypi.org/project/cldflex",
+            }
+        ]
+    )
+    for k, v in md.common_props().items():
+        if k == "dc:license":
+            v = v.replace(" ", "-")
+        writer.cldf.properties.setdefault(k, v)
+    if "dc:license" not in writer.cldf.properties:
+        log.warning("You have not specified a license in your CLDF metadata.")
 
-def add_language(writer, cwd, glottocode, iso):
+def add_language(writer, cwd, glottocode, iso):    # pragma: no cover
     if (Path(cwd) / "languages.csv").is_file():
         log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
         lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
@@ -304,37 +306,36 @@ def add_language(writer, cwd, glottocode, iso):
         for lg in lg_df.to_dict("records"):
             writer.objects["LanguageTable"].append(lg)
         return None
-    else:  # pragma: no cover
-        log.info(
-            f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog"
-        )
-        err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
-        try:
-            from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
-            from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
-        except ImportError:
-            log.error(err_msg)
-        if isinstance(pyglottolog, str):
-            log.error(err_msg)
-        glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
-        if glottocode or iso:
-            if glottocode:
-                languoid = glottolog.languoid(glottocode)
-            elif iso:
-                languoid = glottolog.languoid(iso)
-        else:
-            raise ValueError("Missing value: glottocode or iso")
+    log.info(
+        f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog"
+    )
+    err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
+    try:
+        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
+    except ImportError:
+        log.error(err_msg)
+    if isinstance(pyglottolog, str):
+        log.error(err_msg)
+    glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
+    if glottocode or iso:
+        if glottocode:
+            languoid = glottolog.languoid(glottocode)
+        elif iso:
+            languoid = glottolog.languoid(iso)
+    else:
+        raise ValueError("Missing value: glottocode or iso")
 
-        writer.cldf.add_component("LanguageTable")
-        writer.objects["LanguageTable"].append(
-            {
-                "ID": languoid.id,
-                "Latitude": languoid.latitude,
-                "Longitude": languoid.longitude,
-                "Name": languoid.name,
-            }
-        )
-        return languoid.id
+    writer.cldf.add_component("LanguageTable")
+    writer.objects["LanguageTable"].append(
+        {
+            "ID": languoid.id,
+            "Latitude": languoid.latitude,
+            "Longitude": languoid.longitude,
+            "Name": languoid.name,
+        }
+    )
+    return languoid.id
 
 
 def create_cldf(
@@ -357,15 +358,18 @@ def create_cldf(
 
 
 def write_dictionary_dataset(
-    spec,
     entries,
     senses,
     examples,
     glottocode=None,
+    iso=None,
     metadata=None,
     output_dir=".",
     cwd=".",
 ):
+    spec = CLDFSpec(
+        dir=output_dir / "cldf", module="Dictionary"
+    )
     with CLDFWriter(spec) as writer:
         entries["Headword"] = entries["Name"]
         entries["Part_Of_Speech"] = entries["Gramm"]
@@ -378,8 +382,10 @@ def write_dictionary_dataset(
             for example in examples.to_dict("records"):
                 writer.objects["ExampleTable"].append(example)
         if glottocode:
-            add_language(writer, cwd, glottocode)
-
+            add_language(writer, cwd, glottocode, iso)
+        if metadata:
+            add_metadata(writer, metadata)
+        writer.write()
         return writer.cldf
 
 
@@ -398,11 +404,7 @@ def create_dictionary_dataset(
 ):
     log.debug("Creating dataset")
     metadata = metadata or {}
-    spec = CLDFSpec(
-        dir=output_dir / "cldf", module="Dictionary", metadata_fname="metadata.json"
-    )
     ds = write_dictionary_dataset(
-        spec,
         entries,
         senses,
         examples,
