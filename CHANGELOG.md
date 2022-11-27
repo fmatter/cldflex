@@ -6,25 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
-* CLDF dataset creation
-* `senses.csv`
+## [0.1.0] - 2022-11-27
 
-## Fixed
+### Fixed
 * lexicon retrieval of clitics
 * path handling in CLI
 
-## Changed
+### Changed
 * re-reimplemented XML extraction
+
+### Added
+* CLDF dataset creation
+* `senses.csv`
 
 ## [0.0.3] -- 2022-10-22
 
-## Fixed
+### Fixed
 * missing glosses are handled
 * all records make it into `sentences.csv`
 * empty fields in produced lexicon csv file are handled
 
-## Changed
+### Changed
 * reimplemented `flex2csv` and `lift2csv` from the ground up with `beautifulsoup`
 
 ## [0.0.2] - 2022-10-17
@@ -41,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/fmatter/cldflex/compare/v0.0.3...HEAD
+[Unreleased]: https://github.com/fmatter/cldflex/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/fmatter/cldflex/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/fmatter/cldflex/releases/tag/v0.0.3
 [0.0.2]: https://github.com/fmatter/cldflex/releases/tag/v0.0.2

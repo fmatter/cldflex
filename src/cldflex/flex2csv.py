@@ -307,7 +307,6 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
         )
         return None
     if lexicon_file.suffix == ".lift":
-        log.info(f"Running lift2csv on {lexicon_file.resolve()}")
         lexicon = lift2csv(lift_file=lexicon_file, output_dir=output_dir, conf=conf)
     elif lexicon_file.suffix == ".csv":
         log.info(f"Reading lexicon file {lexicon_file.resolve()}")
@@ -355,7 +354,7 @@ def get_text_id(text):
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
             text_id = slugify(abbrev.text)
-            log.info(f"{text_id}")
+            log.info(f"Read text {text_id} ({abbrev['lang']})")
     return text_id
 
 
