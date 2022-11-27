@@ -34,7 +34,6 @@ def extract_examples(sense, dictionary_examples, sense_id):
                     log.warning(f"Sense {sense_id} has empty examples")
         for attr in example.attrs:
             example_dict[attr] = example[attr]
-        print(example_dict)
         dictionary_examples.append(example_dict)
 
 
