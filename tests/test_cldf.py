@@ -172,7 +172,7 @@ def test_lift(data, tmp_path, monkeypatch):
     assert Path(tmp_path / "senses.csv").is_file()
     assert Path(tmp_path / "morphs.csv").is_file()
     assert Path(tmp_path / "morphemes.csv").is_file()
-    md_path = Path(tmp_path / "cldf/metadata.json")
+    md_path = Path(tmp_path / "cldf/Dictionary-metadata.json")
     assert md_path.is_file()
     ds = Dataset.from_metadata(md_path)
     assert ds.validate()
