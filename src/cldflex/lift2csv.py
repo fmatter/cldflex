@@ -22,6 +22,8 @@ def extract_examples(sense, dictionary_examples, sense_id):
         for child in example.find_all(recursive=False):
             if child.name == "form":
                 example_dict["Primary_Text"] = child.text
+            elif child.name == "translation":
+                example_dict["Translated_Text"] = child.find("form").find("text").text                
             else:
                 child_form = child.find("form")
                 if child_form:
@@ -32,6 +34,7 @@ def extract_examples(sense, dictionary_examples, sense_id):
                     log.warning(f"Sense {sense_id} has empty examples")
         for attr in example.attrs:
             example_dict[attr] = example[attr]
+        print(example_dict)
         dictionary_examples.append(example_dict)
 
 
@@ -392,7 +395,6 @@ def convert(
             )
             tables = {
                 "FormTable": morphemes,
-                # "ExampleTable": dictionary_examples,
                 "ParameterTable": senses,
             }
             create_cldf(
