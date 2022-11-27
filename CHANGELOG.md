@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * lexicon retrieval of clitics
 * path handling in CLI
 
+## Changed
+* re-reimplemented XML extraction
+
 ## [0.0.3] -- 2022-10-22
 
 ## Fixed
