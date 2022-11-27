@@ -64,9 +64,15 @@ def add_example_slices(sentence_slices, writer):
 
 def add_morphology_tables(tables, writer):
     try:
-        from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            FormSlices,
+        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            MorphsetTable,
+        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import (
+            MorphTable,
+        )  # pylint: disable=import-outside-toplevel
     except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -224,7 +230,9 @@ def create_dataset(  # noqa: MC0001
             )
         if texts is not None:
             try:
-                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
+                from clld_corpus_plugin.cldf import (
+                    TextTable,
+                )  # pylint: disable=import-outside-toplevel
             except ImportError:  # pragma: no cover
                 log.error(
                     "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -278,6 +286,7 @@ def create_dataset(  # noqa: MC0001
         writer.write()
         return writer.cldf
 
+
 def add_metadata(writer, metadata):
     md = Metadata(**metadata)
     log.debug(md)
@@ -298,7 +307,8 @@ def add_metadata(writer, metadata):
     if "dc:license" not in writer.cldf.properties:
         log.warning("You have not specified a license in your CLDF metadata.")
 
-def add_language(writer, cwd, glottocode, iso):    # pragma: no cover
+
+def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
     if (Path(cwd) / "languages.csv").is_file():
         log.info(f"Using {(Path(cwd) / 'languages.csv').resolve()}")
         lg_df = pd.read_csv(Path(cwd) / "languages.csv", keep_default_na=False)
@@ -311,8 +321,12 @@ def add_language(writer, cwd, glottocode, iso):    # pragma: no cover
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import (
+            Glottolog,
+        )  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import (
+            pyglottolog,
+        )  # pylint: disable=import-outside-toplevel
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
@@ -367,9 +381,7 @@ def write_dictionary_dataset(
     output_dir=".",
     cwd=".",
 ):
-    spec = CLDFSpec(
-        dir=output_dir / "cldf", module="Dictionary"
-    )
+    spec = CLDFSpec(dir=output_dir / "cldf", module="Dictionary")
     with CLDFWriter(spec) as writer:
         entries["Headword"] = entries["Name"]
         entries["Part_Of_Speech"] = entries["Gramm"]

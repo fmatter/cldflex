@@ -23,7 +23,7 @@ def extract_examples(sense, dictionary_examples, sense_id):
             if child.name == "form":
                 example_dict["Primary_Text"] = child.text
             elif child.name == "translation":
-                example_dict["Translated_Text"] = child.find("form").find("text").text                
+                example_dict["Translated_Text"] = child.find("form").find("text").text
             else:
                 child_form = child.find("form")
                 if child_form:

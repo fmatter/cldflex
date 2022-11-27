@@ -403,8 +403,20 @@ def write_sentences(df, output_dir, conf):
     # resolve records with multiple phrases
     df = df.apply(lambda x: split_part_col(x), axis=1)
     log.debug(type(output_dir))
-    # todo: sort columns for humans
-    # sort_order = ["ID" ,"Primary_Text"    ,"Analyzed_Word","Gloss","Translated_Text", "POS", "Text_ID", "Language_ID"]
+    sort_order = [
+        "ID",
+        "Primary_Text",
+        "Analyzed_Word",
+        "Gloss",
+        "Translated_Text",
+        "Part_Of_Speech",
+        "Text_ID",
+        "Record_Number",
+        "Phrase_Number",
+        "Language_ID",
+    ]
+    sorted_cols = [x for x in sort_order if x in df.columns] + [x for x in df.columns if x not in sort_order]
+    df = df[sorted_cols]
     log.debug(f"Saving {(output_dir / 'sentences.csv').resolve()}")
     df.to_csv(output_dir / "sentences.csv", index=False)
     return df.fillna("")
