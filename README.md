@@ -25,7 +25,7 @@ pip install cldflex
 At the moment, there are two commands: ``cldflex flex2csv`` processes `.flextext` (corpora), and ``cldflex lift2csv`` processes `.lift` (lexica) files.
 Both commands create a number of CSV files.
 One can either use [cldfbench](https://github.com/cldf/cldfbench) to create one's own CLDF datasets from these files, or add the `--cldf` argument to create (simple) datasets.
-Project-specific [configuration](configuration) can be passed via `--conf your/config.yaml`
+Project-specific [configuration](#configuration) can be passed via `--conf your/config.yaml`
 
 ### `flex2csv`
 Basic usage:
