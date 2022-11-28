@@ -99,7 +99,7 @@ def add_morphology_tables(tables, writer):
 
 
 def create_dataset(  # noqa: MC0001
-    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."
+    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd=".", sep="; "
 ):  # pylint: disable=too-many-locals
     log.debug("Creating dataset")
     metadata = metadata or {}
@@ -146,7 +146,7 @@ def create_dataset(  # noqa: MC0001
                         "dc:extent": "singlevalued",
                         "dc:description": "The written expression of the form. If possible the transcription system used for the written form should be described in CLDF metadata (e.g. via adding a common property `dc:conformsTo` to the column description using concept URLs of the GOLD Ontology (such as [phonemicRep](http://linguistics-ontology.org/gold/2010/phonemicRep) or [phoneticRep](http://linguistics-ontology.org/gold/2010/phoneticRep)) as values).",
                         "datatype": "string",
-                        "separator": "; ",
+                        "separator": sep,
                     },
                 )
                 writer.cldf.remove_columns("FormTable", "Parameter_ID")
@@ -158,7 +158,7 @@ def create_dataset(  # noqa: MC0001
                         "propertyUrl": "http://cldf.clld.org/v1.0/terms.rdf#parameterReference",
                         "dc:description": "A reference to the meaning denoted by the form",
                         "datatype": "string",
-                        "separator": "; ",
+                        "separator": sep,
                     },
                 )
 
@@ -353,11 +353,11 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
 
 
 def create_cldf(
-    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd="."
+    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd=".", sep="; "
 ):
     log.info("Creating CLDF dataset")
     ds = create_dataset(
-        tables, glottocode, iso, metadata, output_dir=output_dir, cwd=cwd
+        tables, glottocode, iso, metadata, output_dir=output_dir, cwd=cwd, sep=sep
     )
     log.debug("Validating")
     ds.validate(log=log)

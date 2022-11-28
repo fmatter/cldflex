@@ -555,4 +555,5 @@ def convert(
             metadata=metadata,
             output_dir=output_dir,
             cwd=flextext_file.parents[0],
+            sep=sep
         )

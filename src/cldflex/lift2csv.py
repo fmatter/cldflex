@@ -402,6 +402,7 @@ def convert(
                 metadata=metadata,
                 output_dir=output_dir,
                 cwd=lift_file.parents[0],
+                sep=sep
             )
         else:
             create_dictionary_dataset(
