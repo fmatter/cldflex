@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from cldflex.helpers import LexiconRetriever
+from morphinder import LexiconRetriever
 from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
 
@@ -120,8 +120,8 @@ def get_form_slices(
             )
         ):
             if morph_gloss:
-                m_id, sense_id = retriever.retrieve_morpheme_id(
-                    morph_obj, morph_gloss, lexicon, morph_type, ex_id
+                m_id, sense_id = retriever.retrieve_morph_id(
+                    morph_obj, morph_gloss, lexicon, morph_type, ex_id, sense_id="Parameter_ID", form_str="Form_Bare"
                 )
                 if m_id:
                     form_slices[word_id].append(
@@ -322,7 +322,7 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
     morpheme_lg = lexicon.iloc[0]["Language_ID"]
     if morpheme_lg != conf["Language_ID"]:
         log.info(
-            f"Changing language ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
+            f"Changing Language_ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
         )
         lexicon["Language_ID"] = conf["Language_ID"]
     return lexicon
