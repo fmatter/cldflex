@@ -99,7 +99,13 @@ def add_morphology_tables(tables, writer):
 
 
 def create_dataset(  # noqa: MC0001
-    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd=".", sep="; "
+    tables,
+    glottocode=None,
+    iso=None,
+    metadata=None,
+    output_dir=Path("."),
+    cwd=".",
+    sep="; ",
 ):  # pylint: disable=too-many-locals
     log.debug("Creating dataset")
     metadata = metadata or {}
@@ -353,7 +359,13 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
 
 
 def create_cldf(
-    tables, glottocode=None, iso=None, metadata=None, output_dir=Path("."), cwd=".", sep="; "
+    tables,
+    glottocode=None,
+    iso=None,
+    metadata=None,
+    output_dir=Path("."),
+    cwd=".",
+    sep="; ",
 ):
     log.info("Creating CLDF dataset")
     ds = create_dataset(

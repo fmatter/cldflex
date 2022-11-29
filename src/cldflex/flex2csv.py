@@ -121,7 +121,13 @@ def get_form_slices(
         ):
             if morph_gloss:
                 m_id, sense_id = retriever.retrieve_morph_id(
-                    morph_obj, morph_gloss, lexicon, morph_type, ex_id, sense_id="Parameter_ID", form_str="Form_Bare"
+                    morph_obj,
+                    morph_gloss,
+                    lexicon,
+                    morph_type,
+                    ex_id,
+                    sense_id="Parameter_ID",
+                    form_str="Form_Bare",
                 )
                 if m_id:
                     form_slices[word_id].append(
@@ -414,7 +420,9 @@ def write_sentences(df, output_dir, conf):
         "Phrase_Number",
         "Language_ID",
     ]
-    sorted_cols = [x for x in sort_order if x in df.columns] + [x for x in df.columns if x not in sort_order]
+    sorted_cols = [x for x in sort_order if x in df.columns] + [
+        x for x in df.columns if x not in sort_order
+    ]
     df = df[sorted_cols]
     log.debug(f"Saving {(output_dir / 'sentences.csv').resolve()}")
     df.to_csv(output_dir / "sentences.csv", index=False)
@@ -555,5 +563,5 @@ def convert(
             metadata=metadata,
             output_dir=output_dir,
             cwd=flextext_file.parents[0],
-            sep=sep
+            sep=sep,
         )
