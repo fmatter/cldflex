@@ -7,7 +7,7 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
-from morphinder import LexiconRetriever
+from morphinder import Morphinder
 from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
 
@@ -185,7 +185,7 @@ def extract_records(  # noqa: MC0001
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
-    retriever = LexiconRetriever()
+    retriever = Morphinder()
 
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
         text.find_all("phrase")
