@@ -6,8 +6,8 @@ from string import punctuation
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
-from slugify import slugify
 from morphinder import Morphinder
+from slugify import slugify
 from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
 
@@ -123,11 +123,8 @@ def get_form_slices(
                 m_id, sense_id = retriever.retrieve_morph_id(
                     morph_obj,
                     morph_gloss,
-                    lexicon,
                     morph_type,
-                    ex_id,
-                    sense_id="Parameter_ID",
-                    form_str="Form_Bare",
+                    sense_key="Parameter_ID",
                 )
                 if m_id:
                     form_slices[word_id].append(
@@ -185,7 +182,8 @@ def extract_records(  # noqa: MC0001
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
-    retriever = Morphinder()
+    if lexicon is not None:
+        retriever = Morphinder(lexicon)
 
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
         text.find_all("phrase")
@@ -475,6 +473,13 @@ def convert(
     sep = conf.get("csv_cell_separator", "; ")
     lexicon = load_lexicon(lexicon_file, conf, sep, output_dir)
 
+    if lexicon is not None:
+        lookup_lexicon = lexicon.copy()
+        for col in lookup_lexicon.columns:
+            if isinstance(lookup_lexicon[col].iloc[0], list) and col != "Parameter_ID":
+                lookup_lexicon[col] = lookup_lexicon[col].apply(lambda x: sep.join(x))
+    else:
+        lookup_lexicon = None
     wordforms = {}
 
     sentence_slices = []
@@ -496,7 +501,7 @@ def convert(
                 wordforms,
                 sentence_slices,
                 form_slices,
-                lexicon,
+                lookup_lexicon,
                 conf,
             )
         )

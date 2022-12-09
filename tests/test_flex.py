@@ -52,6 +52,7 @@ def test_with_lexicon(flextext, monkeypatch, tmp_path, data):
         "texts.csv",
         "form_slices.csv",
     ]:
+
         df1 = pd.read_csv(tmp_path / filename)
         df2 = pd.read_csv(data / "output" / filename)
 

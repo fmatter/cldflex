@@ -64,15 +64,9 @@ def add_example_slices(sentence_slices, writer):
 
 def add_morphology_tables(tables, writer):
     try:
-        from clld_morphology_plugin.cldf import (
-            FormSlices,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphsetTable,
-        )  # pylint: disable=import-outside-toplevel
-        from clld_morphology_plugin.cldf import (
-            MorphTable,
-        )  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import FormSlices  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphsetTable  # pylint: disable=import-outside-toplevel
+        from clld_morphology_plugin.cldf import MorphTable  # pylint: disable=import-outside-toplevel
     except ImportError:  # pragma: no cover
         log.error(
             "Run pip install cldflex[extras] to install the clld-morphology plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -236,9 +230,7 @@ def create_dataset(  # noqa: MC0001
             )
         if texts is not None:
             try:
-                from clld_corpus_plugin.cldf import (
-                    TextTable,
-                )  # pylint: disable=import-outside-toplevel
+                from clld_corpus_plugin.cldf import TextTable  # pylint: disable=import-outside-toplevel
             except ImportError:  # pragma: no cover
                 log.error(
                     "Run pip install cldflex[extras] to install the clld-corpus plugin, needed to create a dataset with morphs, morphemes and form slices."
@@ -327,12 +319,8 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import (
-            Glottolog,
-        )  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import (
-            pyglottolog,
-        )  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
