@@ -64,7 +64,7 @@ def extract_morpheme_data(morpheme, morpheme_type, word_dict, gloss_key, conf):
         key = item["type"] + "_" + item["lang"]
         word_dict.setdefault(key, "")
         text = item.text
-        if key in [gloss_key, f"msa_{conf['gloss_lg']}"]:
+        if key == gloss_key or "msa" in key:
             if (
                 morpheme_type == "suffix"
                 and not word_dict[key].endswith("-")
