@@ -402,14 +402,14 @@ def write_sentences(df, output_dir, conf):
         (f"pos_{conf['gloss_lg']}_word", "Part_Of_Speech"),
         (f"segnum_{conf['gloss_lg']}_phrase", "Record_Number"),
     ]:
-        rename_dict.setdefault(gen_col, label)
+        if label not in rename_dict.values():
+            rename_dict.setdefault(gen_col, label)
     for k, v in rename_dict.items():
         if v in df.columns:
             log.warning(
                 f"Renaming '{k}' to '{v}' is overwriting an existing column '{v}'"
             )
-            df.drop(columns=[v], inplace=True)
-        df.rename(columns={k: v}, inplace=True)
+        df[v] = df[k]
     df["Language_ID"] = conf["Language_ID"]
     # resolve records with multiple phrases
     df = df.apply(lambda x: split_part_col(x), axis=1)
