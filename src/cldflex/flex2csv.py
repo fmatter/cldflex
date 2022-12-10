@@ -358,7 +358,7 @@ def get_text_id(text):
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
             text_id = slugify(abbrev.text)
-            log.info(f"Read text {text_id} ({abbrev['lang']})")
+            log.info(f"Processing text {text_id} ({abbrev['lang']})")
     return text_id
 
 
@@ -401,6 +401,7 @@ def write_sentences(df, output_dir, conf):
             log.warning(
                 f"Renaming '{k}' to '{v}' is overwriting an existing column '{v}'"
             )
+            df.drop(columns=[v], inplace=True)
         df.rename(columns={k: v}, inplace=True)
     df["Language_ID"] = conf["Language_ID"]
     # resolve records with multiple phrases
@@ -571,3 +572,4 @@ def convert(
             cwd=flextext_file.parents[0],
             sep=sep,
         )
+    return df
