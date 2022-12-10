@@ -293,13 +293,20 @@ def extract_records(  # noqa: MC0001
                 phrase_item["type"] + "_" + phrase_item["lang"] + "_phrase"
             ] = phrase_item.text
         for col in interlinear_lines.columns:
-            phrase_dict[col] = (
-                "\t".join(
+            if conf.get("fix_clitics", True):
+                phrase_dict[col] = (
+                    "\t".join(
+                        interlinear_lines[
+                            col
+                        ]  # pylint: disable=unsubscriptable-object 🙄
+                    )
+                    .replace("\t=", "=")
+                    .replace("=\t", "=")
+                )
+            else:
+                phrase_dict[col] = "\t".join(
                     interlinear_lines[col]  # pylint: disable=unsubscriptable-object 🙄
                 )
-                .replace("\t=", "=")
-                .replace("=\t", "=")
-            )
         record_list.append(phrase_dict)
     return record_list
 
