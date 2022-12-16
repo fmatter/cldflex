@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * gracefully handle clitics annotated as separate words
+* handle empty translations in dic examples
 
 ### Changed
 * externalized `morph_id` retrieval
