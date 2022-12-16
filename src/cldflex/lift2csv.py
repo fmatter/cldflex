@@ -11,7 +11,7 @@ from cldflex.cldf import create_dictionary_dataset
 from cldflex.helpers import add_to_list_in_dict
 from cldflex.helpers import deduplicate
 from cldflex.helpers import delistify
-
+import numpy as np
 
 log = logging.getLogger(__name__)
 
@@ -165,6 +165,9 @@ def convert(
     )
     entries = pd.DataFrame.from_dict(entries)
     senses = pd.DataFrame.from_dict(senses)
+    for key in [definition_key, gloss_key]:
+        if key not in senses.columns:
+            senses[key] = np.nan
     senses["Description"] = senses.apply(
         lambda x: x[definition_key]
         if not pd.isnull(x[definition_key])
@@ -173,7 +176,7 @@ def convert(
     )
     senses["Name"] = senses.apply(
         lambda x: " / ".join(x[gloss_key])
-        if not pd.isnull(x[gloss_key]).any()
+        if not pd.isnull(x[gloss_key])
         else x[definition_key],
         axis=1,
     )
@@ -181,12 +184,13 @@ def convert(
 
     def entry_repr(entry_id):
         entry = entries[entries["ID"] == entry_id].iloc[0]
-        if not isinstance(entry[gloss_key], list):
+        meanings = entry.get(gloss_key, entry.get(definition_key, ""))
+        if not isinstance(meanings, list):
             ggg = "unknown meaning"
-        elif len(entry[gloss_key]) == 0:
+        elif len(meanings) == 0:
             ggg = "unknown meaning"
         else:
-            ggg = " / ".join(entry[gloss_key])
+            ggg = " / ".join(meanings)
         if isinstance(entry.get(obj_key, None), list):
             form_str = " / ".join(entry[obj_key])
         else:
@@ -201,7 +205,7 @@ def convert(
             if len(entry[col]) > 1:
                 msg = f"""The entry {entry_repr(entry["ID"])} is stored as a variant ({col}) of multiple main entries:"""
                 for entry_id in entry[col]:
-                    msg += "\n" + entry_repr(entry_id)
+                    msg += "\n* " + entry_repr(entry_id)
                 log.warning(msg)
             for entry_id in entry[col]:
                 add_to_list_in_dict(var_dict, entry_id, entry)
@@ -246,7 +250,7 @@ def convert(
             log.debug(
                 f"""inheriting gloss from {entry_repr(entry["ID"])} for {entry_repr(variant["ID"])}"""
             )
-            variant[gloss_key] = entry[gloss_key]
+            variant[gloss_key] = entry.get(gloss_key, entry.get(definition_key, ""))
         variant["Parameter_ID"] = entry["Parameter_ID"]
         entry[obj_key].append(variant[obj_key])
         variant["Variant_ID"] = variant["ID"]
