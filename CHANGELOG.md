@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+* gracefully handle clitics annotated as separate words
+
 ### Changed
 * externalized `morph_id` retrieval
 * deleting existing columns when renaming
