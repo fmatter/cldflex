@@ -2,6 +2,7 @@ import logging
 import re
 import sys
 from pathlib import Path
+import numpy as np
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
@@ -11,7 +12,7 @@ from cldflex.cldf import create_dictionary_dataset
 from cldflex.helpers import add_to_list_in_dict
 from cldflex.helpers import deduplicate
 from cldflex.helpers import delistify
-import numpy as np
+
 
 log = logging.getLogger(__name__)
 
@@ -229,10 +230,11 @@ def convert(
                     f"""The variant {entry_repr(variant["ID"])} of the entry {entry_repr(entry["ID"])} has the subvariant {entry_repr(varvariant["ID"])}. Is this accurate?"""
                 )
                 varvariant = varvariant.copy()
-                process_variant(
-                    entry, varvariant, new_variant_morphs, var_dict, var_count, i
-                )
                 var_count += 1
+                if var_count < 10:
+                    process_variant(
+                        entry, varvariant, new_variant_morphs, var_dict, var_count, i
+                    )
         log.debug(
             f"""Adding variant {variant["ID"]} {variant[obj_key]} to entry {entry_repr(entry["ID"])}"""
         )
