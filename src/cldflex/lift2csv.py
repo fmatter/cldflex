@@ -293,6 +293,7 @@ def convert(
         variants = entries[~(pd.isnull(entries[col]))]
         entries = entries.loc[~(entries.index.isin(variants.index))]
 
+
     entries[obj_key] = entries[obj_key].apply(sorted)
     entries[obj_key] = entries[obj_key].apply(deduplicate)
     entries = delistify(entries, sep)
@@ -413,6 +414,8 @@ def convert(
                 sep=sep,
             )
         else:
+            if cldf_settings.get("drop_empty", False):
+                senses = senses[senses["Description"] != ""]
             create_dictionary_dataset(
                 unmodified_entries,
                 senses,
