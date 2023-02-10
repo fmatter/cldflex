@@ -44,5 +44,6 @@ def delistify(df, sep):
 
 
 def listify(df, column, sep):
-    df[column] = df[column].apply(lambda x: x.split(sep))
+    if not isinstance(df[column].iloc[0], list):
+        df[column] = df[column].apply(lambda x: x.split(sep))
     return df

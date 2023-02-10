@@ -8,13 +8,11 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from morphinder import Morphinder
-from slugify import slugify
 from cldflex.cldf import create_rich_dataset
 from cldflex.helpers import delistify
 from cldflex.helpers import listify
-from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
-
+from humidifier import humidify, get_values
 
 log = logging.getLogger(__name__)
 
@@ -49,8 +47,8 @@ def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
         clitic_dict.setdefault(key, "")
         clitic_dict[key] += item.text
 
-    clitic_dict["Clitic_ID"] = slug(
-        clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***")
+    clitic_dict["Clitic_ID"] = humidify(
+        clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***"), key="clitics", generate_unique=True
     )
     clitic_dict.setdefault(
         f"pos_{conf['msa_lg']}_word",
@@ -152,10 +150,11 @@ def get_form_slices(
                             "Form": re.sub(
                                 "|".join(delimiters), "", word_dict[obj_key]
                             ),
-                            "Form_Meaning": slug(word_dict[gloss_key]),
+                            "Form_Meaning": humidify(word_dict[gloss_key], key="meanings"),
                             "Morph_ID": m_id,
                             "Morpheme_Meaning": sense_id,
                             "Index": str(m_c),
+                            "Gloss_ID": [humidify(morph_gloss, key="glosses")],
                         }
                     )
             else:
@@ -170,7 +169,7 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
             "Wordform_ID": clitic["Clitic_ID"],
             "Index": word_count,
             "Form_Meaning": clitic.get(gloss_key, "***"),
-            "Parameter_ID": slug(clitic.get(gloss_key, "***")),
+            "Parameter_ID": humidify(clitic.get(gloss_key, "***"), key="meanings"),
         }
     )
     return word_count + 1
@@ -191,7 +190,7 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         not in wordforms[clitic["Clitic_ID"]]["Meaning"]
     ):
         wordforms[clitic["Clitic_ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
-
+        humidify(clitic[gloss_key].strip("="), key="meanings")
 
 def _prepare_lex(rec, sep):
     rec["Gloss"] = rec["Gloss"].split(sep)
@@ -226,7 +225,7 @@ def extract_records(  # noqa: MC0001
         else:
             segnum = phrase_count
 
-        ex_id = slugify(f"{text_id}-{segnum}")
+        ex_id = humidify(f"{text_id}-{segnum}", key="examples", generate_unique=True)
         log.debug(f"{ex_id}")
 
         word_count = 0
@@ -273,7 +272,7 @@ def extract_records(  # noqa: MC0001
                     interlinear_lines.append(clitic)
 
                 form_meaning = word_dict.get(gloss_key, "***")
-                form_meaning_id = slug(form_meaning)
+                form_meaning_id = humidify(form_meaning, key="meanings")
 
                 sentence_slices.append(
                     {
@@ -348,25 +347,14 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
         )
         return None
     if lexicon_file.suffix == ".lift":
-        lexicon = lift2csv(lift_file=lexicon_file, output_dir=output_dir, conf=conf)
-    elif lexicon_file.suffix == ".csv":
-        log.info(f"Reading lexicon file {lexicon_file.resolve()}")
-        lexicon = pd.read_csv(lexicon_file, encoding="utf-8", keep_default_na=False)
+        lexemes, stems, morphemes, morphs, senses = lift2csv(lift_file=lexicon_file, output_dir=output_dir, conf=conf)
     else:
-        log.error(f"Please specify a .csv or .lift file ({lexicon_file})")
+        log.error(f"Please specify a .lift file ({lexicon_file})")
         return None
-    lexicon["Form_Bare"] = lexicon["Form"].apply(
+    morphs["Form_Bare"] = morphs["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
-    for split_col in ["Form_Bare", "Form", "Gloss", "Parameter_ID"]:
-        lexicon[split_col] = lexicon[split_col].apply(lambda x: x.split(sep))
-    morpheme_lg = lexicon.iloc[0]["Language_ID"]
-    if morpheme_lg != conf["Language_ID"]:
-        log.info(
-            f"Changing Language_ID from [{morpheme_lg}] to [{conf['Language_ID']}]"
-        )
-        lexicon["Language_ID"] = conf["Language_ID"]
-    return lexicon
+    return lexemes, stems, morphemes, morphs, senses
 
 
 def load_keys(conf, texts):
@@ -396,7 +384,7 @@ def get_text_id(text):
     abbrevs = text.select("item[type='title-abbreviation']")
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
-            text_id = slugify(abbrev.text)
+            text_id = humidify(abbrev.text, key="texts", generate_unique=True)
             log.info(f"Processing text {text_id} ({abbrev['lang']})")
     return text_id
 
@@ -475,7 +463,7 @@ def convert(
                 conf = yaml.safe_load(f)
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
     sep = conf.get("csv_cell_separator", "; ")
-    lexicon = load_lexicon(lexicon_file, conf, sep, output_dir)
+    lexemes, stems, morphemes, lexicon, senses = load_lexicon(lexicon_file, conf, sep, output_dir)
 
     if lexicon is not None:
         lookup_lexicon = lexicon.copy()
@@ -517,10 +505,10 @@ def convert(
     )
     sentences = prepare_sentences(df, conf)
     wordforms = pd.DataFrame.from_dict(wordforms.values())
-    wordforms["Parameter_ID"] = wordforms["Meaning"]
     texts = pd.DataFrame.from_dict(text_list)
     form_slices = pd.DataFrame.from_dict(chain(*form_slices.values()))
-    tables = {"wordforms": wordforms, "examples": df, "texts": texts}
+
+    tables = {"wordforms": wordforms, "examples": df, "texts": texts, "wordformparts": form_slices}
     if conf.get("sentence_slices", True):
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         tables["exampleparts"] = sentence_slices
@@ -536,11 +524,14 @@ def convert(
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
 
+        glosses = get_values("glosses")
+        tables["glosses"] = pd.DataFrame.from_dict([{"ID": v, "Name": k} for k, v in glosses.items()])
+        tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
         contributors = cldf_settings.get("contributors", {})
         if contributors:
             for contributor in contributors:
                 if "id" not in contributor and "name" in contributor:
-                    contributor["ID"] = slugify(contributor["name"])
+                    contributor["ID"] = humidify(contributor["name"], key="contr", generate_unique=True)
                 else:
                     contributor["ID"] = contributor["id"]
                 for k in contributor.keys():
@@ -548,19 +539,22 @@ def convert(
                         contributor[k.capitalize()] = contributor.pop(k)
             tables["contributors"] = pd.DataFrame.from_dict(contributors)
         if lexicon is not None:
-            lexicon["Name"] = lexicon["Form_Bare"].apply(
-                lambda x: " / ".join(x)  # pylint: disable=unnecessary-lambda 🙄
-            )
-            print(lexicon)
-            exit()
-            tables["MorphTable"] = lexicon
+            tables["stems"] = stems
+            tables["lexemes"] = lexemes
+            tables["morphs"] = lexicon
             if conf.get("form_slices", True):
-                tables["FormSlices"] = form_slices
-            tables["MorphsetTable"] = load_lexicon(
-                output_dir / "morphemes.csv", conf, sep
-            )
-            # tables["MorphsetTable"] = morphemes["Parameter_ID"] = morphemes["Parameter_ID"].apply(lambda x: x.split(sep))
-            tables["ParameterTable"] = pd.read_csv(output_dir / "senses.csv")
+                tables["formparts"] = form_slices
+            tables["morphemes"] = morphemes
+            param_dict = get_values("meanings")
+            wordforms["Parameter_ID"] = wordforms["Meaning"].map(param_dict)
+            wf_senses = pd.DataFrame.from_dict([{"ID": v, "Name": k} for k, v in param_dict.items()])
+            senses = pd.concat([senses, wf_senses]).fillna("")
+            tables["senses"] = senses
+            with pd.option_context("mode.chained_assignment", None):
+                for namedf in [lexicon, morphemes, stems, lexemes]:
+                    if "Form" in namedf:
+                        namedf.rename(columns={"Form": "Name"}, inplace=True)
+
 
         glottocode = conf.get("Glottocode", None)
         if not glottocode:

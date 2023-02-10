@@ -173,7 +173,7 @@ def create_rich_dataset(
             for table in tables.values():
                 table = modify_params(
                     table,
-                    mode="none",
+                    mode=parameters,
                     param_dict=param_dict,
                 )
         else:
@@ -186,6 +186,8 @@ def create_rich_dataset(
         "stems": cldf_ldd.StemTable,
         "lexemes": cldf_ldd.LexemeTable,
         "exampleparts": cldf_ldd.ExampleParts,
+        "wordformparts": cldf_ldd.WordformParts,
+        "glosses": cldf_ldd.GlossTable
     }
 
     spec = CLDFSpec(dir=output_dir / "cldf", module="Generic")
@@ -203,7 +205,7 @@ def create_rich_dataset(
         if parameters == "multi":
             for name, table in tables.items():
                 table = modify_params(table)
-                if name in table_dict:
+                if name in table_dict and "Parameter_ID" in tables[name].columns:
                     writer.cldf.remove_columns(table_dict[name]["url"], "Parameter_ID")
                     writer.cldf.add_columns(
                         table_dict[name]["url"],

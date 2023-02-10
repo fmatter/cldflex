@@ -451,4 +451,4 @@ def convert(
         else:
             raise ValueError(mode)
 
-    return morphs
+    return lexemes, stems, morphemes, morphs, senses
