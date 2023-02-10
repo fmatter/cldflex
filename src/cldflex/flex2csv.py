@@ -374,7 +374,7 @@ def load_keys(conf, texts):
     gloss_key = "gls_" + conf["gloss_lg"]
 
     if "obj_lg" not in conf:
-        conf["obj_lg"] = texts.select(f"item[lang!={conf['gloss_lg']}]")[0]["lang"]
+        conf["obj_lg"] = texts.find_all('item', lang=lambda x: x != conf['gloss_lg'])[0]["lang"]
         log.info(f"No object language specified, assuming [{conf['obj_lg']}].")
     obj_key = "txt_" + conf["obj_lg"]
     punct_key = "punct_" + conf["obj_lg"]
