@@ -1,6 +1,7 @@
 import logging
-from slugify import slugify
 import pandas as pd
+from slugify import slugify
+
 
 log = logging.getLogger(__name__)
 

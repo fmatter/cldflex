@@ -6,6 +6,7 @@ import pandas as pd
 from cldfbench import CLDFSpec
 from cldfbench.cldf import CLDFWriter
 from cldfbench.metadata import Metadata
+from humidifier import humidify
 from pycldf.util import metadata2markdown
 from cldflex import __version__
 from cldflex.helpers import listify
@@ -105,18 +106,14 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
         writer.cldf.add_component("LanguageTable")
         for lg in lg_df.to_dict("records"):
             writer.objects["LanguageTable"].append(lg)
-        return None
+        return lg["ID"]
     log.info(
         f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog"
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import (
-            Glottolog,
-        )  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import (
-            pyglottolog,
-        )  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
@@ -129,7 +126,6 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
             languoid = glottolog.languoid(iso)
     else:
         raise ValueError("Missing value: glottocode or iso")
-
     writer.cldf.add_component("LanguageTable")
     writer.objects["LanguageTable"].append(
         {
@@ -161,15 +157,35 @@ def create_rich_dataset(
     sep="; ",
     parameters="multi",
 ):
-    cldf_dict = {"senses": "ParameterTable"}
-    if not parameters:
-        cldf_dict = {}
+    cldf_dict = {"examples": "ExampleTable"}
+    if parameters:
+        cldf_dict["senses"] = "ParameterTable"
+        if "senses" not in tables:
+            params = []
+            for table in tables.values():
+                if "Parameter_ID" in table:
+                    params.extend(list(table["Parameter_ID"]))
+            param_dict = {
+                x: humidify(x, key="meanings", generate_unique=True)
+                for x in set(params)
+            }
+            tables["senses"] = pd.DataFrame.from_dict([{"ID": v, "Name": k} for k, v in param_dict.items()])
+            for table in tables.values():
+                table = modify_params(
+                    table,
+                    mode="none",
+                    param_dict=param_dict,
+                )
+        else:
+            param_dict = dict(zip(tables["senses"]["ID"], tables["senses"]["Name"]))
+
     table_dict = {
         "morphs": cldf_ldd.MorphTable,
         "morphemes": cldf_ldd.MorphemeTable,
         "wordforms": cldf_ldd.WordformTable,
         "stems": cldf_ldd.StemTable,
         "lexemes": cldf_ldd.LexemeTable,
+        "exampleparts": cldf_ldd.ExampleParts,
     }
 
     spec = CLDFSpec(dir=output_dir / "cldf", module="Generic")
@@ -177,14 +193,11 @@ def create_rich_dataset(
 
         glottocode = add_language(writer, cwd, glottocode, iso)
 
-        for name, table in table_dict.items():
+        for name, table in {**table_dict, **cldf_dict}.items():
             if name in tables:
-                with pd.option_context("mode.chained_assignment", None):
-                    tables[name]["Language_ID"] = glottocode
-                    writer.cldf.add_component(table)
-
-        for name, table in cldf_dict.items():
-            if name in tables:
+                if glottocode:
+                    with pd.option_context("mode.chained_assignment", None):
+                        tables[name]["Language_ID"] = glottocode
                 writer.cldf.add_component(table)
 
         if parameters == "multi":
@@ -212,9 +225,7 @@ def create_rich_dataset(
                 table = modify_params(
                     table,
                     mode="none",
-                    param_dict=dict(
-                        zip(tables["senses"]["ID"], tables["senses"]["Name"])
-                    ),
+                    param_dict=param_dict,
                 )
         for name, table in table_dict.items():
             if name in tables:
@@ -250,7 +261,6 @@ def write_wordlist_dataset(  # noqa: MC0001
     with CLDFWriter(spec) as writer:
 
         glottocode = add_language(writer, cwd, glottocode, iso)
-
         tablelist = [("FormTable", forms)]
         if parameters:
             tablelist.append(("ParameterTable", senses))

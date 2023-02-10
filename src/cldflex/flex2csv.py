@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from itertools import chain
 from pathlib import Path
 from string import punctuation
 import pandas as pd
@@ -8,6 +9,9 @@ import yaml
 from bs4 import BeautifulSoup
 from morphinder import Morphinder
 from slugify import slugify
+from cldflex.cldf import create_rich_dataset
+from cldflex.helpers import delistify
+from cldflex.helpers import listify
 from cldflex.helpers import slug
 from cldflex.lift2csv import convert as lift2csv
 
@@ -144,7 +148,7 @@ def get_form_slices(
                     form_slices[word_id].append(
                         {
                             "ID": f"{word_id}-{str(m_c)}",
-                            "Form_ID": word_id,
+                            "Wordform_ID": word_id,
                             "Form": re.sub(
                                 "|".join(delimiters), "", word_dict[obj_key]
                             ),
@@ -163,7 +167,7 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
         {
             "ID": f"{ex_id}-{word_count}",
             "Example_ID": ex_id,
-            "Form_ID": clitic["Clitic_ID"],
+            "Wordform_ID": clitic["Clitic_ID"],
             "Index": word_count,
             "Form_Meaning": clitic.get(gloss_key, "***"),
             "Parameter_ID": slug(clitic.get(gloss_key, "***")),
@@ -275,7 +279,7 @@ def extract_records(  # noqa: MC0001
                     {
                         "ID": f"{ex_id}-{word_count}",
                         "Example_ID": ex_id,
-                        "Form_ID": word_id,
+                        "Wordform_ID": word_id,
                         "Index": word_count,
                         "Form_Meaning": form_meaning,
                         "Parameter_ID": form_meaning_id,
@@ -374,7 +378,9 @@ def load_keys(conf, texts):
     gloss_key = "gls_" + conf["gloss_lg"]
 
     if "obj_lg" not in conf:
-        conf["obj_lg"] = texts.find_all('item', lang=lambda x: x != conf['gloss_lg'])[0]["lang"]
+        conf["obj_lg"] = texts.find_all("item", lang=lambda x: x != conf["gloss_lg"])[
+            0
+        ]["lang"]
         log.info(f"No object language specified, assuming [{conf['obj_lg']}].")
     obj_key = "txt_" + conf["obj_lg"]
     punct_key = "punct_" + conf["obj_lg"]
@@ -403,25 +409,13 @@ def get_text_metadata(text, text_id):
     return text_metadata
 
 
-def write_form_slices(form_slices, output_dir):
-    all_slices = []
-    for slices in form_slices.values():
-        for form_slice in slices:
-            all_slices.append(form_slice)
-    form_slices = pd.DataFrame.from_dict(all_slices)
-    if len(form_slices) > 0:
-        log.debug(f"Saving {(output_dir / 'form_slices.csv').resolve()}")
-        form_slices.to_csv(output_dir / "form_slices.csv", index=False)
-    return form_slices
-
-
 def split_part_col(rec):
     if "." in rec["Record_Number"]:
         rec["Record_Number"], rec["Phrase_Number"] = rec["Record_Number"].split(".")
     return rec
 
 
-def write_sentences(df, output_dir, conf):
+def prepare_sentences(df, conf):
     rename_dict = conf.get("mappings", {})
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
@@ -439,7 +433,6 @@ def write_sentences(df, output_dir, conf):
     df["Language_ID"] = conf["Language_ID"]
     # resolve records with multiple phrases
     df = df.apply(lambda x: split_part_col(x), axis=1)
-    log.debug(type(output_dir))
     sort_order = [
         "ID",
         "Primary_Text",
@@ -456,30 +449,7 @@ def write_sentences(df, output_dir, conf):
         x for x in df.columns if x not in sort_order
     ]
     df = df[sorted_cols]
-    log.debug(f"Saving {(output_dir / 'sentences.csv').resolve()}")
-    df.to_csv(output_dir / "sentences.csv", index=False)
     return df.fillna("")
-
-
-def write_wordforms(wordforms, output_dir, conf, sep):
-    wordforms = pd.DataFrame.from_dict(wordforms.values())
-    lg_id = conf.get("Language_ID", None)
-    if lg_id:
-        wordforms["Language_ID"] = lg_id
-    for col in ["Form", "Meaning"]:
-        wordforms[col] = wordforms[col].apply(
-            lambda x: sep.join(x)  # pylint: disable=unnecessary-lambda 🙄
-        )
-    log.debug(f"Saving {(output_dir / 'wordforms.csv').resolve()}")
-    wordforms.to_csv(output_dir / "wordforms.csv", index=False)
-    return wordforms
-
-
-def write_generic(data, name, output_dir):
-    df = pd.DataFrame.from_dict(data)
-    log.debug(f"Saving {(output_dir / f'{name}.csv').resolve()}")
-    df.to_csv(output_dir / f"{name}.csv", index=False)
-    return df
 
 
 def convert(
@@ -545,24 +515,27 @@ def convert(
         .rename(columns={obj_key: "Analyzed_Word", gloss_key: "Gloss"})
         .fillna("")
     )
-
-    df = write_sentences(df, output_dir, conf)
-
-    wordforms = write_wordforms(wordforms, output_dir, conf, sep)
-
+    sentences = prepare_sentences(df, conf)
+    wordforms = pd.DataFrame.from_dict(wordforms.values())
+    wordforms["Parameter_ID"] = wordforms["Meaning"]
+    texts = pd.DataFrame.from_dict(text_list)
+    form_slices = pd.DataFrame.from_dict(chain(*form_slices.values()))
+    tables = {"wordforms": wordforms, "examples": df, "texts": texts}
     if conf.get("sentence_slices", True):
-        sentence_slices = write_generic(sentence_slices, "sentence_slices", output_dir)
+        sentence_slices = pd.DataFrame.from_dict(sentence_slices)
+        tables["exampleparts"] = sentence_slices
 
-    texts = write_generic(text_list, "texts", output_dir)
+    for name, df in tables.items():
+        df = delistify(df, sep)
+        df.to_csv(output_dir / f"{name}.csv", index=False)
 
-    form_slices = write_form_slices(form_slices, output_dir)
-
-    log.info(f"Wrote CSV files to {output_dir.resolve()}")
     if cldf:
-
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
-        tables = {"wordforms": wordforms, "examples": df, "texts": texts}
+
+        tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
+        tables["examples"] = listify(tables["examples"], "Gloss", "\t")
+
         contributors = cldf_settings.get("contributors", {})
         if contributors:
             for contributor in contributors:
@@ -574,8 +547,6 @@ def convert(
                     if k != "ID":
                         contributor[k.capitalize()] = contributor.pop(k)
             tables["contributors"] = pd.DataFrame.from_dict(contributors)
-        if conf.get("sentence_slices", True):
-            tables["sentenceslices"] = sentence_slices
         if lexicon is not None:
             lexicon["Name"] = lexicon["Form_Bare"].apply(
                 lambda x: " / ".join(x)  # pylint: disable=unnecessary-lambda 🙄
@@ -597,7 +568,8 @@ def convert(
             iso = conf.get("Language_ID", None)
         else:
             iso = None
-        create_cldf(
+
+        create_rich_dataset(
             tables=tables,
             glottocode=glottocode,
             iso=iso,
