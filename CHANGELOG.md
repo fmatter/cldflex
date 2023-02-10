@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * handle empty translations in dic examples
 
 ### Changed
+* now generating tables for lexemes, stems, morphemes, morphs, using [cldf-ldd](https://github.com/fmatter/cldf-ldd/) for the CLDF side
 * externalized `morph_id` retrieval
 * deleting existing columns when renaming
 * use `drop_empty` in `cldf` settings to omit empty senses when converting LIFT

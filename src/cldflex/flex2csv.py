@@ -138,6 +138,7 @@ def get_form_slices(
                     morph_gloss,
                     morph_type,
                     sense_key="Parameter_ID",
+                    form_key="Form_Bare",
                 )
                 if m_id:
                     form_slices[word_id].append(
@@ -188,6 +189,11 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         wordforms[clitic["Clitic_ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
 
 
+def _prepare_lex(rec, sep):
+    rec["Gloss"] = rec["Gloss"].split(sep)
+    return rec
+
+
 def extract_records(  # noqa: MC0001
     text,
     obj_key,
@@ -201,8 +207,9 @@ def extract_records(  # noqa: MC0001
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
+    sep = conf.get("csv_cell_separator", "; ")
     if lexicon is not None:
-        retriever = Morphinder(lexicon)
+        retriever = Morphinder(lexicon.apply(lambda x: _prepare_lex(x, sep), axis=1))
 
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
         text.find_all("phrase")
@@ -552,11 +559,10 @@ def convert(
 
     log.info(f"Wrote CSV files to {output_dir.resolve()}")
     if cldf:
-        from cldflex.cldf import create_cldf  # pylint: disable=import-outside-toplevel
 
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
-        tables = {"FormTable": wordforms, "ExampleTable": df, "TextTable": texts}
+        tables = {"wordforms": wordforms, "examples": df, "texts": texts}
         contributors = cldf_settings.get("contributors", {})
         if contributors:
             for contributor in contributors:
@@ -567,13 +573,15 @@ def convert(
                 for k in contributor.keys():
                     if k != "ID":
                         contributor[k.capitalize()] = contributor.pop(k)
-            tables["ContributorTable"] = pd.DataFrame.from_dict(contributors)
+            tables["contributors"] = pd.DataFrame.from_dict(contributors)
         if conf.get("sentence_slices", True):
-            tables["SentenceSlices"] = sentence_slices
+            tables["sentenceslices"] = sentence_slices
         if lexicon is not None:
             lexicon["Name"] = lexicon["Form_Bare"].apply(
-                lambda x: sep.join(x)  # pylint: disable=unnecessary-lambda 🙄
+                lambda x: " / ".join(x)  # pylint: disable=unnecessary-lambda 🙄
             )
+            print(lexicon)
+            exit()
             tables["MorphTable"] = lexicon
             if conf.get("form_slices", True):
                 tables["FormSlices"] = form_slices
