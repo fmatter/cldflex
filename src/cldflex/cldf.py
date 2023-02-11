@@ -112,8 +112,12 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import (
+            Glottolog,
+        )  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import (
+            pyglottolog,
+        )  # pylint: disable=import-outside-toplevel
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
@@ -169,7 +173,9 @@ def create_rich_dataset(
                 x: humidify(x, key="meanings", generate_unique=True)
                 for x in set(params)
             }
-            tables["senses"] = pd.DataFrame.from_dict([{"ID": v, "Name": k} for k, v in param_dict.items()])
+            tables["senses"] = pd.DataFrame.from_dict(
+                [{"ID": v, "Name": k} for k, v in param_dict.items()]
+            )
             for table in tables.values():
                 table = modify_params(
                     table,
@@ -187,7 +193,8 @@ def create_rich_dataset(
         "lexemes": cldf_ldd.LexemeTable,
         "exampleparts": cldf_ldd.ExampleParts,
         "wordformparts": cldf_ldd.WordformParts,
-        "glosses": cldf_ldd.GlossTable
+        "glosses": cldf_ldd.GlossTable,
+        "texts": cldf_ldd.TextTable,
     }
 
     spec = CLDFSpec(dir=output_dir / "cldf", module="Generic")
@@ -201,6 +208,7 @@ def create_rich_dataset(
                     with pd.option_context("mode.chained_assignment", None):
                         tables[name]["Language_ID"] = glottocode
                 writer.cldf.add_component(table)
+        cldf_ldd.add_columns(writer.cldf)
 
         if parameters == "multi":
             for name, table in tables.items():
