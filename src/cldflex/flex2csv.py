@@ -48,7 +48,7 @@ def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
         clitic_dict[key] += item.text
 
     clitic_dict["Clitic_ID"] = humidify(
-        clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***"), key="clitics", generate_unique=True
+        clitic_dict.get(obj_key, "***") + "-" + clitic_dict.get(gloss_key, "***"), key="clitics"
     )
     clitic_dict.setdefault(
         f"pos_{conf['msa_lg']}_word",
@@ -527,6 +527,7 @@ def convert(
         glosses = get_values("glosses")
         tables["glosses"] = pd.DataFrame.from_dict([{"ID": v, "Name": k} for k, v in glosses.items()])
         tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
+        tables["wordforms"]["Morpho_Segments"] = tables["wordforms"]["Form"].apply(lambda x: x.split("-"))
         contributors = cldf_settings.get("contributors", {})
         if contributors:
             for contributor in contributors:
