@@ -57,8 +57,15 @@ def lift2csv(filename, config_file, cldf, output_dir):
     type=click.Path(exists=True, path_type=Path),
     default=None,
 )
+@click.option(
+    "-a",
+    "--audio",
+    "audio_folder",
+    type=click.Path(exists=True, path_type=Path),
+    default=None,
+)
 @click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
-def flex2csv(filename, config_file, lexicon_file, cldf, output_dir):
+def flex2csv(filename, config_file, lexicon_file, audio_folder, cldf, output_dir):
     if not config_file:
         if Path("cldflex.yaml").is_file():
             config_file = Path("cldflex.yaml")
@@ -71,6 +78,7 @@ def flex2csv(filename, config_file, lexicon_file, cldf, output_dir):
         lexicon_file=lexicon_file,
         cldf=cldf,
         output_dir=output_dir,
+        audio_folder=audio_folder
     )
 
 

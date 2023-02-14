@@ -453,6 +453,7 @@ def convert(
     output_dir=None,
     conf=None,
     cldf=False,
+    audio_folder=None
 ):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or Path(os.path.dirname(os.path.realpath(flextext_file)))
     flextext_file = Path(flextext_file)
@@ -531,6 +532,8 @@ def convert(
         df.to_csv(output_dir / f"{name}.csv", index=False)
 
     if cldf:
+        if audio_folder:
+            tables["media"] = pd.DataFrame.from_dict([{"ID": f.stem, "Media_Type": f.suffix.strip(".")} for f in audio_folder.iterdir()])
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
 

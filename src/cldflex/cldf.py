@@ -161,7 +161,7 @@ def create_rich_dataset(
     sep="; ",
     parameters="multi",
 ):
-    cldf_dict = {"examples": "ExampleTable"}
+    cldf_dict = {"examples": "ExampleTable", "media": "MediaTable"}
     if parameters:
         cldf_dict["senses"] = "ParameterTable"
         if "senses" not in tables:

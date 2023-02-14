@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+* option to add audio files
+
 ### Fixed
 * gracefully handle clitics annotated as separate words
 * handle empty translations in dic examples
