@@ -98,7 +98,7 @@ def parse_entries(entries):
             for gloss in sense.find_all("gloss"):
                 key = "gloss_" + gloss["lang"]
                 for x in [rec, sense_dict]:
-                    add_to_list_in_dict(x, key, gloss.text)
+                    add_to_list_in_dict(x, key, gloss.text.strip("="))
             for note in sense.find_all("note"):
                 note_type = ("note_" + note.get("type", "")).strip("_")
                 for pseudoform in note.find_all("form"):
@@ -163,7 +163,6 @@ def convert(
     entries, senses, dictionary_examples = parse_entries(lexicon.find_all("entry"))
     entries = pd.DataFrame.from_dict(entries)
     senses = pd.DataFrame.from_dict(senses)
-
     for key in [definition_key, gloss_key]:
         if key not in senses.columns:
             senses[key] = np.nan

@@ -152,12 +152,12 @@ def get_form_slices(
                                 "|".join(delimiters), "", word_dict[obj_key]
                             ),
                             "Form_Meaning": humidify(
-                                word_dict[gloss_key], key="meanings"
+                                word_dict[gloss_key].strip("="), key="meanings"
                             ),
                             "Morph_ID": m_id,
                             "Morpheme_Meaning": sense_id,
                             "Index": str(m_c),
-                            "Gloss_ID": [humidify(morph_gloss, key="glosses")],
+                            "Gloss_ID": [humidify(morph_gloss.strip("="), key="glosses")],
                         }
                     )
             else:
@@ -172,7 +172,7 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
             "Wordform_ID": clitic["Clitic_ID"],
             "Index": word_count,
             "Form_Meaning": clitic.get(gloss_key, "***"),
-            "Parameter_ID": humidify(clitic.get(gloss_key, "***"), key="meanings"),
+            "Parameter_ID": humidify(clitic.get(gloss_key, "***").strip("="), key="meanings"),
         }
     )
     return word_count + 1
@@ -256,6 +256,7 @@ def extract_records(  # noqa: MC0001
                         retriever,
                     )
                     for clitic in proclitics + enclitics:
+                        print(clitic)
                         get_form_slices(
                             clitic,
                             clitic["Clitic_ID"],
@@ -275,7 +276,7 @@ def extract_records(  # noqa: MC0001
                     del clitic["Clitic_ID"]
                     interlinear_lines.append(clitic)
 
-                form_meaning = word_dict.get(gloss_key, "***")
+                form_meaning = word_dict.get(gloss_key, "***").strip("=")
                 form_meaning_id = humidify(form_meaning, key="meanings")
 
                 sentence_slices.append(
