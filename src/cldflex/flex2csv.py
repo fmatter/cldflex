@@ -301,7 +301,6 @@ def extract_records(  # noqa: MC0001
                             and word_dict[gen_col] not in wordforms[word_id][label]
                         ):
                             wordforms[word_id][label].append(word_dict[gen_col])
-
                 for clitic in enclitics:
                     word_count = process_clitic_slices(
                         clitic, sentence_slices, gloss_key, word_count, ex_id
@@ -409,6 +408,10 @@ def split_part_col(rec):
     return rec
 
 
+def strip_form(form):
+    return re.sub(re.compile("|".join(delimiters + ["Ø"])), "", form)
+
+
 def prepare_sentences(df, conf):
     rename_dict = conf.get("mappings", {})
     for gen_col, label in [
@@ -453,7 +456,7 @@ def convert(
     output_dir=None,
     conf=None,
     cldf=False,
-    audio_folder=None
+    audio_folder=None,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or Path(os.path.dirname(os.path.realpath(flextext_file)))
     flextext_file = Path(flextext_file)
@@ -533,7 +536,12 @@ def convert(
 
     if cldf:
         if audio_folder:
-            tables["media"] = pd.DataFrame.from_dict([{"ID": f.stem, "Media_Type": f.suffix.strip(".")} for f in audio_folder.iterdir()])
+            tables["media"] = pd.DataFrame.from_dict(
+                [
+                    {"ID": f.stem, "Media_Type": f.suffix.strip(".")}
+                    for f in audio_folder.iterdir()
+                ]
+            )
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
 
@@ -548,6 +556,8 @@ def convert(
         tables["wordforms"]["Morpho_Segments"] = tables["wordforms"]["Form"].apply(
             lambda x: x.split("-")
         )
+        tables["wordforms"]["Form"] = tables["wordforms"]["Form"].apply(strip_form)
+
         contributors = cldf_settings.get("contributors", {})
         if contributors:
             for contributor in contributors:

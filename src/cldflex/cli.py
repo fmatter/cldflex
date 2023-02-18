@@ -78,7 +78,7 @@ def flex2csv(filename, config_file, lexicon_file, audio_folder, cldf, output_dir
         lexicon_file=lexicon_file,
         cldf=cldf,
         output_dir=output_dir,
-        audio_folder=audio_folder
+        audio_folder=audio_folder,
     )
 
 
