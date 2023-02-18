@@ -256,7 +256,6 @@ def extract_records(  # noqa: MC0001
                         retriever,
                     )
                     for clitic in proclitics + enclitics:
-                        print(clitic)
                         get_form_slices(
                             clitic,
                             clitic["Clitic_ID"],
@@ -539,12 +538,13 @@ def convert(
         if audio_folder:
             tables["media"] = pd.DataFrame.from_dict(
                 [
-                    {"ID": f.stem, "Media_Type": f.suffix.strip(".")}
+                    {"ID": f.stem, "Media_Type": f.suffix.strip("."), "Download_URL": str(f)}
                     for f in audio_folder.iterdir()
                 ]
             )
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
+
 
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
@@ -553,11 +553,14 @@ def convert(
         tables["glosses"] = pd.DataFrame.from_dict(
             [{"ID": v, "Name": k} for k, v in glosses.items()]
         )
+
         tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
+
         tables["wordforms"]["Morpho_Segments"] = tables["wordforms"]["Form"].apply(
             lambda x: x.split("-")
         )
         tables["wordforms"]["Form"] = tables["wordforms"]["Form"].apply(strip_form)
+        tables["wordforms"]["Description"] = tables["wordforms"]["Meaning"]
 
         contributors = cldf_settings.get("contributors", {})
         if contributors:
@@ -573,6 +576,9 @@ def convert(
                         contributor[k.capitalize()] = contributor.pop(k)
             tables["contributors"] = pd.DataFrame.from_dict(contributors)
         if lexicon is not None:
+            stems["Description"] = stems["Gloss"]
+            lexicon["Description"] = lexicon["Gloss"]
+            morphemes["Description"] = morphemes["Gloss"]
             tables["stems"] = stems
             tables["lexemes"] = lexemes
             tables["morphs"] = lexicon
