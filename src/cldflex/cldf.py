@@ -246,7 +246,7 @@ def create_rich_dataset(
             if name in tables:
                 for rec in tables[name].to_dict("records"):
                     writer.objects[table].append(rec)
-
+    add_metadata(writer, metadata)
     cldf_ldd.add_keys(writer.cldf)
     writer.write()
     if writer.cldf.validate():
