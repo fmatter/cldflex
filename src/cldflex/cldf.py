@@ -1,5 +1,4 @@
 import logging
-import sys
 from pathlib import Path
 import cldf_ldd
 import pandas as pd

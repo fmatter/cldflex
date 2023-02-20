@@ -549,6 +549,8 @@ def convert(
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
 
+        stems["Gloss_ID"] = stems["Gloss"].apply(lambda x: [humidify(x, key="glosses")])
+
         glosses = get_values("glosses")
         tables["glosses"] = pd.DataFrame.from_dict(
             [{"ID": v, "Name": k} for k, v in glosses.items()]
