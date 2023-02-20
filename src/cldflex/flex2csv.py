@@ -229,7 +229,7 @@ def extract_records(  # noqa: MC0001
         else:
             segnum = phrase_count
 
-        ex_id = humidify(f"{text_id}-{segnum}", key="examples", generate_unique=True)
+        ex_id = humidify(f"{text_id}-{segnum}", key="examples", unique=True)
         log.debug(f"{ex_id}")
 
         word_count = 0
@@ -389,7 +389,7 @@ def get_text_id(text):
     abbrevs = text.select("item[type='title-abbreviation']")
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
-            text_id = humidify(abbrev.text, key="texts", generate_unique=True)
+            text_id = humidify(abbrev.text, key="texts", unique=True)
             log.info(f"Processing text {text_id} ({abbrev['lang']})")
     return text_id
 
@@ -567,7 +567,7 @@ def convert(
             for contributor in contributors:
                 if "id" not in contributor and "name" in contributor:
                     contributor["ID"] = humidify(
-                        contributor["name"], key="contr", generate_unique=True
+                        contributor["name"], key="contr", unique=True
                     )
                 else:
                     contributor["ID"] = contributor["id"]
