@@ -121,6 +121,11 @@ def iterate_morphemes(word, word_dict, obj_key, gloss_key, conf, p=False):
             )
     return proclitics, enclitics, word_dict
 
+def id_glosses(gloss, sep=None):
+    res = [humidify(g, key="glosses") for g in re.split(r"\.\b", gloss)]
+    if sep:
+        return sep.join(res)
+    return res
 
 def get_form_slices(
     word_dict, word_id, lexicon, form_slices, obj_key, gloss_key, ex_id, retriever
@@ -157,9 +162,7 @@ def get_form_slices(
                             "Morph_ID": m_id,
                             "Morpheme_Meaning": sense_id,
                             "Index": str(m_c),
-                            "Gloss_ID": [
-                                humidify(morph_gloss.strip("="), key="glosses")
-                            ],
+                            "Gloss_ID": id_glosses(morph_gloss.strip("=")),
                         }
                     )
             else:
@@ -545,10 +548,6 @@ def convert(
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         tables["exampleparts"] = sentence_slices
 
-    for name, df in tables.items():
-        df = delistify(df, sep).copy()
-        df.to_csv(output_dir / f"{name}.csv", index=False)
-
     if cldf:
         if audio_folder:
             tables["media"] = pd.DataFrame.from_dict(
@@ -578,6 +577,7 @@ def convert(
                 [{"ID": v, "Name": k} for k, v in glosses.items()]
             )
 
+        delistify(tables["wordforms"], ",")
         tables["wordforms"]["Morpho_Segments"] = tables["wordforms"]["Form"].apply(
             lambda x: x.split("-")
         )
@@ -637,4 +637,9 @@ def convert(
             cwd=flextext_file.parents[0],
             sep=sep,
         )
-    return df
+
+    for name, df in tables.items():
+        df = delistify(df, sep)
+        log.info(f"Saved .csv files to {output_dir}")
+        df.to_csv(output_dir / f"{name}.csv", index=False)
+    return tables

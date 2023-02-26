@@ -206,6 +206,7 @@ def create_rich_dataset(
                     with pd.option_context("mode.chained_assignment", None):
                         tables[name]["Language_ID"] = glottocode
                 writer.cldf.add_component(table)
+
         cldf_ldd.add_columns(writer.cldf)
 
         if parameters == "multi":
