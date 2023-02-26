@@ -198,9 +198,7 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         not in wordforms[clitic["Clitic_ID"]]["Meaning"]
     ):
         wordforms[clitic["Clitic_ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
-        wordforms[clitic["Clitic_ID"]]["Parameter_ID"].append(
-            humidify(clitic[gloss_key].strip("="), key="meanings")
-        )
+        humidify(clitic[gloss_key].strip("="), key="meanings")
 
 
 def _prepare_lex(rec, sep):
@@ -302,6 +300,7 @@ def extract_records(  # noqa: MC0001
                     wordforms.setdefault(
                         word_id, {"ID": word_id, "Form": [], "Meaning": []}
                     )
+                    word_dict[gloss_key] = word_dict[gloss_key].strip("=")
                     for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
                         if (
                             gen_col in word_dict
