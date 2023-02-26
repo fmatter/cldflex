@@ -538,7 +538,7 @@ def convert(
         if audio_folder:
             tables["media"] = pd.DataFrame.from_dict(
                 [
-                    {"ID": f.stem, "Media_Type": f.suffix.strip("."), "Download_URL": str(f)}
+                    {"ID": f.stem, "Media_Type": "audio/"+f.suffix.strip("."), "Download_URL": str(f)}
                     for f in audio_folder.iterdir()
                 ]
             )
@@ -580,6 +580,7 @@ def convert(
         if lexicon is not None:
             stems["Description"] = stems["Gloss"]
             lexicon["Description"] = lexicon["Gloss"]
+            morphemes = morphemes.copy()
             morphemes["Description"] = morphemes["Gloss"]
             tables["stems"] = stems
             tables["lexemes"] = lexemes
