@@ -184,7 +184,8 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
 
 def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
     wordforms.setdefault(
-        clitic["Clitic_ID"], {"ID": clitic["Clitic_ID"], "Form": [], "Meaning": []}
+        clitic["Clitic_ID"],
+        {"ID": clitic["Clitic_ID"], "Form": [], "Meaning": [], "Parameter_ID": []},
     )
     if (
         obj_key in clitic
@@ -197,7 +198,9 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         not in wordforms[clitic["Clitic_ID"]]["Meaning"]
     ):
         wordforms[clitic["Clitic_ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
-        humidify(clitic[gloss_key].strip("="), key="meanings")
+        wordforms[clitic["Clitic_ID"]]["Parameter_ID"].append(
+            humidify(clitic[gloss_key].strip("="), key="meanings")
+        )
 
 
 def _prepare_lex(rec, sep):
@@ -484,6 +487,7 @@ def convert(
     else:
         lexicon = None
         stems = None
+        senses = None
 
     if lexicon is not None:
         lookup_lexicon = lexicon.copy()
@@ -603,17 +607,18 @@ def convert(
             if conf.get("form_slices", True):
                 tables["formparts"] = form_slices
             tables["morphemes"] = morphemes
-            param_dict = get_values("meanings")
-            wordforms["Parameter_ID"] = wordforms["Meaning"].map(param_dict)
-            wf_senses = pd.DataFrame.from_dict(
-                [{"ID": v, "Name": k} for k, v in param_dict.items()]
-            )
-            senses = pd.concat([senses, wf_senses]).fillna("")
-            tables["senses"] = senses
             with pd.option_context("mode.chained_assignment", None):
                 for namedf in [lexicon, morphemes, stems, lexemes]:
                     if "Form" in namedf:
                         namedf.rename(columns={"Form": "Name"}, inplace=True)
+
+        param_dict = get_values("meanings")
+        wordforms["Parameter_ID"] = wordforms["Meaning"].map(param_dict)
+        wf_senses = pd.DataFrame.from_dict(
+            [{"ID": v, "Name": k} for k, v in param_dict.items()]
+        )
+        senses = pd.concat([senses, wf_senses]).fillna("")
+        tables["senses"] = senses
 
         glottocode = conf.get("Glottocode", None)
         if not glottocode:

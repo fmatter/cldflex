@@ -65,6 +65,7 @@ def add_example_slices(sentence_slices, writer):
 
 def modify_params(df, mode="multi", sep="; ", param_dict={}):
     if "Parameter_ID" in df.columns:
+        print(df)
         with pd.option_context("mode.chained_assignment", None):
             df = listify(df, "Parameter_ID", sep)
             if mode == "single":
