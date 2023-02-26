@@ -157,7 +157,9 @@ def get_form_slices(
                             "Morph_ID": m_id,
                             "Morpheme_Meaning": sense_id,
                             "Index": str(m_c),
-                            "Gloss_ID": [humidify(morph_gloss.strip("="), key="glosses")],
+                            "Gloss_ID": [
+                                humidify(morph_gloss.strip("="), key="glosses")
+                            ],
                         }
                     )
             else:
@@ -172,7 +174,9 @@ def process_clitic_slices(clitic, sentence_slices, gloss_key, word_count, ex_id)
             "Wordform_ID": clitic["Clitic_ID"],
             "Index": word_count,
             "Form_Meaning": clitic.get(gloss_key, "***"),
-            "Parameter_ID": humidify(clitic.get(gloss_key, "***").strip("="), key="meanings"),
+            "Parameter_ID": humidify(
+                clitic.get(gloss_key, "***").strip("="), key="meanings"
+            ),
         }
     )
     return word_count + 1
@@ -475,8 +479,8 @@ def convert(
     sep = conf.get("csv_cell_separator", "; ")
     if lexicon_file:
         lexemes, stems, morphemes, lexicon, senses = load_lexicon(
-        lexicon_file, conf, sep, output_dir
-    )
+            lexicon_file, conf, sep, output_dir
+        )
     else:
         lexicon = None
         stems = None
@@ -528,40 +532,46 @@ def convert(
         "wordforms": wordforms,
         "examples": df,
         "texts": texts,
-        "wordformparts": form_slices,
     }
+    if len(form_slices) > 0:
+        tables["wordformparts"] = form_slices
+        tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
     if conf.get("sentence_slices", True):
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         tables["exampleparts"] = sentence_slices
 
     for name, df in tables.items():
-        df = delistify(df, sep)
+        df = delistify(df, sep).copy()
         df.to_csv(output_dir / f"{name}.csv", index=False)
 
     if cldf:
         if audio_folder:
             tables["media"] = pd.DataFrame.from_dict(
                 [
-                    {"ID": f.stem, "Media_Type": "audio/"+f.suffix.strip("."), "Download_URL": str(f)}
+                    {
+                        "ID": f.stem,
+                        "Media_Type": "audio/" + f.suffix.strip("."),
+                        "Download_URL": str(f),
+                    }
                     for f in audio_folder.iterdir()
                 ]
             )
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
 
-
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
 
         if stems:
-            stems["Gloss_ID"] = stems["Gloss"].apply(lambda x: [humidify(x, key="glosses")])
+            stems["Gloss_ID"] = stems["Gloss"].apply(
+                lambda x: [humidify(x, key="glosses")]
+            )
 
         glosses = get_values("glosses")
-        tables["glosses"] = pd.DataFrame.from_dict(
-            [{"ID": v, "Name": k} for k, v in glosses.items()]
-        )
-
-        tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
+        if glosses:
+            tables["glosses"] = pd.DataFrame.from_dict(
+                [{"ID": v, "Name": k} for k, v in glosses.items()]
+            )
 
         tables["wordforms"]["Morpho_Segments"] = tables["wordforms"]["Form"].apply(
             lambda x: x.split("-")

@@ -169,8 +169,7 @@ def create_rich_dataset(
                 if "Parameter_ID" in table:
                     params.extend(list(table["Parameter_ID"]))
             param_dict = {
-                x: humidify(x, key="meanings", unique=True)
-                for x in set(params)
+                x: humidify(x, key="meanings", unique=True) for x in set(params)
             }
             tables["senses"] = pd.DataFrame.from_dict(
                 [{"ID": v, "Name": k} for k, v in param_dict.items()]
