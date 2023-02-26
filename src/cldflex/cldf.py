@@ -248,7 +248,7 @@ def create_rich_dataset(
     cldf_ldd.add_keys(writer.cldf)
     writer.write()
     if writer.cldf.validate():
-        log.info("Validated dataset")
+        log.info(f"Validated dataset at {Path(writer.cldf.filename).resolve()}")
 
 
 def write_wordlist_dataset(  # noqa: MC0001

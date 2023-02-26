@@ -300,13 +300,15 @@ def extract_records(  # noqa: MC0001
                     wordforms.setdefault(
                         word_id, {"ID": word_id, "Form": [], "Meaning": []}
                     )
-                    word_dict[gloss_key] = word_dict[gloss_key].strip("=")
+                    word_dict[gloss_key] = word_dict[gloss_key]
                     for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
                         if (
                             gen_col in word_dict
                             and word_dict[gen_col] not in wordforms[word_id][label]
                         ):
-                            wordforms[word_id][label].append(word_dict[gen_col])
+                            wordforms[word_id][label].append(
+                                word_dict[gen_col].strip("=")
+                            )
                 for clitic in enclitics:
                     word_count = process_clitic_slices(
                         clitic, sentence_slices, gloss_key, word_count, ex_id
