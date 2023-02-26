@@ -479,6 +479,7 @@ def convert(
     )
     else:
         lexicon = None
+        stems = None
 
     if lexicon is not None:
         lookup_lexicon = lexicon.copy()
@@ -552,7 +553,8 @@ def convert(
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
 
-        stems["Gloss_ID"] = stems["Gloss"].apply(lambda x: [humidify(x, key="glosses")])
+        if stems:
+            stems["Gloss_ID"] = stems["Gloss"].apply(lambda x: [humidify(x, key="glosses")])
 
         glosses = get_values("glosses")
         tables["glosses"] = pd.DataFrame.from_dict(
