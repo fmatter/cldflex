@@ -540,7 +540,7 @@ def convert(
     }
     if len(form_slices) > 0:
         tables["wordformparts"] = form_slices
-        tables["wordformparts"] = listify(tables["wordformparts"], "Gloss_ID", ",")
+
     if conf.get("sentence_slices", True):
         sentence_slices = pd.DataFrame.from_dict(sentence_slices)
         tables["exampleparts"] = sentence_slices
@@ -567,7 +567,7 @@ def convert(
         tables["examples"] = listify(tables["examples"], "Analyzed_Word", "\t")
         tables["examples"] = listify(tables["examples"], "Gloss", "\t")
 
-        if stems:
+        if stems is not None:
             stems["Gloss_ID"] = stems["Gloss"].apply(
                 lambda x: [humidify(x, key="glosses")]
             )
