@@ -473,9 +473,12 @@ def convert(
                 conf = yaml.safe_load(f)
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
     sep = conf.get("csv_cell_separator", "; ")
-    lexemes, stems, morphemes, lexicon, senses = load_lexicon(
+    if lexicon_file:
+        lexemes, stems, morphemes, lexicon, senses = load_lexicon(
         lexicon_file, conf, sep, output_dir
     )
+    else:
+        lexicon = None
 
     if lexicon is not None:
         lookup_lexicon = lexicon.copy()
