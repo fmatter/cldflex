@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * externalized `morph_id` retrieval
 * deleting existing columns when renaming
 * use `drop_empty` in `cldf` settings to omit empty senses when converting LIFT
+* renamed commands
 
 ## [0.1.0] - 2022-11-27
 

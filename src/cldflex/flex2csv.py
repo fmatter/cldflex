@@ -7,12 +7,15 @@ from string import punctuation
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
+from humidifier import get_values
+from humidifier import humidify
 from morphinder import Morphinder
+from writio import dump
 from cldflex.cldf import create_rich_dataset
 from cldflex.helpers import delistify
 from cldflex.helpers import listify
 from cldflex.lift2csv import convert as lift2csv
-from humidifier import humidify, get_values
+
 
 log = logging.getLogger(__name__)
 
@@ -55,8 +58,7 @@ def extract_clitic_data(morpheme, morpheme_type, obj_key, gloss_key, conf):
         f"pos_{conf['msa_lg']}_word",
         clitic_dict.get(f"msa_{conf['msa_lg']}", "<Not Sure>"),
     )
-    clitic_dict[gloss_key] = clitic_dict[gloss_key]
-    clitic_dict.setdefault(gloss_key + "_word", clitic_dict[gloss_key])
+    # clitic_dict.setdefault(gloss_key + "_word", clitic_dict[gloss_key])
     return clitic_dict
 
 
@@ -117,15 +119,17 @@ def iterate_morphemes(word, word_dict, obj_key, gloss_key, conf, p=False):
     for key in [obj_key, gloss_key]:
         if word_dict and key not in word_dict:
             word_dict[key] = "=".join(
-                [x[key] for x in proclitics] + [x[key] for x in enclitics]
+                [x.get(key) for x in proclitics] + [x.get(key) for x in enclitics]
             )
     return proclitics, enclitics, word_dict
+
 
 def id_glosses(gloss, sep=None):
     res = [humidify(g, key="glosses") for g in re.split(r"\.\b", gloss)]
     if sep:
         return sep.join(res)
     return res
+
 
 def get_form_slices(
     word_dict, word_id, lexicon, form_slices, obj_key, gloss_key, ex_id, retriever
@@ -190,23 +194,13 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         clitic["Clitic_ID"],
         {"ID": clitic["Clitic_ID"], "Form": [], "Meaning": [], "Parameter_ID": []},
     )
-    if (
-        obj_key in clitic
-        and clitic[obj_key] not in wordforms[clitic["Clitic_ID"]]["Form"]
-    ):
+    # print(clitic)
+    # print(obj_key)
+    if clitic[obj_key] not in wordforms[clitic["Clitic_ID"]]["Form"]:
         wordforms[clitic["Clitic_ID"]]["Form"].append(clitic[obj_key])
-    if (
-        gloss_key in clitic
-        and clitic[gloss_key].strip("=")
-        not in wordforms[clitic["Clitic_ID"]]["Meaning"]
-    ):
+    if clitic[gloss_key].strip("=") not in wordforms[clitic["Clitic_ID"]]["Meaning"]:
         wordforms[clitic["Clitic_ID"]]["Meaning"].append(clitic[gloss_key].strip("="))
         humidify(clitic[gloss_key].strip("="), key="meanings")
-
-
-def _prepare_lex(rec, sep):
-    rec["Gloss"] = rec["Gloss"].split(sep)
-    return rec
 
 
 def extract_records(  # noqa: MC0001
@@ -224,8 +218,7 @@ def extract_records(  # noqa: MC0001
     record_list = []
     sep = conf.get("csv_cell_separator", "; ")
     if lexicon is not None:
-        retriever = Morphinder(lexicon.apply(lambda x: _prepare_lex(x, sep), axis=1))
-
+        retriever = Morphinder(lexicon)
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
         text.find_all("phrase")
     ):
@@ -307,7 +300,8 @@ def extract_records(  # noqa: MC0001
                     for gen_col, label in [(obj_key, "Form"), (gloss_key, "Meaning")]:
                         if (
                             gen_col in word_dict
-                            and word_dict[gen_col] not in wordforms[word_id][label]
+                            and word_dict[gen_col].strip("=")
+                            not in wordforms[word_id][label]
                         ):
                             wordforms[word_id][label].append(
                                 word_dict[gen_col].strip("=")
@@ -370,6 +364,8 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
     morphs["Form_Bare"] = morphs["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
+    input(morphs)
+    input(stems[stems["Type"] == "stem"])
     return lexemes, stems, morphemes, morphs, senses
 
 
@@ -401,7 +397,7 @@ def get_text_id(text):
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
             text_id = humidify(abbrev.text, key="texts", unique=True)
-            log.info(f"Processing text {text_id} ({abbrev['lang']})")
+            log.debug(f"Processing text {text_id} ({abbrev['lang']})")
     return text_id
 
 
@@ -433,6 +429,8 @@ def prepare_sentences(df, conf):
         if label not in rename_dict.values():
             rename_dict.setdefault(gen_col, label)
     for k, v in rename_dict.items():
+        if k not in df.columns:
+            continue
         if v in df.columns:
             log.warning(
                 f"Renaming '{k}' to '{v}' is overwriting an existing column '{v}'"
@@ -508,7 +506,6 @@ def convert(
     record_list = []
     for text in texts.find_all("interlinear-text"):
         text_id = get_text_id(text)
-        log.debug(f"Processing {text_id}")
         text_list.append(get_text_metadata(text, text_id))
 
         record_list.extend(
@@ -534,7 +531,7 @@ def convert(
     sentences = prepare_sentences(df, conf)
     wordforms = pd.DataFrame.from_dict(wordforms.values())
     texts = pd.DataFrame.from_dict(text_list)
-    texts.rename(columns={"title_" + conf["gloss_lg"]: "Title"}, inplace=True)
+    texts.rename(columns={"title_" + conf["gloss_lg"]: "Name"}, inplace=True)
     form_slices = pd.DataFrame.from_dict(chain(*form_slices.values()))
     tables = {
         "wordforms": wordforms,
@@ -574,7 +571,7 @@ def convert(
         glosses = get_values("glosses")
         if glosses:
             tables["glosses"] = pd.DataFrame.from_dict(
-                [{"ID": v, "Name": k} for k, v in glosses.items()]
+                [{"ID": v, "Name": k if k else "unknown"} for k, v in glosses.items()]
             )
 
         delistify(tables["wordforms"], ",")
@@ -640,6 +637,6 @@ def convert(
 
     for name, df in tables.items():
         df = delistify(df, sep)
-        log.info(f"Saved .csv files to {output_dir}")
-        df.to_csv(output_dir / f"{name}.csv", index=False)
+        if output_dir:
+            dump(df, output_dir / f"{name}.csv")
     return tables

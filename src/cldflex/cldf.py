@@ -111,12 +111,8 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import (
-            Glottolog,
-        )  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import (
-            pyglottolog,
-        )  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
@@ -248,8 +244,10 @@ def create_rich_dataset(
     add_metadata(writer, metadata)
     cldf_ldd.add_keys(writer.cldf)
     writer.write()
+
     if writer.cldf.validate():
         log.info(f"Validated dataset at {Path(writer.cldf.filename).resolve()}")
+    write_readme(writer.cldf)
 
 
 def write_wordlist_dataset(  # noqa: MC0001

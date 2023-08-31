@@ -25,10 +25,12 @@ def main():
     "--output",
     "output_dir",
     type=click.Path(exists=True, path_type=Path),
-    default=Path("."),
+    default=None,
 )
 @click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
-def lift2csv(filename, config_file, cldf, output_dir):
+def dictionary(filename, config_file, cldf, output_dir):
+    if not output_dir:
+        output_dir = Path(filename.parents[0])
     lift2csv_convert(
         filename, config_file=config_file, cldf=cldf, output_dir=output_dir
     )
@@ -48,7 +50,7 @@ def lift2csv(filename, config_file, cldf, output_dir):
     "--output",
     "output_dir",
     type=click.Path(exists=True, path_type=Path),
-    default=Path("."),
+    default=None,
 )
 @click.option(
     "-l",
@@ -65,13 +67,14 @@ def lift2csv(filename, config_file, cldf, output_dir):
     default=None,
 )
 @click.option("-d", "--cldf", "cldf", default=False, is_flag=True)
-def flex2csv(filename, config_file, lexicon_file, audio_folder, cldf, output_dir):
+def corpus(filename, config_file, lexicon_file, audio_folder, cldf, output_dir):
     if not config_file:
         if Path("cldflex.yaml").is_file():
             config_file = Path("cldflex.yaml")
         else:
             config_file = None
-
+    if not output_dir:
+        output_dir = Path(filename.parents[0])
     flex2csv_convert(
         filename,
         config_file=config_file,

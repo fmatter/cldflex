@@ -27,37 +27,37 @@ Both commands create a number of CSV files.
 One can either use [cldfbench](https://github.com/cldf/cldfbench) to create one's own CLDF datasets from these files, or add the `--cldf` argument to create (simple) datasets.
 Project-specific [configuration](#configuration) can be passed via `--conf your/config.yaml`
 
-### `flex2csv`
+### `corpus`
 Basic usage:
 
 ```shell
-cldflex flex2csv texts.flextext
+cldflex corpus texts.flextext
 ```
 
 Connect the corpus with the lexicon:
 
 ```shell
-cldflex flex2csv texts.flextext --lexicon lexicon.lift
+cldflex corpus texts.flextext --lexicon lexicon.lift
 ```
 
 Create a CLDF dataset:
 
 ```shell
-cldflex flex2csv texts.flextext --lexicon lexicon.lift --cldf
+cldflex corpus texts.flextext --lexicon lexicon.lift --cldf
 ```
 
-### `lift2csv`
+### `dictionary`
 
 Extract morphemes, morphs, and entries from `lexicon.lift`:
 
 ```shell
-cldflex lift2csv lexicon.lift
+cldflex dictionary lexicon.lift
 ```
 
 Create a CLDF dataset with a  [`Dictionary`](https://github.com/cldf/cldf/tree/master/modules/Dictionary) module:
 
 ```shell
-cldflex lift2csv lexicon.lift --cldf
+cldflex dictionary lexicon.lift --cldf
 ```
 
 ## API usage

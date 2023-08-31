@@ -7,6 +7,7 @@ import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
+from writio import dump
 from cldflex.cldf import create_dictionary_dataset
 from cldflex.cldf import create_rich_dataset
 from cldflex.cldf import create_wordlist_dataset
@@ -175,6 +176,7 @@ def convert(
     )
     # fill sense names with glosses and definitions
 
+    senses = senses[~(pd.isnull(senses[gloss_key]))]
     senses["Name"] = senses.apply(
         lambda x: " / ".join(x[gloss_key])
         if not pd.isnull(x[gloss_key]).all()
@@ -213,22 +215,7 @@ def convert(
         lambda d: d if isinstance(d, list) else []
     )
     entries["Language_ID"] = obj_lg
-
-    # 1. find all variants
-    # 2. compile dictionary mapping entry IDs to variants
-    for col in entries.columns:
-        if "variant-type" not in col:
-            continue
-        variants = entries[~(pd.isnull(entries[col]))]
-        log.info(f"Parsing variants of type '{col} ({len(variants)} found)")
-        for entry in variants.to_dict("records"):
-            if len(entry[col]) > 1:
-                msg = f"""The entry {entry_repr(entry["ID"])} is stored as a variant ({col}) of multiple main entries:"""
-                for entry_id in entry[col]:
-                    msg += "\n* " + entry_repr(entry_id)
-                log.warning(msg)
-            for entry_id in entry[col]:
-                add_to_list_in_dict(var_dict, entry_id, entry)
+    entries = entries.fillna("")
 
     # listify gloss and variant columns
     for key in [gloss_key, var_key, "variant_morph-type"]:
@@ -252,16 +239,32 @@ def convert(
             log.warning(
                 f"""The entry {entry_repr(variant["ID"])} is stored as a variant of {entry_repr(entry["ID"])}. It will not retain its part of speech."""
             )
-        if gloss_key in variant and not pd.isnull(variant[gloss_key]):
+        if gloss_key in variant and variant[gloss_key] != []:
             entry[gloss_key] = deduplicate(entry[gloss_key] + variant[gloss_key])
             if variant[gloss_key] != entry[gloss_key]:
                 log.warning(
                     f"""The entry {entry_repr(entry["ID"])} is stored as having a different meaning than its variant {entry_repr(variant["ID"])}"""
                 )
         else:
-            variant[gloss_key] = entry.get(gloss_key, entry.get(definition_key, ""))
+            variant[gloss_key] = entry.get(gloss_key, entry.get(definition_key, []))
         variant["Parameter_ID"] = entry["Parameter_ID"]
         add_to_list_in_dict(entry_variants, entry["ID"], variant)
+
+    # 1. find all variants
+    # 2. compile dictionary mapping entry IDs to variants
+    for col in entries.columns:
+        if "variant-type" not in col:
+            continue
+        variants = entries[entries[col] != ""]
+        log.info(f"Parsing variants of type '{col} ({len(variants)} found)")
+        for entry in variants.to_dict("records"):
+            if len(entry[col]) > 1:
+                msg = f"""The entry {entry_repr(entry["ID"])} is stored as a variant ({col}) of multiple main entries:"""
+                for entry_id in entry[col]:
+                    msg += "\n* " + entry_repr(entry_id)
+                log.warning(msg)
+            for entry_id in entry[col]:
+                add_to_list_in_dict(var_dict, entry_id, entry)
 
     def resolve_variants(entry):
         for idx, variant in enumerate(  # iterate gathered variants for this entry
@@ -277,7 +280,7 @@ def convert(
     for col in entries.columns:
         if "variant-type" not in col:
             continue
-        variants = entries[~(pd.isnull(entries[col]))]
+        variants = entries[entries[col] != ""]
         entries = entries.loc[~(entries.index.isin(variants.index))]
 
     # split up entries into lexemes, stems, morphemes, and morphs
@@ -317,8 +320,12 @@ def convert(
         ),
         axis=1,
     )
-
     morphs = pd.DataFrame.from_dict(morphs)
+    morphs.drop_duplicates("ID", inplace=True)
+    for mid, dd in morphs.groupby("ID"):
+        if len(dd) > 1:
+            print(mid)
+            print(dd)
     stems = pd.DataFrame.from_dict(stems)
     stems = stems[(stems["Type"].isin(["root", "stem"]))]
 
@@ -339,15 +346,12 @@ def convert(
             enriched_examples = []
             for ex in dictionary_examples:
                 successful = False
-                if " " in ex["source"]:
-                    text_id, phrase_rec = ex["source"].split(" ")
+                if " " in ex.get("source", ""):
+                    text_id, phrase_rec = ex["source"].strip(" ").split(" ")
                     if ref_pattern.match(phrase_rec):
                         rec, subrec = phrase_rec.split(".")
-                        if subrec == "1":
-                            subrec = ""
                         cands = glossed_examples[
                             (glossed_examples["Record_Number"] == rec)
-                            & (glossed_examples["Phrase_Number"] == subrec)
                             & glossed_examples["Text_ID"].str.contains(text_id)
                         ]
                         if len(cands) == 1:
@@ -393,8 +397,8 @@ def convert(
         (senses, "senses"),
     ]:
         df = delistify(df, sep)
-        df.to_csv(output_dir / f"{name}.csv", index=False)
-
+        if output_dir:
+            dump(df, output_dir / f"{name}.csv")
     if cldf:
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
