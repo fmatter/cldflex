@@ -51,8 +51,8 @@ def test_sentences1(data, tmp_path, monkeypatch):
         tmp_path,
         [
             "wordforms.csv",
-            "sentences.csv",
-            "sentence_slices.csv",
+            "examples.csv",
+            "exampleparts.csv",
             "texts.csv",
             "morphemes.csv",
             "senses.csv",
@@ -64,10 +64,10 @@ def test_sentences1(data, tmp_path, monkeypatch):
         [
             "languages.csv",
             "examples.csv",
-            "forms.csv",
+            "wordforms.csv",
             "parameters.csv",
-            "ExampleSlices",
-            "TextTable",
+            "exampleparts.csv",
+            "texts.csv",
         ],
     )
 
@@ -92,15 +92,15 @@ def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
     check_filelist(
         tmp_path / "cldf",
         [
-            "MorphsetTable",
-            "FormSlices",
+            "morphemes.csv",
+            "formparts.csv",
             "examples.csv",
-            "MorphTable",
+            "morphs.csv",
             "forms.csv",
             "parameters.csv",
-            "ExampleSlices",
+            "exampleparts.csv",
             "languages.csv",
-            "TextTable",
+            "texts.csv",
         ],
     )
 
@@ -112,13 +112,13 @@ def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
     check_filelist(
         tmp_path / "cldf",
         [
-            "MorphsetTable",
+            "morphemes.csv",
             "examples.csv",
             "FormSlices",
             "languages.csv",
-            "MorphTable",
+            "morphs.csv",
             "forms.csv",
-            "TextTable",
+            "texts.csv",
             "parameters.csv",
         ],
     )
@@ -131,13 +131,13 @@ def test_sentences_with_lexicon_no_form_slices(data, tmp_path, monkeypatch):
     check_filelist(
         tmp_path / "cldf",
         [
-            "MorphsetTable",
+            "morphemes.csv",
             "examples.csv",
             "ExampleSlices",
-            "MorphTable",
+            "morphs.csv",
             "languages.csv",
             "forms.csv",
-            "TextTable",
+            "texts.csv",
             "parameters.csv",
         ],
     )
@@ -151,11 +151,11 @@ def test_sentences_with_lexicon_no_slices(data, tmp_path, monkeypatch):
         tmp_path / "cldf",
         [
             "languages.csv",
-            "MorphsetTable",
+            "morphemes.csv",
             "examples.csv",
-            "MorphTable",
+            "morphs.csv",
             "forms.csv",
-            "TextTable",
+            "texts.csv",
             "parameters.csv",
         ],
     )
