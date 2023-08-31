@@ -354,13 +354,9 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
             "No lexicon file provided. If you want the output to contain morph IDs, provide a csv file with ID, Form, and Meaning."
         )
         return None
-    if lexicon_file.suffix == ".lift":
-        lexemes, stems, morphemes, morphs, senses = lift2csv(
+    lexemes, stems, morphemes, morphs, senses = lift2csv(
             lift_file=lexicon_file, output_dir=output_dir, conf=conf
         )
-    else:
-        log.error(f"Please specify a .lift file ({lexicon_file})")
-        return None
     morphs["Form_Bare"] = morphs["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
@@ -600,8 +596,6 @@ def convert(
             tables["stems"] = stems
             tables["lexemes"] = lexemes
             tables["morphs"] = lexicon
-            if conf.get("form_slices", True):
-                tables["formparts"] = form_slices
             tables["morphemes"] = morphemes
             with pd.option_context("mode.chained_assignment", None):
                 for namedf in [lexicon, morphemes, stems, lexemes]:

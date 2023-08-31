@@ -126,7 +126,7 @@ def convert(
     lift_file, output_dir=".", config_file=None, cldf=False, conf=None
 ):  # pylint: disable=too-many-locals
     if not lift_file.suffix == ".lift":
-        log.error("Please provide a .lift file.")
+        log.error(f"Please provide a .lift file ({lift_file}).")
         sys.exit()
     if not conf and not config_file:
         log.info("Running without configuration file or dict.")

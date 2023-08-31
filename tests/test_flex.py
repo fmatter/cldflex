@@ -34,10 +34,13 @@ def test_duplicate(flextext, monkeypatch, tmp_path, data, caplog):
     )
     assert "using the first hit" in caplog.text
 
+
 def test_missing(flextext, monkeypatch, tmp_path, data, caplog):
 
     convert(
-        flextext, lexicon_file=data / "output" / "morphs_missing.csv", output_dir=tmp_path
+        flextext,
+        lexicon_file=data / "output" / "morphs_missing.csv",
+        output_dir=tmp_path,
     )
     assert "No hits for /" in caplog.text
 

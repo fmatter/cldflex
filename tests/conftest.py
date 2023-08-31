@@ -10,3 +10,7 @@ def data():
 @pytest.fixture
 def flextext(data):
     return data / "apalai.flextext"
+
+@pytest.fixture
+def lift(data):
+    return data / "apalai.lift"

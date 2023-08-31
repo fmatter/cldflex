@@ -35,7 +35,7 @@ def run_flextext(
         str(path.resolve()),
     ]
     if lexicon:
-        commands.extend(["--lexicon", str((data / "output/morphs.csv").resolve())])
+        commands.extend(["--lexicon", str((data / "apalai.lift").resolve())])
     if cldf:
         commands.extend(["--cldf"])
     if config:
@@ -72,37 +72,17 @@ def test_sentences1(data, tmp_path, monkeypatch):
     )
 
 
-def test_sentences_with_lexicon_both_slices(data, tmp_path, monkeypatch):
+def test_sentences_with_lexicon_both_slices(
+    data, tmp_path, monkeypatch, full_cldf_list, full_raw_list
+):
     result = run_flextext(tmp_path, monkeypatch, data, tmp_path, config="config1")
     assert result.exit_code == 0
     check_cldf(tmp_path)
     check_filelist(
         tmp_path,
-        [
-            "wordforms.csv",
-            "sentences.csv",
-            "sentence_slices.csv",
-            "texts.csv",
-            "morphemes.csv",
-            "senses.csv",
-            "cldf",
-            "form_slices.csv",
-        ],
+        full_raw_list
     )
-    check_filelist(
-        tmp_path / "cldf",
-        [
-            "morphemes.csv",
-            "formparts.csv",
-            "examples.csv",
-            "morphs.csv",
-            "forms.csv",
-            "parameters.csv",
-            "exampleparts.csv",
-            "languages.csv",
-            "texts.csv",
-        ],
-    )
+    check_filelist(tmp_path / "cldf", full_cldf_list)
 
 
 def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
@@ -117,7 +97,7 @@ def test_sentences_with_lexicon_no_example_slices(data, tmp_path, monkeypatch):
             "FormSlices",
             "languages.csv",
             "morphs.csv",
-            "forms.csv",
+            "wordforms.csv",
             "texts.csv",
             "parameters.csv",
         ],
@@ -136,7 +116,7 @@ def test_sentences_with_lexicon_no_form_slices(data, tmp_path, monkeypatch):
             "ExampleSlices",
             "morphs.csv",
             "languages.csv",
-            "forms.csv",
+            "wordforms.csv",
             "texts.csv",
             "parameters.csv",
         ],
@@ -154,7 +134,7 @@ def test_sentences_with_lexicon_no_slices(data, tmp_path, monkeypatch):
             "morphemes.csv",
             "examples.csv",
             "morphs.csv",
-            "forms.csv",
+            "wordforms.csv",
             "texts.csv",
             "parameters.csv",
         ],
