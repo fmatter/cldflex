@@ -191,7 +191,7 @@ def create_rich_dataset(
         "texts": cldf_ldd.TextTable,
     }
 
-    spec = CLDFSpec(dir=output_dir / "cldf", module="Generic")
+    spec = CLDFSpec(dir=output_dir / "cldf", module="Generic", metadata_fname="metadata.json")
     with CLDFWriter(spec) as writer:
 
         glottocode = add_language(writer, cwd, glottocode, iso)
