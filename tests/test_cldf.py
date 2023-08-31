@@ -1,5 +1,5 @@
 from click.testing import CliRunner
-from cldflex.cli import flex2csv, lift2csv
+from cldflex.cli import corpus, dictionary
 from pycldf import Dataset
 from pathlib import Path
 import shutil
@@ -40,7 +40,7 @@ def run_flextext(
         commands.extend(["--cldf"])
     if config:
         commands.extend(["--conf", str((data / f"{config}.yaml"))])
-    return runner.invoke(flex2csv, commands, catch_exceptions=False)
+    return runner.invoke(corpus, commands, catch_exceptions=False)
 
 
 def test_sentences1(data, tmp_path, monkeypatch):
@@ -165,7 +165,7 @@ def test_lift(data, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     runner = CliRunner()
     result = runner.invoke(
-        lift2csv,
+        dictionary,
         [str((data / "apalai.lift").resolve()), f"--output", tmp_path, "--cldf"],
     )
     assert result.exit_code == 0
