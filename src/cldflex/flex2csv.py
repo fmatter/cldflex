@@ -364,8 +364,6 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
     morphs["Form_Bare"] = morphs["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
-    input(morphs)
-    input(stems[stems["Type"] == "stem"])
     return lexemes, stems, morphemes, morphs, senses
 
 

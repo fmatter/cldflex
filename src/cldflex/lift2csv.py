@@ -284,7 +284,7 @@ def convert(
         entries = entries.loc[~(entries.index.isin(variants.index))]
 
     # split up entries into lexemes, stems, morphemes, and morphs
-    morphemes = entries[~(entries["Type"].isin(["phrase", "stem"]))]
+    morphemes = entries[~(entries["Type"].isin(["phrase"]))]
     lexemes = entries[(entries["Type"].isin(["root", "stem"]))]
 
     def split_into_variants(rec, abstract_key, main_variant=None):
