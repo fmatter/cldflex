@@ -461,7 +461,7 @@ def convert(
     cldf=False,
     audio_folder=None,
 ):  # pylint: disable=too-many-locals,too-many-arguments
-    output_dir = output_dir or Path(os.path.dirname(os.path.realpath(flextext_file)))
+    output_dir = output_dir or Path(".")
     flextext_file = Path(flextext_file)
     log.info(f"Reading {flextext_file.resolve()}")
     with open(flextext_file, "r", encoding="utf-8") as f:

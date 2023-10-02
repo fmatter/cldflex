@@ -50,7 +50,7 @@ def dictionary(filename, config_file, cldf, output_dir):
     "--output",
     "output_dir",
     type=click.Path(exists=True, path_type=Path),
-    default=None,
+    default=".",
 )
 @click.option(
     "-l",

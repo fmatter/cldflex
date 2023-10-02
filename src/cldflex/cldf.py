@@ -246,7 +246,7 @@ def create_rich_dataset(
     writer.write()
 
     if writer.cldf.validate():
-        log.info(f"Validated dataset at {Path(writer.cldf.filename).resolve()}")
+        log.info(f"""Validated dataset at {(Path("./cldf") / writer.cldf.filename).resolve()}""")
     write_readme(writer.cldf)
 
 
@@ -319,7 +319,7 @@ def create_wordlist_dataset(
         parameters=parameters,
     )
     if ds.validate(log=log, validators=cldf_ldd.validators):
-        log.info(f"Validated dataset at {ds.directory.resolve()}/{ds.filename}")
+        log.info(f"Validated dataset at {ds.directory.resolve()}/cldf/{ds.filename}")
     readme = metadata2markdown(ds, ds.directory)
     with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
         f.write(
@@ -372,6 +372,6 @@ def create_dictionary_dataset(
         cwd=cwd,
     )
     if ds.validate(log=log):
-        log.info(f"Validated dataset at {ds.directory.resolve()}/{ds.filename}")
+        log.info(f"Validated dataset at {ds.directory.resolve()}/cldf/{ds.filename}")
 
     write_readme(ds)
