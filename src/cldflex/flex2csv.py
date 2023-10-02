@@ -404,8 +404,8 @@ def get_text_metadata(text, text_id):
 
 
 def split_part_col(rec):
-    if "." in rec["Record_Number"]:
-        rec["Record_Number"], rec["Phrase_Number"] = rec["Record_Number"].split(".")
+    if "." in rec["Sentence_Number"]:
+        rec["Sentence_Number"], rec["Phrase_Number"] = rec["Sentence_Number"].split(".")
     return rec
 
 
@@ -418,7 +418,7 @@ def prepare_sentences(df, conf):
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
         (f"pos_{conf['gloss_lg']}_word", "Part_Of_Speech"),
-        (f"segnum_{conf['gloss_lg']}_phrase", "Record_Number"),
+        (f"segnum_{conf['gloss_lg']}_phrase", "Sentence_Number"),
     ]:
         if label not in rename_dict.values():
             rename_dict.setdefault(gen_col, label)
@@ -441,7 +441,7 @@ def prepare_sentences(df, conf):
         "Translated_Text",
         "Part_Of_Speech",
         "Text_ID",
-        "Record_Number",
+        "Sentence_Number",
         "Phrase_Number",
         "Language_ID",
     ]

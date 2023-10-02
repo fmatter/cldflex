@@ -351,7 +351,7 @@ def convert(
                     if ref_pattern.match(phrase_rec):
                         rec, subrec = phrase_rec.split(".")
                         cands = glossed_examples[
-                            (glossed_examples["Record_Number"] == rec)
+                            (glossed_examples["Sentence_Number"] == rec)
                             & glossed_examples["Text_ID"].str.contains(text_id)
                         ]
                         if len(cands) == 1:
