@@ -529,7 +529,7 @@ def convert(
     form_slices = pd.DataFrame.from_dict(chain(*form_slices.values()))
     tables = {
         "wordforms": wordforms,
-        "examples": df,
+        "examples": sentences,
         "texts": texts,
     }
     if len(form_slices) > 0:
