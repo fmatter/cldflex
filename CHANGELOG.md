@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * option to add audio files
-
+* `wordlist` command
+ 
 ### Fixed
 * gracefully handle clitics annotated as separate words
 * handle empty translations in dic examples

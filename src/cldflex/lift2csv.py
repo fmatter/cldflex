@@ -122,17 +122,11 @@ def parse_entries(entries):
 
 
 def convert(
-    lift_file, output_dir=".", config_file=None, cldf=False, conf=None
+    lift_file, output_dir=".", conf=None, cldf=False, cldf_mode=None
 ):  # pylint: disable=too-many-locals
     if not lift_file.suffix == ".lift":
         log.error(f"Please provide a .lift file ({lift_file}).")
         sys.exit()
-    if not conf and not config_file:
-        log.info("Running without configuration file or dict.")
-        conf = {}
-    elif not conf:
-        with open(config_file, encoding="utf-8") as f:
-            conf = yaml.safe_load(f)
     sep = conf.get(
         "csv_cell_separator", SEPARATOR
     )  # separator used in cells with multiple values
@@ -386,7 +380,7 @@ def convert(
 
     dictionary_examples.fillna("", inplace=True)
 
-    glottocode = conf.get("Glottocode", conf.get("Language_ID", None))
+    glottocode = conf.get("glottocode", conf.get("lang_id", None))
     with pd.option_context("mode.chained_assignment", None):
         if glottocode:
             for df in [entries, morphemes, morphs, dictionary_examples]:
@@ -410,8 +404,7 @@ def convert(
     if cldf:
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
-        mode = cldf_settings.get("lexicon", "dictionary")
-        if mode == "wordlist":
+        if cldf_mode == "wordlist":
             create_wordlist_dataset(
                 forms=entries,
                 senses=senses,
@@ -422,7 +415,7 @@ def convert(
                 sep=sep,
                 parameters=cldf_settings.get("parameters", "multi"),
             )
-        elif mode == "dictionary":
+        elif cldf_mode == "dictionary":
             if cldf_settings.get("drop_empty", False):
                 senses = senses[senses["Description"] != ""]
             senses = senses[senses["Entry_ID"].isin(entries["ID"].values)]
@@ -435,7 +428,7 @@ def convert(
                 output_dir=output_dir,
                 cwd=lift_file.parents[0],
             )
-        elif mode == "rich":
+        elif cldf_mode == "rich":
             tables = {}
             with pd.option_context("mode.chained_assignment", None):
                 for namedf in [morphs, lexemes, morphemes, stems]:
@@ -460,6 +453,6 @@ def convert(
                 parameters=cldf_settings.get("parameters", "multi"),
             )
         else:
-            raise ValueError(mode)
+            raise ValueError(cldf_mode)
 
     return lexemes, stems, morphemes, morphs, senses

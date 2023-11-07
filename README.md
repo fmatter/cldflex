@@ -20,10 +20,10 @@ pip install cldflex
 ```
 
 ## Command line usage
-At the moment, there are two commands: ``cldflex flex2csv`` processes `.flextext` (corpora), and ``cldflex lift2csv`` processes `.lift` (lexica) files.
-Both commands create a number of CSV files.
-One can either use [cldfbench](https://github.com/cldf/cldfbench) to create one's own CLDF datasets from these files, or add the `--cldf` argument to create (simple) datasets.
-Project-specific [configuration](#configuration) can be passed via `--conf your/config.yaml`
+At the moment, there are three commands: ``cldflex corpus`` for `.flextext` files; ``cldflex dictionary`` and `cldflex wordlist` for `.lift` files.
+All commands create a number of CSV files.
+One can either use [cldfbench](https://github.com/cldf/cldfbench) to create one's own CLDF datasets from these files, or add the `--cldf` argument to create a simple CLDF dataset.
+Project-specific [configuration](#configuration) can be passed by `--conf your/config.yaml`, or creating a file `cldflex.yaml`
 
 ### `corpus`
 Basic usage:
@@ -58,8 +58,16 @@ Create a CLDF dataset with a  [`Dictionary`](https://github.com/cldf/cldf/tree/m
 cldflex dictionary lexicon.lift --cldf
 ```
 
+### `wordlist`
+
+Create a CLDF dataset with a  [`Wordlist`](https://github.com/cldf/cldf/tree/master/modules/Wordlist) module:
+
+```shell
+cldflex wordlist lexicon.lift --cldf
+```
+
 ## API usage
-The functions corresponding to the commands above are [`cldflex.flex2csv.convert()`](https://github.com/fmatter/cldflex/blob/4d9962ff53baab68a20ecce34f8623e87f7197ec/src/cldflex/flex2csv.py#L445) and [`cldflex.lift2csv.convert()`](https://github.com/fmatter/cldflex/blob/4d9962ff53baab68a20ecce34f8623e87f7197ec/src/cldflex/lift2csv.py#L130).
+The functions corresponding to the commands above are [`cldflex.corpus.convert()`](https://github.com/fmatter/cldflex/blob/4d9962ff53baab68a20ecce34f8623e87f7197ec/src/cldflex/corpus.py#L445) and [`cldflex.lift2csv.convert()`](https://github.com/fmatter/cldflex/blob/4d9962ff53baab68a20ecce34f8623e87f7197ec/src/cldflex/lift2csv.py#L130).
 
 ## Configuration
 There is no default configuration.
@@ -70,8 +78,8 @@ Create a [YAML](https://yaml.org/) file for CLI usage, pass a dict to the `conve
 * `obj_lg`: the object language
 * `gloss_lg`: the language used for glossing / translation
 * `msa_lg`: the language used for storing POS information
-* `Language_ID`: the value to be used in the created tables
-* `Glottocode`: used to look up language metadata from glottolog
+* `lang_id`: the value to be used in the created tables
+* `glottocode`: used to look up language metadata from glottolog
 * `csv_cell_separator`: if there are multiple values in a cell (allomorphs, polysemy...), they are by default separated by `"; "`
 * `form_slices`: set to `false` if you don't want form slices connecting morphs and word forms
 * `cldf`:
