@@ -2,12 +2,10 @@
 
 Convert FLEx data to CLDF-ready CSV.
 
-![License](https://img.shields.io/github/license/fmatter/cldflex)
-[![Tests](https://img.shields.io/github/workflow/status/fmatter/cldflex/tests?label=tests)](https://github.com/fmatter/cldflex/actions/workflows/tests.yml)
-[![Linting](https://img.shields.io/github/workflow/status/fmatter/cldflex/lint?label=linting)](https://github.com/fmatter/cldflex/actions/workflows/lint.yml)
-[![Codecov](https://img.shields.io/codecov/c/github/fmatter/cldflex)](https://app.codecov.io/gh/fmatter/cldflex/)
-[![PyPI](https://img.shields.io/pypi/v/cldflex.svg)](https://pypi.org/project/cldflex)
-![Versions](https://img.shields.io/pypi/pyversions/cldflex)
+[![Versions](https://img.shields.io/pypi/pyversions/clld_morphology_plugin)](https://www.python.org/)
+[![PyPI](https://img.shields.io/pypi/v/clld_morphology_plugin.svg)](https://pypi.org/project/clld_morphology_plugin)
+[![License](https://img.shields.io/github/license/fmatter/cldflex)](https://www.apache.org/licenses/LICENSE-2.0)
+
 
 Many descriptive linguists have annotated language data in a FLEx ([SIL's Fieldworks Lexical Explorer](https://software.sil.org/fieldworks/)) database, which provides perhaps the most popular and accessible assisted segmentation and annotation workflow.
 However, a reasonably complete data export is only available in XML, which is not human-friendly, and is not readily converted to other data.

@@ -1,5 +1,5 @@
-RELEASING.md
-etc
+var
+tasks.py
 Makefile
 .~lock.*.csv#
 

@@ -1,7 +1,7 @@
 """Top-level package for cldflex."""
 import logging
-import colorlog
 
+import colorlog
 
 handler = colorlog.StreamHandler(None)
 handler.setFormatter(
@@ -12,6 +12,5 @@ log.setLevel(logging.INFO)
 log.propagate = True
 log.addHandler(handler)
 
-__author__ = "Florian Matter"
-__email__ = "florianmatter@gmail.com"
-__version__ = "0.1.1.dev"
+
+SEPARATOR = "; "

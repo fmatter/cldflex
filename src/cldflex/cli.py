@@ -1,7 +1,10 @@
 """Console script for cldflex."""
 import sys
 from pathlib import Path
+
 import click
+from writio import load
+
 from cldflex.flex2csv import convert as flex2csv_convert
 from cldflex.lift2csv import convert as lift2csv_convert
 
@@ -70,14 +73,16 @@ def dictionary(filename, config_file, cldf, output_dir):
 def corpus(filename, config_file, lexicon_file, audio_folder, cldf, output_dir):
     if not config_file:
         if Path("cldflex.yaml").is_file():
-            config_file = Path("cldflex.yaml")
+            conf = load("cldflex.yaml")
         else:
-            config_file = None
+            conf = None
+    else:
+        conf = load(config_file)
     if not output_dir:
-        output_dir = Path(filename.parents[0])
+        output_dir = Path(".")
     flex2csv_convert(
         filename,
-        config_file=config_file,
+        conf=conf,
         lexicon_file=lexicon_file,
         cldf=cldf,
         output_dir=output_dir,

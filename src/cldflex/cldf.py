@@ -1,5 +1,8 @@
+import importlib
 import logging
+import sys
 from pathlib import Path
+
 import cldf_ldd
 import pandas as pd
 from cldfbench import CLDFSpec
@@ -7,8 +10,12 @@ from cldfbench.cldf import CLDFWriter
 from cldfbench.metadata import Metadata
 from humidifier import humidify
 from pycldf.util import metadata2markdown
-from cldflex import __version__
+from writio import dump
+
+from cldflex import SEPARATOR
 from cldflex.helpers import listify
+
+version = importlib.metadata.version("cldflex")
 
 
 log = logging.getLogger(__name__)
@@ -63,7 +70,7 @@ def add_example_slices(sentence_slices, writer):
         writer.objects["ExampleSlices"].append(ex_slice)
 
 
-def modify_params(df, mode="multi", sep="; ", param_dict={}):
+def modify_params(df, mode="multi", sep=SEPARATOR, param_dict={}):
     if "Parameter_ID" in df.columns:
         with pd.option_context("mode.chained_assignment", None):
             df = listify(df, "Parameter_ID", sep)
@@ -85,7 +92,7 @@ def add_metadata(writer, metadata):
         wasGeneratedBy=[
             {
                 "dc:title": "cldflex",
-                "dc:description": __version__,
+                "dc:description": version,
                 "dc:url": "https://pypi.org/project/cldflex",
             }
         ]
@@ -107,24 +114,27 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
             writer.objects["LanguageTable"].append(lg)
         return lg["ID"]
     log.info(
-        f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog"
+        f"No languages.csv file found, fetching language info for [{glottocode or iso}] from glottolog..."
     )
     err_msg = "Either add a languages.csv file to the working directory or run:\n\tpip install cldfbench[glottolog]"
     try:
-        from cldfbench.catalogs import Glottolog  # pylint: disable=import-outside-toplevel
-        from cldfbench.catalogs import pyglottolog  # pylint: disable=import-outside-toplevel
+        from cldfbench.catalogs import (  # pylint: disable=import-outside-toplevel
+            Glottolog,
+            pyglottolog,
+        )
     except ImportError:
         log.error(err_msg)
     if isinstance(pyglottolog, str):
         log.error(err_msg)
+        sys.exit()
     glottolog = pyglottolog.Glottolog(Glottolog.from_config().repo.working_dir)
-    if glottocode or iso:
-        if glottocode:
-            languoid = glottolog.languoid(glottocode)
-        elif iso:
-            languoid = glottolog.languoid(iso)
+    if glottocode:
+        languoid = glottolog.languoid(glottocode)
+    elif iso:
+        languoid = glottolog.languoid(iso)
     else:
-        raise ValueError("Missing value: glottocode or iso")
+        log.error("Define either glottocode or lang_id in your conf.")
+        sys.exit()
     writer.cldf.add_component("LanguageTable")
     writer.objects["LanguageTable"].append(
         {
@@ -139,21 +149,20 @@ def add_language(writer, cwd, glottocode, iso):  # pragma: no cover
 
 def write_readme(ds):
     readme = metadata2markdown(ds, ds.directory)
-    with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
-        f.write(
-            "**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n"
-            + readme
-        )
+    dump(
+        f"**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n{readme}",
+        ds.directory / "README.md",
+    )
 
 
-def create_rich_dataset(
+def create_corpus_dataset(
     tables,
     glottocode=None,
     iso=None,
     metadata=None,
     output_dir=Path("."),
     cwd=".",
-    sep="; ",
+    sep=SEPARATOR,
     parameters="multi",
 ):
     cldf_dict = {"examples": "ExampleTable", "media": "MediaTable"}
@@ -191,9 +200,10 @@ def create_rich_dataset(
         "texts": cldf_ldd.TextTable,
     }
 
-    spec = CLDFSpec(dir=output_dir / "cldf", module="Generic", metadata_fname="metadata.json")
+    spec = CLDFSpec(
+        dir=output_dir / "cldf", module="Generic", metadata_fname="metadata.json"
+    )
     with CLDFWriter(spec) as writer:
-
         glottocode = add_language(writer, cwd, glottocode, iso)
 
         for name, table in {**table_dict, **cldf_dict}.items():
@@ -245,9 +255,10 @@ def create_rich_dataset(
     cldf_ldd.add_keys(writer.cldf)
     writer.write()
 
-    if writer.cldf.validate():
-        log.info(f"""Validated dataset at {(Path("./cldf") / writer.cldf.filename).resolve()}""")
-    write_readme(writer.cldf)
+    ds = writer.cldf
+    if ds.validate(log=log):
+        log.info(f"Validated dataset at {ds.directory.resolve()}/{ds.filename}")
+        write_readme(ds)
 
 
 def write_wordlist_dataset(  # noqa: MC0001
@@ -258,7 +269,7 @@ def write_wordlist_dataset(  # noqa: MC0001
     metadata=None,
     output_dir=Path("."),
     cwd=".",
-    sep="; ",
+    sep=SEPARATOR,
     parameters="multi",
 ):  # pylint: disable=too-many-locals
     metadata = metadata or {}
@@ -266,7 +277,6 @@ def write_wordlist_dataset(  # noqa: MC0001
         dir=output_dir / "cldf", module="Wordlist", metadata_fname="metadata.json"
     )
     with CLDFWriter(spec) as writer:
-
         glottocode = add_language(writer, cwd, glottocode, iso)
         tablelist = [("FormTable", forms)]
         if parameters:
@@ -303,7 +313,7 @@ def create_wordlist_dataset(
     metadata=None,
     output_dir=Path("."),
     cwd=".",
-    sep="; ",
+    sep=SEPARATOR,
     parameters="multi",
 ):
     log.info("Creating CLDF dataset")
@@ -319,13 +329,8 @@ def create_wordlist_dataset(
         parameters=parameters,
     )
     if ds.validate(log=log, validators=cldf_ldd.validators):
-        log.info(f"Validated dataset at {ds.directory.resolve()}/cldf/{ds.filename}")
-    readme = metadata2markdown(ds, ds.directory)
-    with open(ds.directory / "README.md", "w", encoding="utf-8") as f:
-        f.write(
-            "**This dataset was automatically created by [cldflex](https://pypi.org/project/cldflex).**\n\n"
-            + readme
-        )
+        log.info(f"Validated dataset at {ds.directory.resolve()}/{ds.filename}")
+        write_readme(ds)
 
 
 def write_dictionary_dataset(
@@ -372,6 +377,5 @@ def create_dictionary_dataset(
         cwd=cwd,
     )
     if ds.validate(log=log):
-        log.info(f"Validated dataset at {ds.directory.resolve()}/cldf/{ds.filename}")
-
-    write_readme(ds)
+        log.info(f"Validated dataset at {ds.directory.resolve()}/{ds.filename}")
+        write_readme(ds)

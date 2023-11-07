@@ -2,20 +2,21 @@ import logging
 import re
 import sys
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
 from slugify import slugify
 from writio import dump
-from cldflex.cldf import create_dictionary_dataset
-from cldflex.cldf import create_rich_dataset
-from cldflex.cldf import create_wordlist_dataset
-from cldflex.helpers import add_to_list_in_dict
-from cldflex.helpers import deduplicate
-from cldflex.helpers import delistify
-from cldflex.helpers import listify
 
+from cldflex import SEPARATOR
+from cldflex.cldf import (
+    create_corpus_dataset,
+    create_dictionary_dataset,
+    create_wordlist_dataset,
+)
+from cldflex.helpers import add_to_list_in_dict, deduplicate, delistify, listify
 
 log = logging.getLogger(__name__)
 
@@ -45,14 +46,12 @@ def extract_examples(sense, dictionary_examples, sense_id):
 
 
 def figure_out_gloss_language(entry):
-    gloss_lg = None
     if entry.find("gloss"):
-        gloss_lg = entry.find("gloss")["lang"]
-    elif entry.find("definition"):
-        gloss_lg = entry.find("definition").find("form")["lang"]
-    if gloss_lg:
-        log.info(f"Using [{gloss_lg}] as the main meta language ('Meaning' column)")
-    return gloss_lg
+        return entry.find("gloss")["lang"]
+    if entry.find("definition"):
+        return entry.find("definition").find("form")["lang"]
+    log.warning("Please specify gloss_lg in your config.")
+    return None
 
 
 def parse_entries(entries):
@@ -135,7 +134,7 @@ def convert(
         with open(config_file, encoding="utf-8") as f:
             conf = yaml.safe_load(f)
     sep = conf.get(
-        "csv_cell_separator", "; "
+        "csv_cell_separator", SEPARATOR
     )  # separator used in cells with multiple values
 
     log.info(f"Parsing {lift_file.resolve()}")
@@ -150,6 +149,7 @@ def convert(
     ):  # if not defined, they are deducted from the data
         if not gloss_lg:
             gloss_lg = figure_out_gloss_language(entry)
+            log.info(f"Unconfigured: gloss_lg, assuming {gloss_lg}")
         if not obj_lg:
             obj_lg = entry.find("form")["lang"]
 
@@ -329,7 +329,7 @@ def convert(
     stems = pd.DataFrame.from_dict(stems)
     stems = stems[(stems["Type"].isin(["root", "stem"]))]
 
-    sentence_path = Path(output_dir / "sentences.csv")
+    sentence_path = Path(output_dir / "examples.csv")
     ref_pattern = re.compile(r"^(\d+.\d)+$")
     if dictionary_examples:
         if sentence_path.is_file():
@@ -358,10 +358,17 @@ def convert(
                             successful = True
                             enriched_examples.append(dict(cands.iloc[0]))
                         elif len(cands) > 1:
-                            log.error(
-                                f"Could not resolve ambiguous example reference [{text_id} {phrase_rec}]\n"
-                                + cands.to_string()
-                            )
+                            cands = cands[
+                                cands[f"segnum_{gloss_lg}_phrase"] == phrase_rec
+                            ]
+                            if len(cands) == 1:
+                                successful = True
+                                enriched_examples.append(dict(cands.iloc[0]))
+                            else:
+                                log.warning(
+                                    f"Could not resolve ambiguous example reference [{text_id} {phrase_rec}]\n"
+                                )
+                                print(cands)
                         else:
                             log.warning(
                                 f"Could not resolve example reference [{text_id} {phrase_rec}]"
@@ -371,7 +378,7 @@ def convert(
             dictionary_examples = pd.DataFrame.from_dict(enriched_examples)
         else:
             log.warning(
-                f"There are dictionary examples. If you want to retrieve segmentation and glosses from the corpus, run cldflex flex2csv <your_file>.flextext and place sentences.csv in {output_dir.resolve()}"
+                f"There are dictionary examples. If you want to retrieve segmentation and glosses from the corpus, run cldflex corpus <your_file>.flextext once. This will generate a {sentence_path} file."
             )
             dictionary_examples = pd.DataFrame.from_dict(dictionary_examples)
     else:
@@ -388,17 +395,18 @@ def convert(
             for df in [entries, morphemes, morphs, dictionary_examples]:
                 df["Language_ID"] = obj_lg
 
-    for df, name in [
-        (entries, "entries"),
-        (stems, "stems"),
-        (lexemes, "lexemes"),
-        (morphs, "morphs"),
-        (morphemes, "morphemes"),
-        (senses, "senses"),
-    ]:
-        df = delistify(df, sep)
-        if output_dir:
+    if output_dir:
+        for df, name in [
+            (entries, "entries"),
+            (stems, "stems"),
+            (lexemes, "lexemes"),
+            (morphs, "morphs"),
+            (morphemes, "morphemes"),
+            (senses, "senses"),
+        ]:
+            df = delistify(df, sep)
             dump(df, output_dir / f"{name}.csv")
+        log.info(f"Wrote CSV data to {output_dir.resolve()}")
     if cldf:
         cldf_settings = conf.get("cldf", {})
         metadata = cldf_settings.get("metadata", {})
@@ -442,7 +450,7 @@ def convert(
             ]:
                 if len(df) > 0:
                     tables[name] = df
-            create_rich_dataset(
+            create_corpus_dataset(
                 tables=tables,
                 glottocode=glottocode,
                 metadata=metadata,

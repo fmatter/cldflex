@@ -4,18 +4,18 @@ import re
 from itertools import chain
 from pathlib import Path
 from string import punctuation
+
 import pandas as pd
 import yaml
 from bs4 import BeautifulSoup
-from humidifier import get_values
-from humidifier import humidify
+from humidifier import get_values, humidify
 from morphinder import Morphinder
 from writio import dump
-from cldflex.cldf import create_rich_dataset
-from cldflex.helpers import delistify
-from cldflex.helpers import listify
-from cldflex.lift2csv import convert as lift2csv
 
+from cldflex import SEPARATOR
+from cldflex.cldf import create_corpus_dataset
+from cldflex.helpers import delistify, listify
+from cldflex.lift2csv import convert as lift2csv
 
 log = logging.getLogger(__name__)
 
@@ -216,7 +216,6 @@ def extract_records(  # noqa: MC0001
     conf,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     record_list = []
-    sep = conf.get("csv_cell_separator", "; ")
     if lexicon is not None:
         retriever = Morphinder(lexicon)
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
@@ -244,7 +243,6 @@ def extract_records(  # noqa: MC0001
             )
             # sentence slices are only for analyzed word forms
             if word.find_all("morphemes"):
-
                 if lexicon is not None and conf.get("form_slices", True):
                     get_form_slices(
                         word_dict,
@@ -355,8 +353,8 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
         )
         return None
     lexemes, stems, morphemes, morphs, senses = lift2csv(
-            lift_file=lexicon_file, output_dir=output_dir, conf=conf
-        )
+        lift_file=lexicon_file, output_dir=output_dir, conf=conf
+    )
     morphs["Form_Bare"] = morphs["Form"].apply(
         lambda x: re.sub(re.compile("|".join(delimiters)), "", x)
     )
@@ -365,9 +363,10 @@ def load_lexicon(lexicon_file, conf, sep, output_dir="."):
 
 def load_keys(conf, texts):
     if "gloss_lg" not in conf:
-        log.info("No glossing language specified, assuming [en].")
+        log.info("Unconfigured: gloss_lg, assuming [en].")
         conf["gloss_lg"] = "en"
     if "msa_lg" not in conf:
+        log.info(f"""Unconfigured: msa_lg, assuming [{conf["gloss_lg"]}].""")
         conf["msa_lg"] = conf["gloss_lg"]
     gloss_key = "gls_" + conf["gloss_lg"]
 
@@ -375,13 +374,13 @@ def load_keys(conf, texts):
         conf["obj_lg"] = texts.find_all("item", lang=lambda x: x != conf["gloss_lg"])[
             0
         ]["lang"]
-        log.info(f"No object language specified, assuming [{conf['obj_lg']}].")
+        log.info(f"Unconfigured: obj_lg, assuming [{conf['obj_lg']}].")
     obj_key = "txt_" + conf["obj_lg"]
     punct_key = "punct_" + conf["obj_lg"]
 
-    if "Language_ID" not in conf:
-        log.info(f"Language_ID not specified, using [{conf['obj_lg']}]")
-        conf["Language_ID"] = conf["obj_lg"]
+    if "lang_id" not in conf:
+        log.info(f"Unconfigured: lang_id, using [{conf['obj_lg']}]")
+        conf["lang_id"] = conf["obj_lg"]
     return obj_key, gloss_key, punct_key
 
 
@@ -403,7 +402,7 @@ def get_text_metadata(text, text_id):
     return text_metadata
 
 
-def split_part_col(rec):
+def split_subrecords(rec):
     if "." in rec["Sentence_Number"]:
         rec["Sentence_Number"], rec["Phrase_Number"] = rec["Sentence_Number"].split(".")
     return rec
@@ -413,7 +412,7 @@ def strip_form(form):
     return re.sub(re.compile("|".join(delimiters + ["Ø"])), "", form)
 
 
-def prepare_sentences(df, conf):
+def prepare_records(df, conf):
     rename_dict = conf.get("mappings", {})
     for gen_col, label in [
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
@@ -430,9 +429,9 @@ def prepare_sentences(df, conf):
                 f"Renaming '{k}' to '{v}' is overwriting an existing column '{v}'"
             )
         df[v] = df[k]
-    df["Language_ID"] = conf["Language_ID"]
+    df["Language_ID"] = conf["lang_id"]
     # resolve records with multiple phrases
-    df = df.apply(lambda x: split_part_col(x), axis=1)
+    df = df.apply(lambda x: split_subrecords(x), axis=1)
     sort_order = [
         "ID",
         "Primary_Text",
@@ -455,27 +454,25 @@ def prepare_sentences(df, conf):
 def convert(
     flextext_file,
     lexicon_file=None,
-    config_file=None,
-    output_dir=None,
     conf=None,
+    output_dir=None,
     cldf=False,
     audio_folder=None,
 ):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or Path(".")
     flextext_file = Path(flextext_file)
-    log.info(f"Reading {flextext_file.resolve()}")
+    log.debug(f"reading {flextext_file.resolve()}")
     with open(flextext_file, "r", encoding="utf-8") as f:
         texts = BeautifulSoup(f.read(), features="lxml")
 
     if not conf:
-        if not config_file:
-            log.warning("No configuration file or dict provided.")
-            conf = {}
-        else:
-            with open(config_file, encoding="utf-8") as f:
-                conf = yaml.safe_load(f)
+        log.info(
+            "Running in unconfigured mode. Create a cldflex.yaml file, point to another --conf file, or pass in a conf dict to modify parameters."
+        )
+        conf = {}
     obj_key, gloss_key, punct_key = load_keys(conf, texts)
-    sep = conf.get("csv_cell_separator", "; ")
+    sep = conf.get("csv_cell_separator", SEPARATOR)
+
     if lexicon_file:
         lexemes, stems, morphemes, lexicon, senses = load_lexicon(
             lexicon_file, conf, sep, output_dir
@@ -492,8 +489,8 @@ def convert(
                 lookup_lexicon[col] = lookup_lexicon[col].apply(lambda x: sep.join(x))
     else:
         lookup_lexicon = None
-    wordforms = {}
 
+    wordforms = {}
     sentence_slices = []
     form_slices = {}
     text_list = []
@@ -522,14 +519,14 @@ def convert(
         .rename(columns={obj_key: "Analyzed_Word", gloss_key: "Gloss"})
         .fillna("")
     )
-    sentences = prepare_sentences(df, conf)
+    records = prepare_records(df, conf)
     wordforms = pd.DataFrame.from_dict(wordforms.values())
     texts = pd.DataFrame.from_dict(text_list)
     texts.rename(columns={"title_" + conf["gloss_lg"]: "Name"}, inplace=True)
     form_slices = pd.DataFrame.from_dict(chain(*form_slices.values()))
     tables = {
         "wordforms": wordforms,
-        "examples": sentences,
+        "examples": records,
         "texts": texts,
     }
     if len(form_slices) > 0:
@@ -610,14 +607,12 @@ def convert(
         senses = pd.concat([senses, wf_senses]).fillna("")
         tables["senses"] = senses
 
-        glottocode = conf.get("Glottocode", None)
+        glottocode = conf.get("glottocode", None)
         if not glottocode:
-            log.warning("You have not specified a glottocode in your configuration.")
-            iso = conf.get("Language_ID", None)
+            iso = conf["lang_id"]
         else:
             iso = None
-
-        create_rich_dataset(
+        create_corpus_dataset(
             tables=tables,
             glottocode=glottocode,
             iso=iso,
