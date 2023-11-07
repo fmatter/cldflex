@@ -82,6 +82,4 @@ Create a [YAML](https://yaml.org/) file for CLI usage, pass a dict to the `conve
 * `glottocode`: used to look up language metadata from glottolog
 * `csv_cell_separator`: if there are multiple values in a cell (allomorphs, polysemy...), they are by default separated by `"; "`
 * `form_slices`: set to `false` if you don't want form slices connecting morphs and word forms
-* `cldf`:
-    * `lexicon`: can be set to `"wordlist"` to create a [Wordlist](https://github.com/cldf/cldf/tree/master/modules/Wordlist) instead of a dictionary
 * `mappings`: a dictionary specifying name changes of columns in the created CSV files
