@@ -120,7 +120,7 @@ def iterate_morphemes(word, word_dict, obj_key, gloss_key, conf, p=False):
     for key in [obj_key, gloss_key]:
         if word_dict and key not in word_dict:
             word_dict[key] = "=".join(
-                [x.get(key) for x in proclitics] + [x.get(key) for x in enclitics]
+                [x.get(key, "") for x in proclitics] + [x.get(key, "") for x in enclitics]
             )
     return proclitics, enclitics, word_dict
 
@@ -217,8 +217,12 @@ def extract_records(  # noqa: MC0001
     record_list = []
     if lexicon is not None:
         retriever = Morphinder(lexicon)
+    if text.find("phrase"):
+        iterator = "phrase"
+    else:
+        iterator = "paragraph"
     for phrase_count, phrase in enumerate(  # pylint: disable=too-many-nested-blocks
-        text.find_all("phrase")
+        text.find_all(iterator)
     ):
         surface = []
         segnum = phrase.select("item[type='segnum']")
@@ -227,7 +231,6 @@ def extract_records(  # noqa: MC0001
             segnum = segnum[0].text
         else:
             segnum = phrase_count
-
         ex_id = humidify(f"{text_id}-{segnum}", key="examples", unique=True)
         log.debug(f"{ex_id}")
 
@@ -318,7 +321,6 @@ def extract_records(  # noqa: MC0001
             "ID": ex_id,
             "Primary_Text": surface,
             "Text_ID": text_id,
-            "guid": phrase["guid"],
         }
         for attr, value in phrase.attrs.items():
             phrase_dict[attr] = value
@@ -417,9 +419,9 @@ def prepare_records(df, conf):
         (f"gls_{conf['gloss_lg']}_phrase", "Translated_Text"),
         (f"pos_{conf['gloss_lg']}_word", "Part_Of_Speech"),
         (f"segnum_{conf['gloss_lg']}_phrase", "Sentence_Number"),
+        (f"segnum_{conf['gloss_lg']}_word", "Sentence_Number"),
     ]:
-        if label not in rename_dict.values():
-            rename_dict.setdefault(gen_col, label)
+        rename_dict.setdefault(gen_col, label)
     for k, v in rename_dict.items():
         if k not in df.columns:
             continue
