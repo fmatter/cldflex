@@ -18,6 +18,7 @@ from cldflex.helpers import delistify, listify
 from cldflex.lift2csv import convert as lift2csv
 
 log = logging.getLogger(__name__)
+# log.setLevel(logging.DEBUG)
 
 delimiters = ["-", "<", ">", "~"]
 
@@ -194,8 +195,6 @@ def add_clitic_wordforms(wordforms, clitic, obj_key, gloss_key):
         clitic["Clitic_ID"],
         {"ID": clitic["Clitic_ID"], "Form": [], "Meaning": [], "Parameter_ID": []},
     )
-    # print(clitic)
-    # print(obj_key)
     if clitic[obj_key] not in wordforms[clitic["Clitic_ID"]]["Form"]:
         wordforms[clitic["Clitic_ID"]]["Form"].append(clitic[obj_key])
     if clitic[gloss_key].strip("=") not in wordforms[clitic["Clitic_ID"]]["Meaning"]:
@@ -390,7 +389,7 @@ def get_text_id(text):
     for abbrev in abbrevs:
         if abbrev.text != "" and text_id is None:
             text_id = humidify(abbrev.text, key="texts", unique=True)
-            log.debug(f"Processing text {text_id} ({abbrev['lang']})")
+            log.info(f"Processing text {text_id} ({abbrev['lang']})")
     return text_id
 
 
@@ -461,9 +460,9 @@ def convert(
 ):  # pylint: disable=too-many-locals,too-many-arguments
     output_dir = output_dir or Path(".")
     flextext_file = Path(flextext_file)
-    log.debug(f"reading {flextext_file.resolve()}")
+    log.info(f"Reading {flextext_file.resolve()}...")
     with open(flextext_file, "r", encoding="utf-8") as f:
-        texts = BeautifulSoup(f.read(), features="lxml")
+        texts = BeautifulSoup(f.read(), features="xml")
 
     if not conf:
         log.info(
@@ -498,7 +497,6 @@ def convert(
     for text in texts.find_all("interlinear-text"):
         text_id = get_text_id(text)
         text_list.append(get_text_metadata(text, text_id))
-
         record_list.extend(
             extract_records(
                 text,
