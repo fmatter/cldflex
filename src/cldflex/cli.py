@@ -16,6 +16,7 @@ def _load_config(config_file):
         return None
     return load(config_file)
 
+
 @click.group()
 def main():
     pass  # pragma: no cover
@@ -42,8 +43,13 @@ def dictionary(filename, config_file, cldf, output_dir):
     if not output_dir:
         output_dir = Path(filename.parents[0])
     lift2csv_convert(
-        filename, conf=_load_config(config_file), cldf=cldf, output_dir=output_dir, cldf_mode="dictionary"
+        filename,
+        conf=_load_config(config_file),
+        cldf=cldf,
+        output_dir=output_dir,
+        cldf_mode="dictionary",
     )
+
 
 @main.command()
 @click.argument("filename", type=click.Path(exists=True, path_type=Path))
@@ -71,7 +77,11 @@ def wordlist(filename, config_file, cldf, output_dir, rich):
     else:
         cldf_mode = "wordlist"
     lift2csv_convert(
-        filename, conf=_load_config(config_file), cldf=cldf, output_dir=output_dir, cldf_mode =cldf_mode
+        filename,
+        conf=_load_config(config_file),
+        cldf=cldf,
+        output_dir=output_dir,
+        cldf_mode=cldf_mode,
     )
 
 
