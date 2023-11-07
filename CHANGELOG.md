@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-11-06
+
 ### Added
 * option to add audio files
 * `wordlist` command
@@ -58,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/fmatter/cldflex/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/fmatter/cldflex/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/fmatter/cldflex/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/fmatter/cldflex/compare/v0.0.3...v0.1.0
 [0.0.3]: https://github.com/fmatter/cldflex/releases/tag/v0.0.3
 [0.0.2]: https://github.com/fmatter/cldflex/releases/tag/v0.0.2
